@@ -72,8 +72,12 @@ public class AzureRegistrationIntentService extends IntentService {
 
                 NotificationHub hub = new NotificationHub(PushNotificationSettings.HubName, PushNotificationSettings.HubListenConnectionString, this);
                 //if(hub != null)
-                regID = hub.register(FCM_token, emailTag).getRegistrationId();
-
+                try {
+                    regID = hub.register(FCM_token, emailTag).getRegistrationId();
+                }
+                catch(Exception ex) {
+                    ex.printStackTrace();
+                }
                 // If you want to use tags...
                 // Refer to : https://azure.microsoft.com/en-us/documentation/articles/notification-hubs-routing-tag-expressions/
                 // regID = hub.register(token, "tag1,tag2").getRegistrationId();
