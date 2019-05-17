@@ -9,9 +9,12 @@ public class AppPreferences {
     SharedPreferences preferences;
     public static String USER_ID = "user_id";
     public static String FCM_TOKEN = "fcm_token";
+    public static String AUTH_TOKEN = "auth_token";
     public static String AZURE_REG_ID = "azure_reg_id";
     int user_id;
-    String fcm_token, azure_reg_id;
+    String fcm_token;
+    String azure_reg_id;
+    String auth_token;
     boolean isLoginned;
 
     public AppPreferences(Context context) {
@@ -38,6 +41,15 @@ public class AppPreferences {
 
     public void setUser_id(int user_id) {
         preferences.edit().putInt(USER_ID, user_id).apply();
+    }
+
+    public String getAuthToken() {
+        auth_token = preferences.getString(AUTH_TOKEN, null);
+        return auth_token;
+    }
+
+    public void setAuthToken(String auth_token) {
+        preferences.edit().putString(AUTH_TOKEN, auth_token).apply();
     }
 
     public String getFcm_token() {

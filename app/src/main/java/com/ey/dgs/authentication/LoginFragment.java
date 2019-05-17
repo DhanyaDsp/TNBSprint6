@@ -148,6 +148,7 @@ public class LoginFragment extends Fragment implements APICallback {
                 }
                 moveToHomePage();
             }
+            appPreferences.setAuthToken(loginResponse.getToken());
         }
     }
 
