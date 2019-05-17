@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <variable
+            name="user"
+            type="com.ey.dgs.model.User" />
+
+        <variable
+            name="fragment"
+            type="com.ey.dgs.authentication.LoginFragment" />
+
+        <variable
+            name="isLoading"
+            type="java.lang.Boolean" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_login">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/login_side_padding"
+            android:paddingTop="@dimen/login_top_margin"
+            android:paddingRight="@dimen/login_side_padding">
+
+            <android.support.v7.widget.AppCompatImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/logo" />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/museosans_500"
+                android:text="@string/welcome_back"
+                android:textColor="@color/yellow1"
+                android:textSize="@dimen/text_size_large" />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/museosans_500"
+                android:text="@string/my_tnb_account_login"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/text_size_medium" />
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="35dp"
+                android:hint="@string/email"
+                android:textColorHint="@color/text_field_hint_color">
+
+                <android.support.v7.widget.AppCompatEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/login_side_padding"
+                    android:drawableRight="@drawable/ic_camera"
+                    android:drawablePadding="@dimen/small_padding"
+                    android:fontFamily="@font/museosans_500"
+                    android:gravity="center_vertical"
+                    android:padding="@dimen/small_padding"
+                    android:text="@={user.email}"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/text_size_medium"
+                    android:theme="@style/MyEditTextTheme" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="35dp"
+                android:hint="@string/password"
+                android:textColorHint="@color/text_field_hint_color">
+
+                <android.support.v7.widget.AppCompatEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/login_side_padding"
+                    android:drawableRight="@drawable/ic_camera"
+                    android:drawablePadding="@dimen/small_padding"
+                    android:fontFamily="@font/museosans_500"
+                    android:gravity="center_vertical"
+                    android:inputType="textPassword"
+                    android:padding="@dimen/small_padding"
+                    android:text="@={user.password}"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/text_size_medium"
+                    android:theme="@style/MyEditTextTheme" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:fontFamily="@font/museosans_500"
+                android:text="@string/forgot_password"
+                android:textColor="@android:color/white" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <android.support.v7.widget.AppCompatCheckBox
+                    style="@style/WhiteCheck"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:button="@drawable/bg_checkbox"
+                    android:checked="@={user.rememberMe}"
+                    android:gravity="center" />
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/small_padding"
+                    android:fontFamily="@font/museosans_500"
+                    android:text="@string/remember_email"
+                    android:textColor="@android:color/white" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/login_side_padding"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/login_side_padding"
+            android:paddingTop="@dimen/login_top_margin"
+            android:paddingRight="@dimen/login_side_padding">
+
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="35dp"
+                android:drawablePadding="@dimen/small_padding"
+                android:fontFamily="@font/museosans_500"
+                android:text="@string/dont_have_tnb_account"
+                android:textColor="@android:color/white"
+                android:textColorHint="@color/text_field_hint_color"
+                android:textSize="@dimen/text_size_small" />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/small_padding"
+                android:drawablePadding="@dimen/small_padding"
+                android:fontFamily="@font/museosans_500"
+                android:hint="@string/register_account"
+                android:textColor="@android:color/white"
+                android:textColorHint="@android:color/white"
+                android:textSize="@dimen/text_size_medium" />
+
+            <android.support.v7.widget.AppCompatButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/login_side_padding"
+                android:background="@drawable/bg_login_btn"
+                android:fontFamily="@font/museosans_500"
+                android:gravity="center"
+                android:hint="@string/register_account"
+                android:onClick="@{(v)-> fragment.login(v)}"
+                android:text="@string/login"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/text_size_medium" />
+
+        </LinearLayout>
+
+        <include
+            android:id="@+id/loader"
+            layout="@layout/loader"
+            android:visibility="gone" />
+
+    </RelativeLayout>
+
+</layout>

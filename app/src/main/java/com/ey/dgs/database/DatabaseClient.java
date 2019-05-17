@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import com.ey.dgs.model.Account;
+import com.ey.dgs.model.AccountSettings;
 import com.ey.dgs.model.Notification;
 import com.ey.dgs.model.User;
 
@@ -56,25 +57,25 @@ public class DatabaseClient {
         st.execute();
     }
 
-    public void getUsers(int requestCode, int userId, int accountId, DatabaseCallback databaseCallback) {
-        class GetNotificationsTask extends AsyncTask<Void, Void, List<Notification>> {
+    public void deleteUser(int requestCode, User user, DatabaseCallback databaseCallback) {
+        class DeleteUserTask extends AsyncTask<Void, Void, Void> {
 
             @Override
-            protected List<Notification> doInBackground(Void... voids) {
-
-                return DatabaseClient.getInstance(mCtx).getAppDatabase()
-                        .notificationDao()
-                        .getAccountNotification(userId, accountId);
+            protected Void doInBackground(Void... voids) {
+                DatabaseClient.getInstance(mCtx).getAppDatabase()
+                        .taskDao()
+                        .delete(user);
+                return null;
             }
 
             @Override
-            protected void onPostExecute(List<Notification> notifications) {
-                super.onPostExecute(notifications);
-                databaseCallback.onReceived(notifications, requestCode, 0);
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                //databaseCallback.onInsert(user, requestCode, 0);
             }
         }
 
-        GetNotificationsTask st = new GetNotificationsTask();
+        DeleteUserTask st = new DeleteUserTask();
         st.execute();
     }
 
@@ -129,9 +130,16 @@ public class DatabaseClient {
             @Override
             protected Void doInBackground(Void... voids) {
 
+
                 DatabaseClient.getInstance(mCtx).getAppDatabase()
                         .accountDao()
-                        .insert(accounts);
+                        .clear();
+                for (Account account : accounts) {
+                    DatabaseClient.getInstance(mCtx).getAppDatabase()
+                            .accountDao()
+                            .insert(account);
+                }
+
                 return null;
             }
 
@@ -168,26 +176,28 @@ public class DatabaseClient {
         st.execute();
     }
 
-    public void addNotifications(int requestCode, List<Notification> notifications, DatabaseCallback databaseCallback) {
-        class AddNotificationsTask extends AsyncTask<Void, Void, Void> {
+    public void addNotification(int requestCode, Notification notification, DatabaseCallback databaseCallback) {
+        class AddNotificationTask extends AsyncTask<Void, Void, Void> {
 
             @Override
             protected Void doInBackground(Void... voids) {
 
                 DatabaseClient.getInstance(mCtx).getAppDatabase()
                         .notificationDao()
-                        .insert(notifications);
+                        .insert(notification);
                 return null;
             }
 
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
-                databaseCallback.onInsert(notifications, requestCode, 0);
+                if (databaseCallback != null) {
+                    databaseCallback.onInsert(notification, requestCode, 0);
+                }
             }
         }
 
-        AddNotificationsTask st = new AddNotificationsTask();
+        AddNotificationTask st = new AddNotificationTask();
         st.execute();
     }
 
@@ -204,7 +214,7 @@ public class DatabaseClient {
                 } else {
                     return DatabaseClient.getInstance(mCtx).getAppDatabase()
                             .notificationDao()
-                            .getAccountNotification(user_id, accountId);
+                            .getAll();
                 }
             }
 
@@ -218,4 +228,53 @@ public class DatabaseClient {
         GetNotificationsTask st = new GetNotificationsTask();
         st.execute();
     }
+
+    public void getAccountSettings(int requestCode, String accountNumber, DatabaseCallback databaseCallback) {
+        class GetAccountSettingsTask extends AsyncTask<Void, Void, AccountSettings> {
+
+            @Override
+            protected AccountSettings doInBackground(Void... voids) {
+
+                return DatabaseClient.getInstance(mCtx).getAppDatabase()
+                        .getAccountSettingsDao()
+                        .getAccountSettings(accountNumber);
+
+            }
+
+            @Override
+            protected void onPostExecute(AccountSettings accountSettings) {
+                super.onPostExecute(accountSettings);
+                databaseCallback.onReceived(accountSettings, requestCode, 0);
+            }
+        }
+
+        GetAccountSettingsTask st = new GetAccountSettingsTask();
+        st.execute();
+    }
+
+    public void addAccountSettings(int requestCode, AccountSettings accountSettings, DatabaseCallback databaseCallback) {
+        class AddAccountsTask extends AsyncTask<Void, Void, Void> {
+
+            @Override
+            protected Void doInBackground(Void... voids) {
+
+                DatabaseClient.getInstance(mCtx).getAppDatabase()
+                        .getAccountSettingsDao()
+                        .insert(accountSettings);
+
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                databaseCallback.onInsert(accountSettings, requestCode, 0);
+            }
+        }
+
+        AddAccountsTask st = new AddAccountsTask();
+        st.execute();
+    }
 }
+
+

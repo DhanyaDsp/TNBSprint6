@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <variable
+            name="user"
+            type="com.ey.dgs.model.User" />
+
+        <variable
+            name="fragment"
+            type="com.ey.dgs.notifications.settings.NotificationToggleFragment" />
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        android:clickable="true"
+        android:focusableInTouchMode="true"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:padding="@dimen/medium_padding">
+
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:fontFamily="@font/museosans_500"
+                android:text="@string/notifications"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_size_medium" />
+
+            <android.support.v7.widget.SwitchCompat
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:checked="@{user.notificationFlag}"
+                android:onCheckedChanged="@{(view,isChecked)-> fragment.toggleNotification(view,isChecked)}"
+                android:theme="@style/SwitchCompatTheme" />
+
+        </RelativeLayout>
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/tvLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/medium_padding"
+            android:text="@string/notification_toggle_heading"
+            android:textColor="@color/blue1" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rvAccounts"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+</layout>

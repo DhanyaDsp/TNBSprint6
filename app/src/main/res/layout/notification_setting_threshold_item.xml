@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white"
+    android:gravity="center_vertical"
+    android:padding="@dimen/medium_padding">
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/tvName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@+id/etThreshold"
+        android:fontFamily="@font/museosans_500"
+        android:text="@string/notifications"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_medium" />
+
+    <android.support.v7.widget.AppCompatEditText
+        android:id="@+id/etThreshold"
+        android:layout_width="60dp"
+        android:layout_height="40dp"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/bg_rounded_black"
+        android:gravity="right|center_vertical"
+        android:inputType="number"
+        android:padding="@dimen/small_padding"
+        android:text="45" />
+
+</RelativeLayout>

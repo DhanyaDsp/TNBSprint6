@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "344373815152",
+    "firebase_url": "https://dgsapp-aff5f.firebaseio.com",
+    "project_id": "dgsapp-aff5f",
+    "storage_bucket": "dgsapp-aff5f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:344373815152:android:c7c2c23d06b25782",
+        "android_client_info": {
+          "package_name": "com.ey.dgs"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "344373815152-gnd0lj35vv6uc29p4s1cia8bbvk8urdj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDbVRU7c4uFM9WZ4IeuDYBFaTylxLtR5Bg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "344373815152-gnd0lj35vv6uc29p4s1cia8bbvk8urdj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
