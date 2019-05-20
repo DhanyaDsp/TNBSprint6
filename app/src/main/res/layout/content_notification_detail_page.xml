@@ -22,6 +22,7 @@
         android:padding="@dimen/medium_padding">
 
         <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/tvHeader"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/museosans_500"
@@ -30,6 +31,7 @@
             android:textSize="@dimen/text_size_medium" />
 
         <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/tvMessage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/medium_padding"
@@ -40,12 +42,14 @@
 
 
         <LinearLayout
+            android:id="@+id/llEnergyTips"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/medium_padding"
             android:background="@drawable/bg_tip"
             android:orientation="vertical"
-            android:padding="@dimen/medium_padding">
+            android:padding="@dimen/medium_padding"
+            android:visibility="gone">
 
             <android.support.v7.widget.AppCompatTextView
                 android:layout_width="wrap_content"
@@ -56,6 +60,7 @@
                 android:textSize="@dimen/text_size_medium" />
 
             <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/tvEnergyTips"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/medium_padding"

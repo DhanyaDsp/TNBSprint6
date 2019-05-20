@@ -46,12 +46,14 @@
         </LinearLayout>
 
         <include
+            android:id="@+id/subscribePopup"
             layout="@layout/subscribe_popup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:layout_marginLeft="@dimen/large_padding"
-            android:layout_marginRight="@dimen/large_padding" />
+            android:layout_marginRight="@dimen/large_padding"
+            android:visibility="gone" />
 
     </RelativeLayout>
 

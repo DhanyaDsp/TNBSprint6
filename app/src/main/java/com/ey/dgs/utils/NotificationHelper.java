@@ -10,7 +10,10 @@ import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
 
 import com.ey.dgs.R;
+import com.ey.dgs.model.Notification;
 import com.ey.dgs.notifications.NotificationDetailPage;
+
+import java.io.Serializable;
 
 public class NotificationHelper {
     private Context mContext;
@@ -25,9 +28,10 @@ public class NotificationHelper {
     /**
      * Create and push the notification
      */
-    public void createNotification(String title, String message) {
+    public void createNotification(String title, Notification notification, String message) {
         /**Creates an explicit intent for an Activity in your app**/
         Intent resultIntent = new Intent(mContext, NotificationDetailPage.class);
+        resultIntent.putExtra("notification",(Serializable) notification);
         resultIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         PendingIntent resultPendingIntent = PendingIntent.getActivity(mContext,

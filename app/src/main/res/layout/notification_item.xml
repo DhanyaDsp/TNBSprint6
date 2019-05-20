@@ -26,6 +26,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/museosans_500"
+            android:singleLine="true"
             android:text="Consumption"
             android:textColor="@color/black"
             android:textSize="@dimen/text_size_medium" />
@@ -35,7 +36,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/small_padding"
+            android:ellipsize="end"
             android:fontFamily="@font/museosans_500"
+            android:singleLine="true"
             android:text="You have reached your threshold"
             android:textColor="@color/light_black"
             android:textSize="@dimen/text_size_very_small" />
@@ -52,6 +55,7 @@
         android:orientation="horizontal">
 
         <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/tvDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/museosans_500"

@@ -6,6 +6,9 @@ import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,8 +17,10 @@ import android.widget.CompoundButton;
 import com.ey.dgs.R;
 import com.ey.dgs.dashboard.DashboardFragment;
 import com.ey.dgs.model.AccountSettings;
+import com.ey.dgs.model.EnergyConsumptions;
 import com.ey.dgs.model.NotificationSetting;
 import com.ey.dgs.notifications.settings.AccountNotificationSettingsFragment;
+import com.ey.dgs.utils.Utils;
 
 import java.util.ArrayList;
 
@@ -30,12 +35,24 @@ public class NotificationSettingsAdapter extends RecyclerView.Adapter<RecyclerVi
     public ArrayList<NotificationSetting> notificationSettings;
     private Activity context;
     private Fragment fragment;
-    NotificationSetting averageThresholdItem, userThresholdItem;
+    private NotificationSetting averageThresholdItem, userThresholdItem;
     AccountSettings accountSettings;
+    EnergyConsumptions energyConsumptions;
     private boolean isExpanded;
+    public boolean isThresholdChanged;
+    public boolean isUpdated;
 
     public void setAccountSettings(AccountSettings accountSettings) {
         this.accountSettings = accountSettings;
+    }
+
+    public void setEnergyConsumptions(EnergyConsumptions energyConsumptions) {
+        this.energyConsumptions = energyConsumptions;
+        if (energyConsumptions.getEnergyConsumptionFlag()) {
+            this.notificationSettings.add(4, averageThresholdItem);
+            this.notificationSettings.add(5, userThresholdItem);
+            isExpanded = true;
+        }
     }
 
     public NotificationSettingsAdapter(RecyclerView rvNotificationSettings, Fragment fragment, Activity context, ArrayList<NotificationSetting> notificationSettings) {
@@ -85,7 +102,6 @@ public class NotificationSettingsAdapter extends RecyclerView.Adapter<RecyclerVi
                 settingsHolder.scTurn.setChecked(notificationSetting.isTurnedOn());
 
                 if (accountSettings != null) {
-                    settingsHolder.scTurn.setOnCheckedChangeListener(null);
                     if (isExpanded) {
                         if (position == 6) {
                             settingsHolder.scTurn.setChecked(accountSettings.isServiceAvailability());
@@ -104,26 +120,66 @@ public class NotificationSettingsAdapter extends RecyclerView.Adapter<RecyclerVi
                         }
                     }
                 }
+
+                if (energyConsumptions != null) {
+                    if (isExpanded) {
+                        if (position == 3) {
+                            settingsHolder.scTurn.setChecked(energyConsumptions.getEnergyConsumptionFlag());
+                        }
+                    } else {
+                        if (position == 3) {
+                            settingsHolder.scTurn.setChecked(energyConsumptions.getEnergyConsumptionFlag());
+                        }
+                    }
+                }
+
                 settingsHolder.scTurn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        if (position == 3) {
-                            if (isChecked) {
-                                isExpanded = true;
-                                notificationSettings.add(4, averageThresholdItem);
-                                notificationSettings.add(5, userThresholdItem);
-                                notifyItemInserted(4);
-                                notifyItemInserted(4);
-                            } else {
-                                isExpanded = false;
-                                notificationSettings.remove(averageThresholdItem);
-                                notificationSettings.remove(userThresholdItem);
-                                notifyItemRemoved(4);
-                                notifyItemRemoved(5);
+                        if (!isUpdated) {
+                            if (position == 3) {
+                                if (isChecked) {
+                                    isExpanded = true;
+                                    notificationSettings.add(4, averageThresholdItem);
+                                    notificationSettings.add(5, userThresholdItem);
+                                    notifyItemInserted(4);
+                                    notifyItemInserted(5);
+                                } else {
+                                    isExpanded = false;
+                                    notificationSettings.remove(averageThresholdItem);
+                                    notificationSettings.remove(userThresholdItem);
+                                    notifyItemRemoved(4);
+                                    notifyItemRemoved(5);
+                                }
+                                if (energyConsumptions != null) {
+                                    energyConsumptions.setEnergyConsumptionFlag(isChecked);
+                                }
+                            } else if (position == 7) {
+                                if (!isExpanded) {
+                                    if (accountSettings != null) {
+                                        accountSettings.setPushNotificationFlag(isChecked);
+                                    }
+                                }
+                            } else if (position == 8) {
+                                if (!isExpanded) {
+                                    if (accountSettings != null) {
+                                        accountSettings.setSmsNotificationFlag(isChecked);
+                                    }
+                                }
+                            } else if (position == 9) {
+                                if (isExpanded) {
+                                    if (accountSettings != null) {
+                                        accountSettings.setPushNotificationFlag(isChecked);
+                                    }
+                                }
+                            } else if (position == 10) {
+                                if (isExpanded) {
+                                    if (accountSettings != null) {
+                                        accountSettings.setSmsNotificationFlag(isChecked);
+                                    }
+                                }
                             }
-                            notificationSetting.setTurnedOn(isChecked);
-
                         }
                     }
                 });
@@ -136,7 +192,43 @@ public class NotificationSettingsAdapter extends RecyclerView.Adapter<RecyclerVi
                     thresholdHolder.etThreshold.setFocusable(false);
                     thresholdHolder.etThreshold.setBackground(null);
                 }
-                thresholdHolder.etThreshold.setText("45");
+                if (energyConsumptions != null) {
+                    if (isExpanded) {
+                        if (position == 4) {
+                            thresholdHolder.etThreshold.setText(energyConsumptions.getAverageConsumption());
+                        } else if (position == 5) {
+                            if (((AccountNotificationSettingsFragment) fragment).isThresholdOrSubscribe()) {
+                                thresholdHolder.etThreshold.requestFocus();
+                                Utils.showKeyBoard(context);
+                            }
+                            thresholdHolder.etThreshold.setText(energyConsumptions.getUserThreshold());
+                            thresholdHolder.etThreshold.addTextChangedListener(new TextWatcher() {
+                                @Override
+                                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                                }
+
+                                @Override
+                                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                                }
+
+                                @Override
+                                public void afterTextChanged(Editable s) {
+                                    String threshold = s.toString();
+                                    if (!TextUtils.isEmpty(threshold) && Integer.parseInt(threshold) > 0) {
+                                        isThresholdChanged = true;
+                                        energyConsumptions.setUserThreshold(s.toString());
+                                    } else {
+                                        Utils.showToast(context, "Please Enter a Threshold Value Great than Zero and Non Empty");
+                                    }
+                                }
+                            });
+                        }
+                    } else {
+
+                    }
+                }
                 break;
 
             case TYPE_HEADER:
@@ -161,12 +253,6 @@ public class NotificationSettingsAdapter extends RecyclerView.Adapter<RecyclerVi
             super(itemView);
             tvName = itemView.findViewById(R.id.tvName);
             scTurn = itemView.findViewById(R.id.scTurn);
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                }
-            });
         }
     }
 
@@ -191,4 +277,19 @@ public class NotificationSettingsAdapter extends RecyclerView.Adapter<RecyclerVi
         }
     }
 
+    public AccountSettings getAccountSettings() {
+        return accountSettings;
+    }
+
+    public EnergyConsumptions getEnergyConsumptions() {
+        return energyConsumptions;
+    }
+
+    public boolean isThresholdChanged() {
+        return isThresholdChanged;
+    }
+
+    public void setUpdated(boolean updated) {
+        isUpdated = updated;
+    }
 }

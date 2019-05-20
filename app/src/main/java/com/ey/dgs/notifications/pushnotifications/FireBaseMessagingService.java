@@ -55,7 +55,7 @@ public class FireBaseMessagingService extends FirebaseMessagingService {
         Gson gson = new Gson();
         Notification notification = gson.fromJson(messageBody, Notification.class);
         DatabaseClient.getInstance(getApplication()).addNotification(Notification.REQUEST_CODE_ADD_NOTIFICATIONS, notification, null);
-        new NotificationHelper(getApplicationContext()).createNotification("", notification.getMessage());
+        new NotificationHelper(getApplicationContext()).createNotification("",notification, notification.getMessage());
 
     }
 }

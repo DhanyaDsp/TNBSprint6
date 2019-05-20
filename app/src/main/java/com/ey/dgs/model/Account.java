@@ -1,6 +1,7 @@
 package com.ey.dgs.model;
 
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
@@ -24,7 +25,8 @@ public class Account implements Serializable {
     private String date;
     private String rm;
     private int user_id;
-    boolean isAccount;
+    private boolean isAccount;
+
 
     public int getAccountId() {
         return accountId;

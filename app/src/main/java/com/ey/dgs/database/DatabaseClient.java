@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 
 import com.ey.dgs.model.Account;
 import com.ey.dgs.model.AccountSettings;
+import com.ey.dgs.model.EnergyConsumptions;
 import com.ey.dgs.model.Notification;
 import com.ey.dgs.model.User;
 
@@ -154,6 +155,32 @@ public class DatabaseClient {
         st.execute();
     }
 
+    public void addEnergyConsumptionsToLocalDB(int requestCode, List<EnergyConsumptions> energyConsumptions, DatabaseCallback databaseCallback) {
+        class AddEnergyConsumptionsTask extends AsyncTask<Void, Void, Void> {
+
+            @Override
+            protected Void doInBackground(Void... voids) {
+
+                DatabaseClient.getInstance(mCtx).getAppDatabase()
+                        .getEnergyConsumptionsDao().clear();
+
+                DatabaseClient.getInstance(mCtx).getAppDatabase()
+                        .getEnergyConsumptionsDao().insert(energyConsumptions);
+
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                databaseCallback.onInsert(energyConsumptions, requestCode, 0);
+            }
+        }
+
+        AddEnergyConsumptionsTask st = new AddEnergyConsumptionsTask();
+        st.execute();
+    }
+
     public void getAccounts(int requestCode, int user_id, DatabaseCallback databaseCallback) {
         class GetAccountsTask extends AsyncTask<Void, Void, List<Account>> {
 
@@ -252,6 +279,29 @@ public class DatabaseClient {
         st.execute();
     }
 
+    public void getEnergyConsumptions(int requestCode, String accountNumber, DatabaseCallback databaseCallback) {
+        class GetAccountSettingsTask extends AsyncTask<Void, Void, EnergyConsumptions> {
+
+            @Override
+            protected EnergyConsumptions doInBackground(Void... voids) {
+
+                return DatabaseClient.getInstance(mCtx).getAppDatabase()
+                        .getEnergyConsumptionsDao()
+                        .getEnergyConsumption(accountNumber);
+
+            }
+
+            @Override
+            protected void onPostExecute(EnergyConsumptions energyConsumptions) {
+                super.onPostExecute(energyConsumptions);
+                databaseCallback.onReceived(energyConsumptions, requestCode, 0);
+            }
+        }
+
+        GetAccountSettingsTask st = new GetAccountSettingsTask();
+        st.execute();
+    }
+
     public void addAccountSettings(int requestCode, AccountSettings accountSettings, DatabaseCallback databaseCallback) {
         class AddAccountsTask extends AsyncTask<Void, Void, Void> {
 
@@ -261,6 +311,10 @@ public class DatabaseClient {
                 DatabaseClient.getInstance(mCtx).getAppDatabase()
                         .getAccountSettingsDao()
                         .insert(accountSettings);
+
+                accountSettings.getEnergyConsumptions().setAccountNumber(accountSettings.getAccountNumber());
+                DatabaseClient.getInstance(mCtx).getAppDatabase().getEnergyConsumptionsDao()
+                        .insert(accountSettings.getEnergyConsumptions());
 
                 return null;
             }
@@ -273,6 +327,54 @@ public class DatabaseClient {
         }
 
         AddAccountsTask st = new AddAccountsTask();
+        st.execute();
+    }
+
+    public void updateAccountSettings(int requestCode, AccountSettings accountSettings, DatabaseCallback databaseCallback) {
+        class UpdateAccountsTask extends AsyncTask<Void, Void, Void> {
+
+            @Override
+            protected Void doInBackground(Void... voids) {
+
+                DatabaseClient.getInstance(mCtx).getAppDatabase()
+                        .getAccountSettingsDao()
+                        .update(accountSettings);
+
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                databaseCallback.onUpdate(accountSettings, requestCode, 0);
+            }
+        }
+
+        UpdateAccountsTask st = new UpdateAccountsTask();
+        st.execute();
+    }
+
+    public void updateEnergyConsumptions(int requestCode, EnergyConsumptions energyConsumptions, DatabaseCallback databaseCallback) {
+        class UpdateAccountsTask extends AsyncTask<Void, Void, Void> {
+
+            @Override
+            protected Void doInBackground(Void... voids) {
+
+                DatabaseClient.getInstance(mCtx).getAppDatabase()
+                        .getEnergyConsumptionsDao()
+                        .update(energyConsumptions);
+
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                databaseCallback.onUpdate(energyConsumptions, requestCode, 0);
+            }
+        }
+
+        UpdateAccountsTask st = new UpdateAccountsTask();
         st.execute();
     }
 }

@@ -12,7 +12,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -24,19 +23,12 @@ import com.ey.dgs.model.Account;
 import com.ey.dgs.model.User;
 import com.ey.dgs.notifications.NotificationListActivity;
 import com.ey.dgs.notifications.pushnotifications.AzureRegistrationIntentService;
-import com.ey.dgs.notifications.pushnotifications.PushNotificationSettings;
 import com.ey.dgs.notifications.settings.NotificationSettingsActivity;
 import com.ey.dgs.utils.AppPreferences;
 import com.ey.dgs.utils.FragmentUtils;
 import com.ey.dgs.utils.Utils;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
-import com.microsoft.windowsazure.notifications.NotificationsManager;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
 public class HomeActivity extends AppCompatActivity implements MyAccountFragment.OnFragmentInteractionListener, DashboardFragment.OnFragmentInteractionListener {
 
@@ -165,19 +157,19 @@ public class HomeActivity extends AppCompatActivity implements MyAccountFragment
             switch (item.getItemId()) {
                 case R.id.navigation_dashboard:
                     FragmentUtils.newInstance(getSupportFragmentManager())
-                            .setFragment(INDEX_DASHBOARD, null, DashboardFragment.class.getName(), R.id.homeFlContainer);
+                            .addFragment(INDEX_DASHBOARD, null, DashboardFragment.class.getName(), R.id.homeFlContainer);
                     return true;
                 case R.id.navigation_bills:
                     FragmentUtils.newInstance(getSupportFragmentManager())
-                            .setFragment(INDEX_DASHBOARD, null, DashboardFragment.class.getName(), R.id.homeFlContainer);
+                            .addFragment(INDEX_DASHBOARD, null, DashboardFragment.class.getName(), R.id.homeFlContainer);
                     return true;
                 case R.id.navigation_promotions:
                     FragmentUtils.newInstance(getSupportFragmentManager())
-                            .setFragment(INDEX_DASHBOARD, null, DashboardFragment.class.getName(), R.id.homeFlContainer);
+                            .addFragment(INDEX_DASHBOARD, null, DashboardFragment.class.getName(), R.id.homeFlContainer);
                     return true;
                 case R.id.navigation_feedback:
                     FragmentUtils.newInstance(getSupportFragmentManager())
-                            .setFragment(INDEX_DASHBOARD, null, DashboardFragment.class.getName(), R.id.homeFlContainer);
+                            .addFragment(INDEX_DASHBOARD, null, DashboardFragment.class.getName(), R.id.homeFlContainer);
                     return true;
                 case R.id.navigation_more:
                     moveToSettingsPage();

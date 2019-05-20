@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import com.ey.dgs.R;
 import com.ey.dgs.model.Notification;
 import com.ey.dgs.notifications.NotificationDetailPage;
+import com.ey.dgs.utils.Utils;
 
 import java.util.ArrayList;
 
@@ -37,7 +38,13 @@ public class NotificationListAdapter extends RecyclerView.Adapter<RecyclerView.V
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int i) {
         final Notification notification = this.notifications.get(i);
         NotificationHolder notificationHolder = (NotificationHolder) holder;
-        notificationHolder.tvMessage.setText(notification.getMessage());
+        notificationHolder.tvDetailMessage.setText(notification.getMessage());
+        if (notification.getNotificationType().equalsIgnoreCase(Notification.MMC)) {
+            notificationHolder.tvMessage.setText("Consumption");
+        } else {
+            notificationHolder.tvMessage.setText("Service Availability");
+        }
+        notificationHolder.tvDate.setText(notification.getDate());
     }
 
     @Override
@@ -48,16 +55,18 @@ public class NotificationListAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     public class NotificationHolder extends RecyclerView.ViewHolder {
 
-        AppCompatTextView tvMessage, tvDetailMessage;
+        AppCompatTextView tvMessage, tvDetailMessage, tvDate;
 
         private NotificationHolder(View itemView) {
             super(itemView);
             tvMessage = itemView.findViewById(R.id.tvMessage);
             tvDetailMessage = itemView.findViewById(R.id.tvDetailMessage);
+            tvDate = itemView.findViewById(R.id.tvDate);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(context, NotificationDetailPage.class);
+                    intent.putExtra("notification", notifications.get(getAdapterPosition()));
                     context.startActivity(intent);
                 }
             });

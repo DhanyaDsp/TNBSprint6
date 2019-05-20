@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.AppCompatTextView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,8 +15,10 @@ import com.ey.dgs.dashboard.DashboardFragment;
 import com.ey.dgs.databinding.FragmentMyAccountBinding;
 import com.ey.dgs.model.Account;
 import com.ey.dgs.model.NotificationSetting;
+import com.ey.dgs.model.User;
 import com.ey.dgs.notifications.NotificationListActivity;
 import com.ey.dgs.notifications.settings.NotificationSettingsActivity;
+import com.ey.dgs.utils.Utils;
 
 import java.io.Serializable;
 
@@ -24,6 +27,8 @@ public class MyAccountFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
     private FragmentMyAccountBinding myAccountBinding;
     private Account account;
+    AppCompatTextView tvDueDate;
+    View view;
 
     public MyAccountFragment() {
     }
@@ -50,7 +55,15 @@ public class MyAccountFragment extends Fragment {
         }
         myAccountBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_my_account, container, false);
         myAccountBinding.setFragment(this);
-        return myAccountBinding.getRoot();
+        myAccountBinding.setAccount(account);
+        view = myAccountBinding.getRoot();
+        initViews();
+        return view;
+    }
+
+    private void initViews() {
+        tvDueDate = view.findViewById(R.id.tvDueDate);
+        tvDueDate.setText(Utils.formatAccountDetailDate(account.getLastBilledDate()));
     }
 
     @Override
@@ -79,10 +92,12 @@ public class MyAccountFragment extends Fragment {
     }
 
     private void moveToNotificationSettingsPage() {
-        Intent intent = new Intent(getActivity(), NotificationSettingsActivity.class);
-        intent.putExtra("isAddThreshold", true);
-        intent.putExtra("account", account);
-        startActivity(intent);
+        if (account != null) {
+            Intent intent = new Intent(getActivity(), NotificationSettingsActivity.class);
+            intent.putExtra("isAddThreshold", true);
+            intent.putExtra("account", account);
+            startActivity(intent);
+        }
     }
 
 }

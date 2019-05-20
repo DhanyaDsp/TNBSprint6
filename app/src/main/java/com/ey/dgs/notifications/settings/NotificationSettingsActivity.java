@@ -1,24 +1,22 @@
 package com.ey.dgs.notifications.settings;
 
-import android.net.Uri;
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.ey.dgs.R;
+import com.ey.dgs.dashboard.myaccount.AccountSettingsViewModel;
 import com.ey.dgs.model.Account;
-import com.ey.dgs.model.SettingMenuItem;
 import com.ey.dgs.utils.FragmentUtils;
 
 public class NotificationSettingsActivity extends AppCompatActivity implements SettingsMenuFragment.OnFragmentInteractionListener, NotificationToggleFragment.OnFragmentInteractionListener, AccountNotificationSettingsFragment.OnFragmentInteractionListener {
 
     boolean isComingFromPopup, isAddThreshold;
     Account account;
+    AccountSettingsViewModel accountSettingsViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +25,7 @@ public class NotificationSettingsActivity extends AppCompatActivity implements S
         isComingFromPopup = getIntent().getBooleanExtra("isComingFromPopup", false);
         isAddThreshold = getIntent().getBooleanExtra("isAddThreshold", false);
         account = (Account) getIntent().getSerializableExtra("account");
+        accountSettingsViewModel = ViewModelProviders.of(this).get(AccountSettingsViewModel.class);
         initViews();
         showSettingsFragment();
     }
@@ -35,7 +34,7 @@ public class NotificationSettingsActivity extends AppCompatActivity implements S
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                finish();
+                onActionBarBackBtnPressed();
                 break;
             default:
                 break;
@@ -45,21 +44,21 @@ public class NotificationSettingsActivity extends AppCompatActivity implements S
 
     private void showSettingsFragment() {
         if (isAddThreshold) {
+            /*FragmentUtils.newInstance(getSupportFragmentManager()).
+                    addFragment(FragmentUtils.INDEX_SETTINGS_FRAGMENT, account, SettingsMenuFragment.class.getName(), R.id.flNotificationContainer);
             FragmentUtils.newInstance(getSupportFragmentManager()).
-                    setFragment(FragmentUtils.INDEX_SETTINGS_FRAGMENT, account, SettingsMenuFragment.class.getName(), R.id.flNotificationContainer);
+                    addFragment(FragmentUtils.INDEX_NOTIFICATION_TOGGLE_FRAGMENT, account, SettingsMenuFragment.class.getName(), R.id.flNotificationContainer);*/
             FragmentUtils.newInstance(getSupportFragmentManager()).
-                    setFragment(FragmentUtils.INDEX_NOTIFICATION_TOGGLE_FRAGMENT, account, SettingsMenuFragment.class.getName(), R.id.flNotificationContainer);
-            FragmentUtils.newInstance(getSupportFragmentManager()).
-                    setFragment(FragmentUtils.INDEX_NOTIFICATION_SETTINGS_FRAGMENT, account, SettingsMenuFragment.class.getName(), R.id.flNotificationContainer);
+                    replaceFragment(FragmentUtils.INDEX_NOTIFICATION_SETTINGS_FRAGMENT, account, AccountNotificationSettingsFragment.class.getName(), R.id.flNotificationContainer);
         } else if (isComingFromPopup) {
+            /*FragmentUtils.newInstance(getSupportFragmentManager()).
+                    addFragment(FragmentUtils.INDEX_SETTINGS_FRAGMENT, null, SettingsMenuFragment.class.getName(), R.id.flNotificationContainer);*/
             FragmentUtils.newInstance(getSupportFragmentManager()).
-                    setFragment(FragmentUtils.INDEX_SETTINGS_FRAGMENT, null, SettingsMenuFragment.class.getName(), R.id.flNotificationContainer);
-            FragmentUtils.newInstance(getSupportFragmentManager()).
-                    setFragment(FragmentUtils.INDEX_NOTIFICATION_TOGGLE_FRAGMENT, null, SettingsMenuFragment.class.getName(), R.id.flNotificationContainer);
+                    replaceFragment(FragmentUtils.INDEX_NOTIFICATION_SETTINGS_FRAGMENT, account, NotificationToggleFragment.class.getName(), R.id.flNotificationContainer);
 
         } else {
             FragmentUtils.newInstance(getSupportFragmentManager()).
-                    setFragment(FragmentUtils.INDEX_SETTINGS_FRAGMENT, null, SettingsMenuFragment.class.getName(), R.id.flNotificationContainer);
+                    addFragment(FragmentUtils.INDEX_SETTINGS_FRAGMENT, account, SettingsMenuFragment.class.getName(), R.id.flNotificationContainer);
         }
     }
 
@@ -77,7 +76,20 @@ public class NotificationSettingsActivity extends AppCompatActivity implements S
 
     public void moveToNotificationSettings(Account account) {
         FragmentUtils.newInstance(getSupportFragmentManager())
-                .setFragment(FragmentUtils.INDEX_NOTIFICATION_SETTINGS_FRAGMENT, account, "AccountNotificationSettingsFragment", R.id.flNotificationContainer);
+                .addFragment(FragmentUtils.INDEX_NOTIFICATION_SETTINGS_FRAGMENT, account, "AccountNotificationSettingsFragment", R.id.flNotificationContainer);
+    }
+
+    public void onActionBarBackBtnPressed() {
+        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.flNotificationContainer);
+        if (currentFragment instanceof SettingsMenuFragment) {
+            finish();
+        } else if (currentFragment instanceof NotificationToggleFragment) {
+            super.onBackPressed();
+            setActionBarTitle("More");
+        } else if (currentFragment instanceof AccountNotificationSettingsFragment) {
+            ((AccountNotificationSettingsFragment) currentFragment).updateAccountDetails();
+            setActionBarTitle("Notifications");
+        }
     }
 
     @Override
@@ -86,13 +98,12 @@ public class NotificationSettingsActivity extends AppCompatActivity implements S
         if (currentFragment instanceof SettingsMenuFragment) {
             finish();
         } else if (currentFragment instanceof NotificationToggleFragment) {
-            getSupportFragmentManager().popBackStack();
+            super.onBackPressed();
             setActionBarTitle("More");
         } else if (currentFragment instanceof AccountNotificationSettingsFragment) {
-            getSupportFragmentManager().popBackStack();
+            super.onBackPressed();
             setActionBarTitle("Notifications");
         }
-
     }
 
     private void setActionBarTitle(String title) {
@@ -100,6 +111,6 @@ public class NotificationSettingsActivity extends AppCompatActivity implements S
     }
 
     public void moveToNotificationTogglePage() {
-        FragmentUtils.newInstance(getSupportFragmentManager()).setFragment(FragmentUtils.INDEX_NOTIFICATION_TOGGLE_FRAGMENT, null, NotificationToggleFragment.class.getName(), R.id.flNotificationContainer);
+        FragmentUtils.newInstance(getSupportFragmentManager()).addFragment(FragmentUtils.INDEX_NOTIFICATION_TOGGLE_FRAGMENT, null, NotificationToggleFragment.class.getName(), R.id.flNotificationContainer);
     }
 }

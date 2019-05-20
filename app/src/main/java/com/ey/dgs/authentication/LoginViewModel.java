@@ -91,7 +91,7 @@ public class LoginViewModel extends ViewModel implements DatabaseCallback, APICa
 
         if (requestCode == ApiClient.REQUEST_CODE_UPDATE_USER) {
             User user = (User) obj;
-            setUserData(user);
+            update(user);
         } else {
             UserDetailResponse userDetailResponse = (UserDetailResponse) obj;
             User serverUser = userDetailResponse.getUser();

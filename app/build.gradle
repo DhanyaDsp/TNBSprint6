@@ -1,5 +1,5 @@
 apply plugin: 'com.android.application'
-
+apply plugin: 'io.fabric'
 android {
     compileSdkVersion 28
     defaultConfig {
@@ -54,13 +54,14 @@ dependencies {
 //    implementation 'com.microsoft.azure:notification-hubs-android-sdk:0.4@aar'
 //    implementation 'com.microsoft.azure:azure-notifications-handler:1.0.1@aar'
 
-    implementation 'com.google.firebase:firebase-core:11.0.4'
-    implementation 'com.google.firebase:firebase-messaging:11.0.4'
-    implementation 'com.google.android.gms:play-services-gcm:11.0.4'
+    implementation 'com.google.firebase:firebase-core:16.0.9'
+    implementation 'com.google.firebase:firebase-messaging:18.0.0'
+    implementation 'com.google.android.gms:play-services-gcm:16.1.0'
     implementation 'com.microsoft.azure:azure-mobile-android:3.1.0'
     implementation 'com.microsoft.azure:notification-hubs-android-sdk:0.4@aar'
     implementation 'com.microsoft.azure:azure-notifications-handler:1.0.1@aar'
-
+    implementation 'com.google.firebase:firebase-core:16.0.9'
+    implementation 'com.crashlytics.sdk.android:crashlytics:2.10.0'
     implementation 'com.android.support:multidex:1.0.3'
 
 }

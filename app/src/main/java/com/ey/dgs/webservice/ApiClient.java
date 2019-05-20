@@ -1,15 +1,13 @@
 package com.ey.dgs.webservice;
 
-import android.util.Log;
-
 import com.ey.dgs.api_response.LoginRequest;
 import com.ey.dgs.api_response.LoginResponse;
 import com.ey.dgs.api_response.UserDetailResponse;
 import com.ey.dgs.model.AccountSettings;
+import com.ey.dgs.model.NotificationSettingsRequest;
 import com.ey.dgs.model.User;
-
-import java.io.IOException;
-import java.util.HashMap;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -25,7 +23,8 @@ public class ApiClient {
     public static int REQUEST_CODE_UPDATE_USER = 100;
     public static int REQUEST_CODE_LOGIN_USER = 101;
     public static int REQUEST_CODE_GET_USER = 102;
-
+    public static int REQUEST_CODE_UPDATE_ACCOUNT_DETAILS = 103;
+    public static int REQUEST_CODE_GET_ACCOUNT_DETAILS = 104;
     public static Retrofit getClient() {
         return new Retrofit.Builder()
                 .baseUrl(BASE_URL)
@@ -38,6 +37,17 @@ public class ApiClient {
         return retrofit = new Retrofit.Builder()
                 .baseUrl(LOGIN_BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
+                .build();
+    }
+
+    public static Retrofit getRawTextClient() {
+        Gson gson = new GsonBuilder()
+                .setLenient()
+                .create();
+
+        return new Retrofit.Builder()
+                .baseUrl(LOGIN_BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
     }
 
@@ -104,7 +114,7 @@ public class ApiClient {
     }
 
     public void updateUser(User user, APICallback callback) {
-        ApiInterface apiService = ApiClient.getUserDetailsClient().create(ApiInterface.class);
+        ApiInterface apiService = ApiClient.getRawTextClient().create(ApiInterface.class);
 
         Call<String> call = apiService.updateUser(user);
         call.enqueue(new Callback<String>() {
@@ -135,11 +145,11 @@ public class ApiClient {
                 AccountSettings accountSettings = response.body();
                 if (accountSettings != null) {
                     accountSettings.setAccountNumber(accountNumber);
-                    callback.onSuccess(REQUEST_CODE_UPDATE_USER, accountSettings, response.code());
+                    callback.onSuccess(REQUEST_CODE_GET_ACCOUNT_DETAILS, accountSettings, response.code());
                 } else {
                     accountSettings = new AccountSettings();
                     accountSettings.setMessage("Please try again!");
-                    callback.onFailure(REQUEST_CODE_UPDATE_USER, accountSettings, response.code());
+                    callback.onFailure(REQUEST_CODE_GET_ACCOUNT_DETAILS, accountSettings, response.code());
                 }
 
             }
@@ -148,7 +158,30 @@ public class ApiClient {
             public void onFailure(Call<AccountSettings> call, Throwable t) {
                 UserDetailResponse userDetailResponse = new UserDetailResponse();
                 userDetailResponse.setMessage("Please try again!");
-                callback.onFailure(REQUEST_CODE_UPDATE_USER, userDetailResponse, 0);
+                callback.onFailure(REQUEST_CODE_GET_ACCOUNT_DETAILS, userDetailResponse, 0);
+            }
+        });
+    }
+
+    public void updateAccountSettingsInServer(NotificationSettingsRequest notificationSettingsRequest, APICallback callback) {
+        ApiInterface apiService = ApiClient.getRawTextClient().create(ApiInterface.class);
+        Call<String> call = apiService.updateAccountSettings(notificationSettingsRequest);
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                String res = response.body();
+                if (res != null) {
+                    if (res.equalsIgnoreCase("Updated")) {
+                        callback.onSuccess(REQUEST_CODE_UPDATE_ACCOUNT_DETAILS, notificationSettingsRequest, response.code());
+                    }
+                } else {
+                    callback.onFailure(REQUEST_CODE_UPDATE_ACCOUNT_DETAILS, notificationSettingsRequest, response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                callback.onFailure(REQUEST_CODE_UPDATE_ACCOUNT_DETAILS, "Failed to update Account Aettings", 0);
             }
         });
     }

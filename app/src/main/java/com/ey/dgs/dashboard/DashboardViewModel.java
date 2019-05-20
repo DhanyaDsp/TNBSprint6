@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentActivity;
 import com.ey.dgs.database.DatabaseCallback;
 import com.ey.dgs.database.DatabaseClient;
 import com.ey.dgs.model.Account;
+import com.ey.dgs.model.EnergyConsumptions;
 import com.ey.dgs.notifications.NotificationViewModel;
 import com.ey.dgs.utils.AppPreferences;
 

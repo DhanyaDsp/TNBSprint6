@@ -76,10 +76,11 @@ public class NotificationToggleFragment extends Fragment {
         accountAdapter = new NotificationAccountAdapter(this, getActivity(), accounts);
         rvAccounts.setAdapter(accountAdapter);
         mViewModel = ViewModelProviders.of(this).get(DashboardViewModel.class);
-        loginViewModel = ViewModelProviders.of(getActivity()).get(LoginViewModel.class);
+        loginViewModel = ViewModelProviders.of(this).get(LoginViewModel.class);
         loginViewModel.getUserDetail(appPreferences.getUser_id());
         loginViewModel.getUserDetail().observeForever(user -> {
             this.user = user;
+            binding.setUser(this.user);
             if (this.user.isNotificationFlag()) {
                 rvAccounts.setVisibility(View.VISIBLE);
                 tvLabel.setVisibility(View.VISIBLE);

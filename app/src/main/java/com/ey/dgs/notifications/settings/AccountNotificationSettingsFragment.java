@@ -10,6 +10,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,19 +19,23 @@ import com.ey.dgs.R;
 import com.ey.dgs.adapters.NotificationSettingsAdapter;
 import com.ey.dgs.authentication.LoginViewModel;
 import com.ey.dgs.dashboard.myaccount.AccountSettingsViewModel;
-import com.ey.dgs.dashboard.myaccount.MyAccountFragment;
 import com.ey.dgs.databinding.FragmentAccountNotificationSettingsBinding;
 import com.ey.dgs.model.Account;
 import com.ey.dgs.model.AccountSettings;
+import com.ey.dgs.model.EnergyConsumptions;
 import com.ey.dgs.model.NotificationSetting;
+import com.ey.dgs.model.NotificationSettingsRequest;
+import com.ey.dgs.model.Setting;
 import com.ey.dgs.model.User;
+import com.ey.dgs.utils.AppPreferences;
+import com.ey.dgs.utils.Utils;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 
 public class AccountNotificationSettingsFragment extends Fragment {
 
-    private View view;
+    private View view, loader;
     private RecyclerView rvNotificationSettings;
     private LinearLayoutManager rvLayoutManager;
     private ArrayList<NotificationSetting> notificationSettings = new ArrayList<>();
@@ -42,6 +47,9 @@ public class AccountNotificationSettingsFragment extends Fragment {
     Account account;
     AccountSettings accountSettings;
     AccountSettingsViewModel accountSettingsViewModel;
+    LoginViewModel loginViewModel;
+    private EnergyConsumptions energyConsumptions;
+    AppPreferences appPreferences;
 
     public AccountNotificationSettingsFragment() {
     }
@@ -64,16 +72,41 @@ public class AccountNotificationSettingsFragment extends Fragment {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_account_notification_settings, container, false);
         binding.setFragment(this);
         view = binding.getRoot();
-        initViews();
-        accountSettingsViewModel = ViewModelProviders.of(getActivity()).get(AccountSettingsViewModel.class);
         account = (Account) getArguments().getSerializable("account");
+        appPreferences = new AppPreferences(getActivity());
+        initViews();
+        accountSettingsViewModel = ViewModelProviders.of(this).get(AccountSettingsViewModel.class);
+        loginViewModel = ViewModelProviders.of(this).get(LoginViewModel.class);
+        showProgress(true);
         accountSettingsViewModel.loadAccountSettingsFromLocalDB(account.getAccountNumber());
-        accountSettingsViewModel.getAccountSettingsData().observeForever(accountSettings -> {
-            this.accountSettings = accountSettings;
-            notificationSettingsAdapter.setAccountSettings(accountSettings);
-            notificationSettingsAdapter.notifyDataSetChanged();
+        accountSettingsViewModel.getAccountSettingsData().observe(this, accountSettings -> {
             if (accountSettings == null) {
                 accountSettingsViewModel.getNotificationsFromServer(account.getAccountNumber());
+            } else {
+                this.accountSettings = accountSettings;
+                accountSettingsViewModel.loadEnergyConsumptionsFromLocalDB(accountSettings.getAccountNumber());
+                accountSettingsViewModel.getEnergyConsumptions().observeForever(energyConsumptions -> {
+                    this.energyConsumptions = energyConsumptions;
+                    if (energyConsumptions != null) {
+                        notificationSettingsAdapter = new NotificationSettingsAdapter(rvNotificationSettings, this, getActivity(), notificationSettings);
+                        notificationSettingsAdapter.setAccountSettings(this.accountSettings);
+                        notificationSettingsAdapter.setEnergyConsumptions(this.energyConsumptions);
+                        rvNotificationSettings.setAdapter(notificationSettingsAdapter);
+                        showProgress(false);
+                    }
+                });
+            }
+        });
+        loginViewModel.getUserDetail(appPreferences.getUser_id());
+        loginViewModel.getUserDetail().observeForever(user -> {
+            this.user = user;
+        });
+        accountSettingsViewModel.getIsAccountDetailsUpdated().observeForever(isUserUpdated -> {
+            if (isUserUpdated) {
+                notificationSettingsAdapter.setUpdated(true);
+                showProgress(false);
+                Utils.hideKeyBoard(getActivity());
+                getActivity().finish();
             }
         });
         return binding.getRoot();
@@ -83,6 +116,7 @@ public class AccountNotificationSettingsFragment extends Fragment {
         if (mListener != null) {
             mListener.onFragmentInteraction("My Account");
         }
+        ((NotificationSettingsActivity) getActivity()).getSupportActionBar().setTitle(account.getNickName());
         rvNotificationSettings = view.findViewById(R.id.rvNotificationSettings);
         rvNotificationSettings.setHasFixedSize(true);
         rvLayoutManager = new LinearLayoutManager(getActivity());
@@ -90,13 +124,11 @@ public class AccountNotificationSettingsFragment extends Fragment {
         DividerItemDecoration itemDecorator = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL);
         rvNotificationSettings.addItemDecoration(itemDecorator);
         rvNotificationSettings.setItemAnimator(new DefaultItemAnimator());
-        notificationSettingsAdapter = new NotificationSettingsAdapter(rvNotificationSettings, this, getActivity(), notificationSettings);
-        rvNotificationSettings.setAdapter(notificationSettingsAdapter);
+        loader = view.findViewById(R.id.loader);
         mViewModel = ViewModelProviders.of(this).get(NotificationSettingsViewModel.class);
         mViewModel.getNotificationSettings().observeForever(notificationSettings -> {
             this.notificationSettings.clear();
             this.notificationSettings.addAll(notificationSettings);
-            notificationSettingsAdapter.notifyDataSetChanged();
         });
     }
 
@@ -123,8 +155,52 @@ public class AccountNotificationSettingsFragment extends Fragment {
         mListener = null;
     }
 
+    public void updateAccountDetails() {
+        AccountSettings accountSettings = notificationSettingsAdapter.getAccountSettings();
+        EnergyConsumptions energyConsumptions;
+        energyConsumptions = notificationSettingsAdapter.getEnergyConsumptions();
+        NotificationSettingsRequest notificationSettingsRequest = new NotificationSettingsRequest();
+        notificationSettingsRequest.setAccountNumber(accountSettings.getAccountNumber());
+        Setting setting = new Setting();
+        setting.setEnergyConsumptions(energyConsumptions);
+        setting.setPushNotificationFlag(accountSettings.isPushNotificationFlag());
+        setting.setServiceAvailability(accountSettings.isServiceAvailability());
+        setting.setSmsNotificationFlag(accountSettings.isSmsNotificationFlag());
+        notificationSettingsRequest.setSetting(setting);
+        showProgress(true);
+        if (!TextUtils.isEmpty(notificationSettingsRequest.getSetting().getEnergyConsumptions().getUserThreshold())
+                && Integer.parseInt(notificationSettingsRequest.getSetting().getEnergyConsumptions().getUserThreshold()) > 0) {
+            accountSettingsViewModel.updateAccountSettingsInServer(notificationSettingsRequest);
+        } else {
+            Utils.showToast(getActivity(), "Please Enter a Threshold Value Great than Zero and Non Empty");
+        }
+        if (notificationSettingsAdapter.isThresholdChanged()) {
+            user.setMmcAlertFlag(false);
+            loginViewModel.updateUserInServer(user);
+        }
+
+    }
+
     public interface OnFragmentInteractionListener {
         public void onFragmentInteraction(String title);
     }
 
+    public NotificationSettingsAdapter getNotificationSettingsAdapter() {
+        return notificationSettingsAdapter;
+    }
+
+
+    public void showProgress(boolean isVisible) {
+        if (isVisible) {
+            loader.setVisibility(View.VISIBLE);
+        } else {
+            loader.setVisibility(View.GONE);
+        }
+    }
+
+    public boolean isThresholdOrSubscribe() {
+        return ((NotificationSettingsActivity) getActivity()).isAddThreshold
+                || ((NotificationSettingsActivity) getActivity()).isComingFromPopup;
+    }
 }
+

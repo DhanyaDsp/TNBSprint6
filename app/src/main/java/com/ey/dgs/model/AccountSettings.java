@@ -1,6 +1,7 @@
 package com.ey.dgs.model;
 
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
@@ -8,6 +9,8 @@ import android.support.annotation.NonNull;
 public class AccountSettings {
 
     public static final int REQUEST_CODE_ADD_ACCOUNT_SETTINGS = 6;
+    public static final int REQUEST_CODE_GET_ACCOUNT_SETTINGS = 11;
+    public static final int REQUEST_CODE_UPDATE_ACCOUNT_SETTINGS = 12;
 
     @PrimaryKey(autoGenerate = true)
     @NonNull
@@ -17,6 +20,9 @@ public class AccountSettings {
     private boolean pushNotificationFlag;
     private boolean smsNotificationFlag;
     private String message;
+
+    @Ignore
+    private EnergyConsumptions energyConsumptions;
 
     public int getAccountId() {
         return accountId;
@@ -64,5 +70,15 @@ public class AccountSettings {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    @Ignore
+    public EnergyConsumptions getEnergyConsumptions() {
+        return energyConsumptions;
+    }
+
+    @Ignore
+    public void setEnergyConsumptions(EnergyConsumptions energyConsumptions) {
+        this.energyConsumptions = energyConsumptions;
     }
 }

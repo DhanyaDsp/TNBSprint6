@@ -4,6 +4,7 @@ import com.ey.dgs.api_response.LoginRequest;
 import com.ey.dgs.api_response.LoginResponse;
 import com.ey.dgs.api_response.UserDetailResponse;
 import com.ey.dgs.model.AccountSettings;
+import com.ey.dgs.model.NotificationSettingsRequest;
 import com.ey.dgs.model.User;
 
 import java.util.Map;
@@ -36,5 +37,8 @@ public interface ApiInterface {
 
     @GET("AccountDetails")
     Call<AccountSettings> getAccountSettings(@Query("AccountNumber") String AccountNumber);
+
+    @POST("AccountDetails")
+    Call<String> updateAccountSettings(@Body NotificationSettingsRequest notificationSettingsRequest);
 
 }

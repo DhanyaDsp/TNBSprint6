@@ -36,7 +36,20 @@ public class FragmentUtils {
         this.fragmentManager = fragmentManager;
     }
 
-    public void setFragment(int index, Object object, String fragmentTag, int viewId) {
+    public void replaceFragment(int index, Object object, String fragmentTag, int viewId) {
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        Fragment newFragment = null;
+        switch (index) {
+            case 7:
+                newFragment = AccountNotificationSettingsFragment.newInstance((Account) object);
+                fragmentTransaction.replace(viewId, newFragment, fragmentTag).commitAllowingStateLoss();
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void addFragment(int index, Object object, String fragmentTag, int viewId) {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         Fragment newFragment = null;
         switch (index) {

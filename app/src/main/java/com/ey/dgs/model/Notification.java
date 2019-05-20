@@ -4,11 +4,18 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
+import java.io.Serializable;
+
 @Entity
-public class Notification {
+public class Notification implements Serializable {
 
     public static int REQUEST_CODE_ADD_NOTIFICATIONS = 5;
     public static int REQUEST_CODE_GET_ALL_NOTIFICATIONS = 6;
+
+    public static String MMC = "MMCNotification";
+    public static String ADVANCED = "AdvancedNotification";
+    public static String SA_ACK = "SAAcknowledgement";
+    public static String SA_RES = "SARestoration";
 
     @PrimaryKey(autoGenerate = true)
     @NonNull
@@ -17,6 +24,7 @@ public class Notification {
     private String notificationType;
     private String message;
     private String energyTip;
+    private String date;
 
     public int getId() {
         return id;
@@ -56,5 +64,13 @@ public class Notification {
 
     public void setEnergyTip(String energyTip) {
         this.energyTip = energyTip;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 }

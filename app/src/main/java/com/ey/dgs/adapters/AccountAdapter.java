@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import com.ey.dgs.R;
 import com.ey.dgs.dashboard.DashboardFragment;
 import com.ey.dgs.model.Account;
+import com.ey.dgs.utils.Utils;
 
 import java.util.ArrayList;
 
@@ -61,8 +62,8 @@ public class AccountAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 AccountHolder accountHolder = (AccountHolder) holder;
                 accountHolder.tvAcountID.setText(account.getAccountNumber());
                 accountHolder.tvAccountName.setText(account.getNickName());
-                accountHolder.tvLastBilledAmount.setText(account.getLastBilledAmount());
-                accountHolder.tvDate.setText(account.getLastBilledDate());
+                accountHolder.tvLastBilledAmount.setText("RM " + account.getLastBilledAmount() + ".00");
+                accountHolder.tvDate.setText(Utils.formatAccountDate(account.getLastBilledDate()));
                 break;
 
             case TYPE_ADD_ACCOUNT:

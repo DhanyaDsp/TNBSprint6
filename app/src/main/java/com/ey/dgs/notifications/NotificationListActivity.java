@@ -1,6 +1,7 @@
 package com.ey.dgs.notifications;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -17,6 +18,7 @@ import com.ey.dgs.notifications.settings.SettingsMenuFragment;
 import com.ey.dgs.utils.AppPreferences;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class NotificationListActivity extends AppCompatActivity implements SettingsMenuFragment.OnFragmentInteractionListener {
     RecyclerView rvNotifications;
@@ -33,7 +35,6 @@ public class NotificationListActivity extends AppCompatActivity implements Setti
         setContentView(R.layout.activity_notification_list);
         appPreferences = new AppPreferences(this);
         userId = appPreferences.getUser_id();
-
         allNotifications = getIntent().getBooleanExtra("allNotifications", false);
         if (!allNotifications) {
             accountId = getIntent().getIntExtra("accountId", -1);
@@ -42,6 +43,11 @@ public class NotificationListActivity extends AppCompatActivity implements Setti
         }
         initViews();
         subscribe();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
     }
 
     @Override
@@ -60,6 +66,7 @@ public class NotificationListActivity extends AppCompatActivity implements Setti
         notificationViewModel.getNotifications().observeForever(notifications -> {
             this.notifications.clear();
             this.notifications.addAll(notifications);
+            Collections.reverse(this.notifications);
             notificationListAdapter.notifyDataSetChanged();
         });
     }

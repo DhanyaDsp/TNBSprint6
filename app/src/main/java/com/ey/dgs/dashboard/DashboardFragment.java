@@ -24,7 +24,6 @@ import com.ey.dgs.authentication.LoginViewModel;
 import com.ey.dgs.dashboard.myaccount.MyAccountFragment;
 import com.ey.dgs.model.Account;
 import com.ey.dgs.model.User;
-import com.ey.dgs.notifications.NotificationViewModel;
 import com.ey.dgs.notifications.settings.NotificationSettingsActivity;
 import com.ey.dgs.utils.AppPreferences;
 import com.ey.dgs.utils.FragmentUtils;
@@ -43,12 +42,12 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
     private DividerItemDecoration itemDecorator;
     private Context context;
     private DashboardViewModel dashboardViewModel;
-    private NotificationViewModel notificationViewModel;
     private OnFragmentInteractionListener mListener;
     AppCompatTextView tvSubscribe;
     AppPreferences appPreferences;
     private LoginViewModel loginViewModel;
     private User user;
+    View subscribePopup;
 
     public static DashboardFragment newInstance() {
         return new DashboardFragment();
@@ -67,6 +66,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
     }
 
     private void initView() {
+        subscribePopup = rootView.findViewById(R.id.subscribePopup);
         rvLeaves = rootView.findViewById(R.id.rvAccounts);
         rvLeaves.setHasFixedSize(true);
         rvLayoutManager = new LinearLayoutManager(getActivity());
@@ -84,24 +84,37 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+    }
+
+    private void subcribe() {
         loginViewModel = ViewModelProviders.of(getActivity()).get(LoginViewModel.class);
         loginViewModel.getUserDetail(appPreferences.getUser_id());
         dashboardViewModel = ViewModelProviders.of(getActivity()).get(DashboardViewModel.class);
-        notificationViewModel = ViewModelProviders.of(getActivity()).get(NotificationViewModel.class);
         dashboardViewModel.setContext(getActivity());
         loginViewModel.getUserDetail().observeForever(user -> {
-            this.user = user;
+            if (user != null) {
+                this.user = user;
+                if (this.user.isMmcAlertFlag()) {
+                    subscribePopup.setVisibility(View.VISIBLE);
+                } else {
+                    subscribePopup.setVisibility(View.GONE);
+                }
+            }
         });
         //dashboardViewModel.loadAccountsFromLocalDB(appPreferences.getUser_id());
         dashboardViewModel.getAccounts().observeForever(accounts -> {
             this.accounts.clear();
             this.accounts.addAll(accounts);
+            Account addAccount = new Account();
+            addAccount.setAccount(true);
+            this.accounts.add(addAccount);
             if (accounts.size() > 0) {
                 dashboardViewModel.setSelectedAccount(accounts.get(0));
             }
             accountAdapter.notifyDataSetChanged();
         });
     }
+
 
     @Override
     public void onAttach(Activity activity) {
@@ -124,13 +137,22 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
     @Override
     public void onResume() {
         super.onResume();
+        subcribe();
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+
+        }
     }
 
     public void openFragment(int index, Object obj) {
         if (index == INDEX_MY_ACCOUNT) {
             dashboardViewModel.setSelectedAccount((Account) obj);
             FragmentUtils.newInstance(((HomeActivity) getActivity()).getSupportFragmentManager())
-                    .setFragment(index, obj, MyAccountFragment.class.getName(), R.id.homeFlContainer);
+                    .addFragment(index, obj, MyAccountFragment.class.getName(), R.id.homeFlContainer);
         }
     }
 
@@ -146,9 +168,12 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
     }
 
     private void moveToNotificationSettingsPage() {
-        Intent intent = new Intent(getActivity(), NotificationSettingsActivity.class);
-        intent.putExtra("isComingFromPopup", true);
-        getActivity().startActivity(intent);
+        if (accounts != null && accounts.size() > 0) {
+            Intent intent = new Intent(getActivity(), NotificationSettingsActivity.class);
+            intent.putExtra("isComingFromPopup", true);
+            intent.putExtra("account", accounts.get(0));
+            getActivity().startActivity(intent);
+        }
     }
 
     public interface OnFragmentInteractionListener {
