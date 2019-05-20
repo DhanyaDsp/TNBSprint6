@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -20,6 +21,7 @@ public class NotificationDetailPage extends AppCompatActivity {
     private Notification notification;
     AppCompatTextView tvEnergyTips, tvHeader, tvMessage;
     LinearLayout llEnergyTips;
+    AppCompatImageView ivBanner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +68,13 @@ public class NotificationDetailPage extends AppCompatActivity {
         tvHeader = findViewById(R.id.tvHeader);
         tvMessage = findViewById(R.id.tvMessage);
         llEnergyTips = findViewById(R.id.llEnergyTips);
+        ivBanner = findViewById(R.id.ivBanner);
+        if (notification.getNotificationType().equalsIgnoreCase(Notification.MMC)) {
+            ivBanner.setImageResource(R.drawable.notification_detail_bg);
+        } else {
+            ivBanner.setImageResource(R.drawable.service_banner);
+        }
+
     }
 
 }

@@ -76,6 +76,7 @@ public class AccountNotificationSettingsFragment extends Fragment {
         appPreferences = new AppPreferences(getActivity());
         initViews();
         accountSettingsViewModel = ViewModelProviders.of(this).get(AccountSettingsViewModel.class);
+        accountSettingsViewModel.setContext(getActivity());
         loginViewModel = ViewModelProviders.of(this).get(LoginViewModel.class);
         showProgress(true);
         accountSettingsViewModel.loadAccountSettingsFromLocalDB(account.getAccountNumber());
