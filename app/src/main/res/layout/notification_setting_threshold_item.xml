@@ -25,6 +25,7 @@
         android:background="@drawable/bg_rounded_black"
         android:gravity="right|center_vertical"
         android:inputType="number"
+        android:maxLength="3"
         android:padding="@dimen/small_padding"
         android:text="45" />
 
