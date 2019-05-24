@@ -33,10 +33,12 @@ import com.ey.dgs.dashboard.questions.QuestionActivity;
 import com.ey.dgs.databinding.DashboardFragmentBinding;
 import com.ey.dgs.model.Account;
 import com.ey.dgs.model.User;
+import com.ey.dgs.model.chart.ChartData;
 import com.ey.dgs.notifications.settings.NotificationSettingsActivity;
 import com.ey.dgs.utils.AppPreferences;
 import com.ey.dgs.utils.DialogHelper;
 import com.ey.dgs.utils.FragmentUtils;
+import com.ey.dgs.views.BarChart;
 
 import java.util.ArrayList;
 
@@ -66,6 +68,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
     AppCompatButton btnManageConsumption;
     AppCompatImageView ivBanner;
     RelativeLayout rlChart;
+    BarChart barChart;
 
     public static DashboardFragment newInstance() {
         return new DashboardFragment();
@@ -85,6 +88,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
     private void initView() {
         ivBanner = rootView.findViewById(R.id.ivBanner);
         rlChart = rootView.findViewById(R.id.rlChart);
+        barChart = rootView.findViewById(R.id.bar_chart);
         btnSetPrimaryAccount = rootView.findViewById(R.id.btnSetPrimaryAccount);
         btnSetPrimaryAccount.setOnClickListener(this);
         subscribePopup = rootView.findViewById(R.id.subscribePopup);
@@ -108,6 +112,19 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
         if (mListener != null) {
             mListener.onFragmentInteraction("");
         }
+
+        ArrayList<ChartData> chartDatum = new ArrayList<>();
+        ChartData chartData;
+
+        for(int i=0; i<6; i++){
+            chartData = new ChartData();
+            chartData.setTag("LB" + (i+1));
+            chartData.setVal(20.0f);
+            chartDatum.add(chartData);
+        }
+
+        barChart.setData(chartDatum).setTitle("Chart_Title");
+
     }
 
     @Override

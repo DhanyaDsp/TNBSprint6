@@ -22,13 +22,21 @@
         android:focusableInTouchMode="true"
         tools:context=".dashboard.myaccount.MyAccountFragment">
 
-        <android.support.v7.widget.AppCompatImageView
+        <!--<android.support.v7.widget.AppCompatImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_above="@+id/btnAddThreshold"
             android:layout_marginBottom="@dimen/large_padding"
             android:adjustViewBounds="true"
-            android:src="@drawable/chart" />
+            android:src="@drawable/chart" />-->
+
+        <com.ey.dgs.views.BarChart
+            android:id="@+id/bar_chart"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/btnAddThreshold"
+            android:layout_marginBottom="@dimen/large_padding"
+            android:adjustViewBounds="true"/>
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/btnAddThreshold"

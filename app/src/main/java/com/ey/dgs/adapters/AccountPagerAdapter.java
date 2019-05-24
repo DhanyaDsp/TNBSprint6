@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 
 import com.ey.dgs.R;
 import com.ey.dgs.model.Account;
+import com.ey.dgs.model.chart.ChartData;
+import com.ey.dgs.views.BarChart;
 
 import java.util.ArrayList;
 
@@ -27,6 +29,20 @@ public class AccountPagerAdapter extends PagerAdapter {
         LayoutInflater inflater = LayoutInflater.from(mContext);
         ViewGroup layout = (ViewGroup) inflater.inflate(R.layout.account_pager_item, viewGroup, false);
         viewGroup.addView(layout);
+
+        BarChart barChart = layout.findViewById(R.id.bar_chart);
+        ArrayList<ChartData> chartDatum = new ArrayList<>();
+        ChartData chartData;
+
+        for(int i=0; i<6; i++){
+            chartData = new ChartData();
+            chartData.setTag("LB" + (i+1));
+            chartData.setVal(20.0f);
+            chartDatum.add(chartData);
+        }
+
+        barChart.setData(chartDatum).setTitle("Chart_Title");
+
         return layout;
     }
 

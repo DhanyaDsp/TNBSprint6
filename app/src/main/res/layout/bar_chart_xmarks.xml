@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.AppCompatTextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:fontFamily="@font/museosans_500"
+    android:id="@+id/x_txt_label"
+    android:text="MON"
+    android:layout_weight="1"
+    android:textColor="#4dffffff"
+    android:gravity="center"
+    android:layout_marginBottom="5dp"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content" />

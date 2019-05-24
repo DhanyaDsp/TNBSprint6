@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_margin="5dp"
+    android:weightSum="10"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_weight="2"
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
+        <android.support.v7.widget.AppCompatTextView
+            android:fontFamily="@font/museosans_500"
+            android:text="Title"
+            android:textColor="#FECC39"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="5dp"
+            android:id="@+id/titleText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_marginBottom="5dp"
+            android:layout_height="wrap_content">
+
+            <android.support.v7.widget.AppCompatTextView
+                android:fontFamily="@font/museosans_500"
+                android:text="Value"
+                android:textColor="@android:color/white"
+                android:id="@+id/highLightedValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+<!--    <LinearLayout
+        android:id="@+id/bars"
+        android:orientation="horizontal" android:layout_width="match_parent"
+        android:layout_height="0dp">
+
+    </LinearLayout>-->
+
+    <LinearLayout
+        android:id="@+id/bars_container"
+        android:layout_weight="6"
+        android:orientation="horizontal" android:layout_width="match_parent"
+        android:layout_height="0dp">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/bars"
+            android:orientation="horizontal"
+             android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+        </android.support.v7.widget.RecyclerView>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_weight="2"
+        android:paddingTop="10dp"
+        android:orientation="vertical" android:layout_width="match_parent"
+        android:layout_height="0dp">
+
+        <View
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_width="match_parent"
+            android:background="#4dffffff"
+            android:layout_height="1dp" />
+
+<!--        <LinearLayout
+            android:layout_marginBottom="5dp"
+            android:id="@+id/xmarks"
+            android:orientation="horizontal" android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </LinearLayout>-->
+
+        <android.support.v7.widget.RecyclerView
+            android:layout_marginBottom="5dp"
+            android:id="@+id/xmarks"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+        </android.support.v7.widget.RecyclerView>
+
+
+    </LinearLayout>
+
+</LinearLayout>
