@@ -2,6 +2,7 @@ package com.ey.dgs.views;
 
 import com.ey.dgs.R;
 import com.ey.dgs.adapters.chart.BarsAdapter;
+import com.ey.dgs.adapters.chart.LegendsAdapter;
 import com.ey.dgs.model.chart.ChartData;
 
 import android.content.Context;
@@ -64,15 +65,6 @@ public class BarChart extends LinearLayout {
 
         bars_container.getViewTreeObserver().addOnGlobalLayoutListener(new GlobalViewListenerClass());
 
-        LayoutInflater barInflater = (LayoutInflater) context
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-        View barLabel;
-        /*for(int i=0; i<chartData.getBarXValues().length; i++) {
-            barLabel = barInflater.inflate(R.layout.bar_chart_xmarks, (ViewGroup)view.findViewById(R.id.xmarks), true);
-            ((AppCompatTextView)barLabel.findViewById(R.id.x_txt_label)).setText(chartData.getBarXValues()[i]);
-            // ((AppCompatTextView)barLabel.findViewById(R.id.xmarks).findViewById(R.id.xmarks)).setText(chartData.getBarXValues()[i]);
-        }*/
     }
 
     public void fillChartBarData(int parentLayoutWidth) {
@@ -82,6 +74,15 @@ public class BarChart extends LinearLayout {
         barsRecylerView.setLayoutManager(layoutManager);
         barsRecylerView.setAdapter(barsAdapter);
         barsAdapter.notifyDataSetChanged();
+
+        RecyclerView legendsRecylerView = view.findViewById(R.id.xmarks);
+        RecyclerView.LayoutManager legendlayoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
+        LegendsAdapter legendsAdapter = new LegendsAdapter(context, chartDatum, parentLayoutWidth);
+        legendsRecylerView.setLayoutManager(legendlayoutManager);
+        legendsRecylerView.setAdapter(legendsAdapter);
+        legendsAdapter.notifyDataSetChanged();
+
+
     }
 
     boolean widthCreated = false;

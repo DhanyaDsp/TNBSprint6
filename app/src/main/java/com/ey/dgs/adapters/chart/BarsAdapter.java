@@ -69,7 +69,7 @@ public class BarsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         BarsHolder barsHolder = (BarsHolder) holder;
-        barsHolder.bar_line.setLayoutParams(new LinearLayout.LayoutParams(parentLayoutWidth/6, LinearLayout.LayoutParams.MATCH_PARENT));
+        barsHolder.bar_line.setLayoutParams(new LinearLayout.LayoutParams(parentLayoutWidth/chartDatum.size(), LinearLayout.LayoutParams.MATCH_PARENT));
 
         boolean isSelected = chartDatum.get(position).getIsSelected();
 

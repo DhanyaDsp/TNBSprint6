@@ -7,7 +7,7 @@
 
     <LinearLayout
         android:orientation="vertical"
-        android:layout_weight="2"
+        android:layout_weight="2.5"
         android:layout_width="match_parent"
         android:layout_height="0dp">
         <android.support.v7.widget.AppCompatTextView
@@ -37,16 +37,9 @@
         </LinearLayout>
     </LinearLayout>
 
-<!--    <LinearLayout
-        android:id="@+id/bars"
-        android:orientation="horizontal" android:layout_width="match_parent"
-        android:layout_height="0dp">
-
-    </LinearLayout>-->
-
     <LinearLayout
         android:id="@+id/bars_container"
-        android:layout_weight="6"
+        android:layout_weight="5"
         android:orientation="horizontal" android:layout_width="match_parent"
         android:layout_height="0dp">
 
@@ -61,14 +54,14 @@
 
 
     <LinearLayout
-        android:layout_weight="2"
+        android:layout_weight="2.5"
         android:paddingTop="10dp"
         android:orientation="vertical" android:layout_width="match_parent"
         android:layout_height="0dp">
 
         <View
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="3dp"
             android:layout_width="match_parent"
             android:background="#4dffffff"
             android:layout_height="1dp" />
