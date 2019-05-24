@@ -27,9 +27,14 @@ public class NotificationDetailPage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification_detail_page);
-        notification = (Notification) getIntent().getSerializableExtra("notification");
-        initViews();
-        setData();
+
+        if (getIntent().getSerializableExtra("notification") != null) {
+            notification = (Notification) getIntent().getSerializableExtra("notification");
+            if (notification != null) {
+                initViews();
+                setData();
+            }
+        }
     }
 
     private void setData() {
@@ -62,7 +67,12 @@ public class NotificationDetailPage extends AppCompatActivity {
     private void initViews() {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Consumption");
+        if (notification.getNotificationType().equalsIgnoreCase(Notification.MMC) ||
+                notification.getNotificationType().equalsIgnoreCase(Notification.ADVANCED)) {
+            getSupportActionBar().setTitle("Consumption");
+        } else {
+            getSupportActionBar().setTitle("Service Availability");
+        }
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         tvEnergyTips = findViewById(R.id.tvEnergyTips);
         tvHeader = findViewById(R.id.tvHeader);
@@ -76,5 +86,4 @@ public class NotificationDetailPage extends AppCompatActivity {
         }
 
     }
-
 }

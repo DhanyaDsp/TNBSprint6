@@ -31,7 +31,7 @@ public class NotificationHelper {
     public void createNotification(String title, Notification notification, String message) {
         /**Creates an explicit intent for an Activity in your app**/
         Intent resultIntent = new Intent(mContext, NotificationDetailPage.class);
-        resultIntent.putExtra("notification",(Serializable) notification);
+        resultIntent.putExtra("notification", (Serializable) notification);
         resultIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         PendingIntent resultPendingIntent = PendingIntent.getActivity(mContext,
@@ -40,7 +40,7 @@ public class NotificationHelper {
 
         mBuilder = new NotificationCompat.Builder(mContext);
         mBuilder.setSmallIcon(R.mipmap.ic_launcher);
-        mBuilder.setContentTitle(title)
+        mBuilder.setContentTitle("MyTNB App")
                 .setContentText(message)
                 .setAutoCancel(false)
                 .setSound(Settings.System.DEFAULT_NOTIFICATION_URI)

@@ -25,6 +25,7 @@ public class ApiClient {
     public static int REQUEST_CODE_GET_USER = 102;
     public static int REQUEST_CODE_UPDATE_ACCOUNT_DETAILS = 103;
     public static int REQUEST_CODE_GET_ACCOUNT_DETAILS = 104;
+
     public static Retrofit getClient() {
         return new Retrofit.Builder()
                 .baseUrl(BASE_URL)
@@ -82,16 +83,20 @@ public class ApiClient {
         });
     }
 
-    public void getUser(String userName, APICallback callback) {
+    public void getUser(User user, APICallback callback) {
         ApiInterface apiService = ApiClient.getUserDetailsClient().create(ApiInterface.class);
 
-        Call<UserDetailResponse> call = apiService.getUserDetails(userName);
+        Call<UserDetailResponse> call = apiService.getUserDetails(user.getEmail());
         call.enqueue(new Callback<UserDetailResponse>() {
             @Override
             public void onResponse(Call<UserDetailResponse> call, Response<UserDetailResponse> response) {
                 UserDetailResponse userDetailResponse = response.body();
                 if (userDetailResponse != null) {
                     if (userDetailResponse.getSuccess()) {
+                        //setting local user data
+                        userDetailResponse.getUser().setPrimaryAccount(user.isPrimaryAccount());
+                        userDetailResponse.getUser().setRememberMe(user.isRememberMe());
+                        userDetailResponse.getUser().setUserId(user.getUserId());
                         callback.onSuccess(REQUEST_CODE_GET_USER, userDetailResponse, response.code());
                     } else {
                         userDetailResponse.setMessage("Invalid Login");

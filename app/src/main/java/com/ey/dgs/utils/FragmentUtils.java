@@ -8,6 +8,7 @@ import com.ey.dgs.R;
 import com.ey.dgs.authentication.LoginFragment;
 import com.ey.dgs.dashboard.DashboardFragment;
 import com.ey.dgs.dashboard.myaccount.MyAccountFragment;
+import com.ey.dgs.dashboard.questions.MMCQuestionsFragment;
 import com.ey.dgs.model.Account;
 import com.ey.dgs.model.NotificationSetting;
 import com.ey.dgs.notifications.settings.AccountNotificationSettingsFragment;
@@ -26,6 +27,7 @@ public class FragmentUtils {
     public static int INDEX_SETTINGS_FRAGMENT = 5;
     public static int INDEX_NOTIFICATION_TOGGLE_FRAGMENT = 6;
     public static int INDEX_NOTIFICATION_SETTINGS_FRAGMENT = 7;
+    public static int INDEX_QUESTIONS_FRAGMENT = 8;
 
     public static FragmentUtils newInstance(FragmentManager fragmentManager) {
         fragmentUtils = new FragmentUtils(fragmentManager);
@@ -42,6 +44,10 @@ public class FragmentUtils {
         switch (index) {
             case 7:
                 newFragment = AccountNotificationSettingsFragment.newInstance((Account) object);
+                fragmentTransaction.replace(viewId, newFragment, fragmentTag).commitAllowingStateLoss();
+                break;
+            case 8:
+                newFragment = MMCQuestionsFragment.newInstance();
                 fragmentTransaction.replace(viewId, newFragment, fragmentTag).commitAllowingStateLoss();
                 break;
             default:

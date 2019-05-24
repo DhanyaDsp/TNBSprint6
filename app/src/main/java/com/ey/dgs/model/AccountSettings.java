@@ -16,7 +16,7 @@ public class AccountSettings {
     @NonNull
     private int accountId;
     private String accountNumber;
-    private boolean serviceAvailability;
+    private boolean serviceAvailabilityFlag;
     private boolean pushNotificationFlag;
     private boolean smsNotificationFlag;
     private String message;
@@ -40,12 +40,12 @@ public class AccountSettings {
         this.accountNumber = accountNumber;
     }
 
-    public boolean isServiceAvailability() {
-        return serviceAvailability;
+    public boolean isServiceAvailabilityFlag() {
+        return serviceAvailabilityFlag;
     }
 
-    public void setServiceAvailability(boolean serviceAvailability) {
-        this.serviceAvailability = serviceAvailability;
+    public void setServiceAvailabilityFlag(boolean serviceAvailabilityFlag) {
+        this.serviceAvailabilityFlag = serviceAvailabilityFlag;
     }
 
     public boolean isPushNotificationFlag() {

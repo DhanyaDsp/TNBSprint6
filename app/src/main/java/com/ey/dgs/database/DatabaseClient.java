@@ -3,6 +3,7 @@ package com.ey.dgs.database;
 import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.text.TextUtils;
 
 import com.ey.dgs.model.Account;
 import com.ey.dgs.model.AccountSettings;
@@ -228,20 +229,20 @@ public class DatabaseClient {
         st.execute();
     }
 
-    public void getNotifications(int requestCode, int user_id, int accountId, DatabaseCallback databaseCallback) {
+    public void getNotifications(int requestCode, int user_id, String accountNumber, DatabaseCallback databaseCallback) {
         class GetNotificationsTask extends AsyncTask<Void, Void, List<Notification>> {
 
             @Override
             protected List<Notification> doInBackground(Void... voids) {
 
-                if (accountId == -1) {
+                if (TextUtils.isEmpty(accountNumber)) {
                     return DatabaseClient.getInstance(mCtx).getAppDatabase()
                             .notificationDao()
                             .getAll();
                 } else {
                     return DatabaseClient.getInstance(mCtx).getAppDatabase()
                             .notificationDao()
-                            .getAll();
+                            .getAccountNotifications(accountNumber);
                 }
             }
 
@@ -375,6 +376,29 @@ public class DatabaseClient {
         }
 
         UpdateAccountsTask st = new UpdateAccountsTask();
+        st.execute();
+    }
+
+    public void updateAccount(int requestCode, Account account, DatabaseCallback databaseCallback) {
+        class UpdateAccountTask extends AsyncTask<Void, Void, Void> {
+
+            @Override
+            protected Void doInBackground(Void... voids) {
+
+                DatabaseClient.getInstance(mCtx).getAppDatabase()
+                        .accountDao()
+                        .update(account);
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                databaseCallback.onUpdate(account, requestCode, 0);
+            }
+        }
+
+        UpdateAccountTask st = new UpdateAccountTask();
         st.execute();
     }
 }

@@ -50,6 +50,8 @@ public class AccountNotificationSettingsFragment extends Fragment {
     LoginViewModel loginViewModel;
     private EnergyConsumptions energyConsumptions;
     AppPreferences appPreferences;
+    Activity activity;
+    private boolean isProgressing;
 
     public AccountNotificationSettingsFragment() {
     }
@@ -106,8 +108,10 @@ public class AccountNotificationSettingsFragment extends Fragment {
             if (isUserUpdated) {
                 notificationSettingsAdapter.setUpdated(true);
                 showProgress(false);
-                Utils.hideKeyBoard(getActivity());
-                getActivity().finish();
+                if (activity != null) {
+                    Utils.hideKeyBoard(activity);
+                    ((NotificationSettingsActivity) activity).onBackPressed();
+                }
             }
         });
         return binding.getRoot();
@@ -142,6 +146,7 @@ public class AccountNotificationSettingsFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+        this.activity = activity;
         try {
             mListener = (OnFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
@@ -157,29 +162,30 @@ public class AccountNotificationSettingsFragment extends Fragment {
     }
 
     public void updateAccountDetails() {
-        AccountSettings accountSettings = notificationSettingsAdapter.getAccountSettings();
-        EnergyConsumptions energyConsumptions;
-        energyConsumptions = notificationSettingsAdapter.getEnergyConsumptions();
-        NotificationSettingsRequest notificationSettingsRequest = new NotificationSettingsRequest();
-        notificationSettingsRequest.setAccountNumber(accountSettings.getAccountNumber());
-        Setting setting = new Setting();
-        setting.setEnergyConsumptions(energyConsumptions);
-        setting.setPushNotificationFlag(accountSettings.isPushNotificationFlag());
-        setting.setServiceAvailability(accountSettings.isServiceAvailability());
-        setting.setSmsNotificationFlag(accountSettings.isSmsNotificationFlag());
-        notificationSettingsRequest.setSetting(setting);
-        showProgress(true);
-        if (!TextUtils.isEmpty(notificationSettingsRequest.getSetting().getEnergyConsumptions().getUserThreshold())
-                && Integer.parseInt(notificationSettingsRequest.getSetting().getEnergyConsumptions().getUserThreshold()) > 0) {
-            accountSettingsViewModel.updateAccountSettingsInServer(notificationSettingsRequest);
-        } else {
-            Utils.showToast(getActivity(), "Please Enter a Threshold Value Great than Zero and Non Empty");
+        if (!isProgressing) {
+            AccountSettings accountSettings = notificationSettingsAdapter.getAccountSettings();
+            EnergyConsumptions energyConsumptions;
+            energyConsumptions = notificationSettingsAdapter.getEnergyConsumptions();
+            NotificationSettingsRequest notificationSettingsRequest = new NotificationSettingsRequest();
+            notificationSettingsRequest.setAccountNumber(accountSettings.getAccountNumber());
+            Setting setting = new Setting();
+            setting.setEnergyConsumptions(energyConsumptions);
+            setting.setPushNotificationFlag(accountSettings.isPushNotificationFlag());
+            setting.setServiceAvailabilityFlag(accountSettings.isServiceAvailabilityFlag());
+            setting.setSmsNotificationFlag(accountSettings.isSmsNotificationFlag());
+            notificationSettingsRequest.setSetting(setting);
+            showProgress(true);
+            if (!TextUtils.isEmpty(notificationSettingsRequest.getSetting().getEnergyConsumptions().getUserThreshold())
+                    && Integer.parseInt(notificationSettingsRequest.getSetting().getEnergyConsumptions().getUserThreshold()) > 0) {
+                accountSettingsViewModel.updateAccountSettingsInServer(notificationSettingsRequest);
+            } else {
+                Utils.showToast(activity, "Please Enter a Threshold Value Great than Zero and Non Empty");
+            }
+            if (notificationSettingsAdapter.isThresholdChanged()) {
+                user.setMmcAlertFlag(false);
+                loginViewModel.updateUserInServer(user);
+            }
         }
-        if (notificationSettingsAdapter.isThresholdChanged()) {
-            user.setMmcAlertFlag(false);
-            loginViewModel.updateUserInServer(user);
-        }
-
     }
 
     public interface OnFragmentInteractionListener {
@@ -192,6 +198,7 @@ public class AccountNotificationSettingsFragment extends Fragment {
 
 
     public void showProgress(boolean isVisible) {
+        isProgressing = isVisible;
         if (isVisible) {
             loader.setVisibility(View.VISIBLE);
         } else {
@@ -203,5 +210,7 @@ public class AccountNotificationSettingsFragment extends Fragment {
         return ((NotificationSettingsActivity) getActivity()).isAddThreshold
                 || ((NotificationSettingsActivity) getActivity()).isComingFromPopup;
     }
+
+
 }
 

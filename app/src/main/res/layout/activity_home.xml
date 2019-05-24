@@ -14,11 +14,12 @@
         android:background="@color/purple"
         android:theme="@style/ToolbarTheme">
 
-        <android.support.v7.widget.AppCompatTextView android:fontFamily="@font/museosans_500"
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/tvTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:fontFamily="@font/museosans_500"
             android:textColor="@android:color/white"
             android:textSize="@dimen/text_size_medium" />
 

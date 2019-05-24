@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 
 import com.ey.dgs.R;
-import com.ey.dgs.dashboard.DashboardFragment;
 import com.ey.dgs.model.AccountSettings;
 import com.ey.dgs.model.EnergyConsumptions;
 import com.ey.dgs.model.NotificationSetting;
@@ -98,13 +97,14 @@ public class NotificationSettingsAdapter extends RecyclerView.Adapter<RecyclerVi
         switch (holder.getItemViewType()) {
             case TYPE_SETTINGS:
                 SettingsHolder settingsHolder = (SettingsHolder) holder;
+                settingsHolder.scTurn.setOnCheckedChangeListener(null);
                 settingsHolder.tvName.setText(notificationSetting.getName());
                 settingsHolder.scTurn.setChecked(notificationSetting.isTurnedOn());
 
                 if (accountSettings != null) {
                     if (isExpanded) {
                         if (position == 6) {
-                            settingsHolder.scTurn.setChecked(accountSettings.isServiceAvailability());
+                            settingsHolder.scTurn.setChecked(accountSettings.isServiceAvailabilityFlag());
                         } else if (position == 9) {
                             settingsHolder.scTurn.setChecked(accountSettings.isPushNotificationFlag());
                         } else if (position == 10) {
@@ -112,7 +112,7 @@ public class NotificationSettingsAdapter extends RecyclerView.Adapter<RecyclerVi
                         }
                     } else {
                         if (position == 4) {
-                            settingsHolder.scTurn.setChecked(accountSettings.isServiceAvailability());
+                            settingsHolder.scTurn.setChecked(accountSettings.isServiceAvailabilityFlag());
                         } else if (position == 7) {
                             settingsHolder.scTurn.setChecked(accountSettings.isPushNotificationFlag());
                         } else if (position == 8) {
@@ -154,6 +154,18 @@ public class NotificationSettingsAdapter extends RecyclerView.Adapter<RecyclerVi
                                 }
                                 if (energyConsumptions != null) {
                                     energyConsumptions.setEnergyConsumptionFlag(isChecked);
+                                }
+                            } else if (position == 4) {
+                                if (!isExpanded) {
+                                    if (accountSettings != null) {
+                                        accountSettings.setServiceAvailabilityFlag(isChecked);
+                                    }
+                                }
+                            } else if (position == 6) {
+                                if (isExpanded) {
+                                    if (accountSettings != null) {
+                                        accountSettings.setServiceAvailabilityFlag(isChecked);
+                                    }
                                 }
                             } else if (position == 7) {
                                 if (!isExpanded) {

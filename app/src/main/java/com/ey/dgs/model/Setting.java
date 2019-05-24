@@ -1,7 +1,5 @@
 package com.ey.dgs.model;
 
-import com.google.gson.annotations.SerializedName;
-
 import java.io.Serializable;
 
 public class Setting implements Serializable {
@@ -9,7 +7,7 @@ public class Setting implements Serializable {
 
     private boolean pushNotificationFlag;
 
-    private boolean serviceAvailability;
+    private boolean serviceAvailabilityFlag;
 
     private EnergyConsumptions energyConsumptions;
 
@@ -29,12 +27,12 @@ public class Setting implements Serializable {
         this.pushNotificationFlag = pushNotificationFlag;
     }
 
-    public boolean getServiceAvailability() {
-        return serviceAvailability;
+    public boolean getServiceAvailabilityFlag() {
+        return serviceAvailabilityFlag;
     }
 
-    public void setServiceAvailability(boolean serviceAvailability) {
-        this.serviceAvailability = serviceAvailability;
+    public void setServiceAvailabilityFlag(boolean serviceAvailabilityFlag) {
+        this.serviceAvailabilityFlag = serviceAvailabilityFlag;
     }
 
     public EnergyConsumptions getEnergyConsumptions() {
@@ -47,6 +45,6 @@ public class Setting implements Serializable {
 
     @Override
     public String toString() {
-        return "ClassPojo [smsNotificationFlag = " + smsNotificationFlag + ", pushNotificationFlag = " + pushNotificationFlag + ", serviceAvailability = " + serviceAvailability + ", energyConsumptions = " + energyConsumptions + "]";
+        return "ClassPojo [smsNotificationFlag = " + smsNotificationFlag + ", pushNotificationFlag = " + pushNotificationFlag + ", serviceAvailabilityFlag = " + serviceAvailabilityFlag + ", energyConsumptions = " + energyConsumptions + "]";
     }
 }

@@ -12,16 +12,18 @@ public class Notification implements Serializable {
     public static int REQUEST_CODE_ADD_NOTIFICATIONS = 5;
     public static int REQUEST_CODE_GET_ALL_NOTIFICATIONS = 6;
 
-    public static String MMC = "MMCNotification";
-    public static String ADVANCED = "AdvancedNotification";
-    public static String SA_ACK = "SAAcknowledgement";
-    public static String SA_RES = "SARestoration";
+    public static String MMC = "MMC";
+    public static String ADVANCED = "AMMC";
+    public static String POAN = "POAN";//Outage Acknowledgement Notification
+    public static String UPOAM = "UPOAM";//Outage Acknowledgement Notification
+    public static String IRT = "IRT";//Inform Restoration Time
 
     @PrimaryKey(autoGenerate = true)
     @NonNull
     private int id;
     private String header;
     private String notificationType;
+    private String accountNumber;
     private String message;
     private String energyTip;
     private String date;
@@ -72,5 +74,13 @@ public class Notification implements Serializable {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public String getAccountNumber() {
+        return accountNumber;
+    }
+
+    public void setAccountNumber(String accountNumber) {
+        this.accountNumber = accountNumber;
     }
 }

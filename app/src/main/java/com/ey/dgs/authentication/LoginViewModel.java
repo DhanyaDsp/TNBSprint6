@@ -34,8 +34,8 @@ public class LoginViewModel extends ViewModel implements DatabaseCallback, APICa
         DatabaseClient.getInstance(context).getUser(User.REQUEST_CODE_GET_USER_DETAIL, user_id, this);
     }
 
-    public void getUserDetailFromServer(String userName) {
-        new ApiClient().getUser(userName, this);
+    public void getUserDetailFromServer(User user) {
+        new ApiClient().getUser(user, this);
     }
 
     public void updateUserInServer(User user) {
@@ -95,8 +95,8 @@ public class LoginViewModel extends ViewModel implements DatabaseCallback, APICa
         } else {
             UserDetailResponse userDetailResponse = (UserDetailResponse) obj;
             User serverUser = userDetailResponse.getUser();
-            serverUser.setUserId(1);
-            serverUser.setRememberMe(true);
+          /*  serverUser.setUserId(1);
+            serverUser.setRememberMe(true);*/
             setUserData(serverUser);
             update(serverUser);
         }

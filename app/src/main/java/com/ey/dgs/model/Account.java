@@ -11,6 +11,7 @@ import java.io.Serializable;
 public class Account implements Serializable {
 
     public static int REQUEST_CODE_ADD_ACCOUNTS = 5;
+    public static int REQUEST_CODE_UPDATE_ACCOUNT = 15;
 
     @PrimaryKey(autoGenerate = true)
     @NonNull
@@ -26,6 +27,7 @@ public class Account implements Serializable {
     private String rm;
     private int user_id;
     private boolean isAccount;
+    private boolean isPrimaryAccount;
 
 
     public int getAccountId() {
@@ -122,5 +124,13 @@ public class Account implements Serializable {
 
     public void setAccount(boolean account) {
         isAccount = account;
+    }
+
+    public boolean isPrimaryAccount() {
+        return isPrimaryAccount;
+    }
+
+    public void setPrimaryAccount(boolean primaryAccount) {
+        isPrimaryAccount = primaryAccount;
     }
 }

@@ -106,7 +106,7 @@ public class LoginFragment extends Fragment implements APICallback {
     public void login(View view) {
         isLoginClicked = true;
         if (isValidated(user)) {
-            onProgress(0,true);
+            onProgress(0, true);
             new ApiClient().login(user, this);
         } else {
         }

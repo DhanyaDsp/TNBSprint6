@@ -25,9 +25,10 @@ public class NotificationListActivity extends AppCompatActivity implements Setti
     NotificationListAdapter notificationListAdapter;
     ArrayList<Notification> notifications = new ArrayList<>();
     private NotificationViewModel notificationViewModel;
-    int userId, accountId;
+    int userId;
     AppPreferences appPreferences;
     boolean allNotifications;
+    String accountNumber;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,9 +38,9 @@ public class NotificationListActivity extends AppCompatActivity implements Setti
         userId = appPreferences.getUser_id();
         allNotifications = getIntent().getBooleanExtra("allNotifications", false);
         if (!allNotifications) {
-            accountId = getIntent().getIntExtra("accountId", -1);
+            accountNumber = getIntent().getStringExtra("accountNumber");
         } else {
-            accountId = -1;
+            accountNumber = "";
         }
         initViews();
         subscribe();
@@ -62,7 +63,7 @@ public class NotificationListActivity extends AppCompatActivity implements Setti
 
     private void subscribe() {
         notificationViewModel = ViewModelProviders.of(this).get(NotificationViewModel.class);
-        notificationViewModel.loadNotificationsFromLocalDB(userId, accountId);
+        notificationViewModel.loadNotificationsFromLocalDB(userId, accountNumber);
         notificationViewModel.getNotifications().observeForever(notifications -> {
             this.notifications.clear();
             this.notifications.addAll(notifications);

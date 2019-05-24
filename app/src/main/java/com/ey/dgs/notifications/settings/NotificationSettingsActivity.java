@@ -1,5 +1,6 @@
 package com.ey.dgs.notifications.settings;
 
+import android.app.Activity;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -95,14 +96,16 @@ public class NotificationSettingsActivity extends AppCompatActivity implements S
     @Override
     public void onBackPressed() {
         Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.flNotificationContainer);
-        if (currentFragment instanceof SettingsMenuFragment) {
-            finish();
-        } else if (currentFragment instanceof NotificationToggleFragment) {
-            super.onBackPressed();
-            setActionBarTitle("More");
-        } else if (currentFragment instanceof AccountNotificationSettingsFragment) {
-            super.onBackPressed();
-            setActionBarTitle("Notifications");
+        if (currentFragment != null) {
+            if (currentFragment instanceof SettingsMenuFragment) {
+                finish();
+            } else if (currentFragment instanceof NotificationToggleFragment) {
+                super.onBackPressed();
+                setActionBarTitle("More");
+            } else if (currentFragment instanceof AccountNotificationSettingsFragment) {
+                super.onBackPressed();
+                setActionBarTitle("Notifications");
+            }
         }
     }
 

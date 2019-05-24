@@ -123,7 +123,7 @@ public class AccountSettingsViewModel extends ViewModel implements DatabaseCallb
             accountSettings.setAccountNumber(notificationSettingsRequest.getAccountNumber());
             accountSettings.setSmsNotificationFlag(notificationSettingsRequest.getSetting().getSmsNotificationFlag());
             accountSettings.setPushNotificationFlag(notificationSettingsRequest.getSetting().getPushNotificationFlag());
-            accountSettings.setServiceAvailability(notificationSettingsRequest.getSetting().getServiceAvailability());
+            accountSettings.setServiceAvailabilityFlag(notificationSettingsRequest.getSetting().getServiceAvailabilityFlag());
             updateAccountSettingsInLocalDB(accountSettings);
             updateEnergyConsumptionsInLocalDB(notificationSettingsRequest.getSetting().getEnergyConsumptions());
         } else if (requestCode == ApiClient.REQUEST_CODE_GET_ACCOUNT_DETAILS) {

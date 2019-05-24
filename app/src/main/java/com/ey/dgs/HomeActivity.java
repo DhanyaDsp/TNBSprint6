@@ -44,7 +44,8 @@ public class HomeActivity extends AppCompatActivity implements MyAccountFragment
     AppPreferences appPreferences;
     String userName;
     private String TAG = "HomeActivity";
-    private boolean isLoginServiceCalled;
+    private boolean isUserDetailsServiceCalled;
+    public static boolean isQuestionsShown;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,11 +89,10 @@ public class HomeActivity extends AppCompatActivity implements MyAccountFragment
         loginViewModel.getUserDetail().observeForever(user -> {
             if (user != null) {
                 this.user = user;
-
-                if (!isLoginServiceCalled) {
+                if (!isUserDetailsServiceCalled) {
                     dashboardViewModel.loadAccountsFromLocalDB(appPreferences.getUser_id());
-                    loginViewModel.getUserDetailFromServer(this.user.getEmail());
-                    isLoginServiceCalled = true;
+                    loginViewModel.getUserDetailFromServer(this.user);
+                    isUserDetailsServiceCalled = true;
                 } else {
                     dashboardViewModel.loadAccountsFromLocalDB(appPreferences.getUser_id());
                     dashboardViewModel.getAccounts().observeForever(accounts -> {
@@ -101,7 +101,7 @@ public class HomeActivity extends AppCompatActivity implements MyAccountFragment
                                 dashboardViewModel.addAccountsToLocalDB(Arrays.asList(this.user.getAccountDetails()));
                             }
                         } else {
-                            dashboardViewModel.setSelectedAccount(accounts.get(0));
+                            //dashboardViewModel.setSelectedAccount(accounts.get(0));
                         }
 
                     });
@@ -126,15 +126,17 @@ public class HomeActivity extends AppCompatActivity implements MyAccountFragment
     }
 
     private void moveToNotificationListPage() {
-        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.homeFlContainer);
-        Intent intent = new Intent(this, NotificationListActivity.class);
-        if (currentFragment instanceof DashboardFragment) {
-            intent.putExtra("allNotifications", true);
-        } else if (currentFragment instanceof MyAccountFragment) {
-            intent.putExtra("allNotifications", false);
-            intent.putExtra("accountId", selectedAccount.getAccountId());
+        if (selectedAccount != null) {
+            Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.homeFlContainer);
+            Intent intent = new Intent(this, NotificationListActivity.class);
+            if (currentFragment instanceof DashboardFragment) {
+                intent.putExtra("allNotifications", true);
+            } else if (currentFragment instanceof MyAccountFragment) {
+                intent.putExtra("allNotifications", false);
+                intent.putExtra("accountNumber", selectedAccount.getAccountNumber());
+            }
+            startActivity(intent);
         }
-        startActivity(intent);
     }
 
     private void initViews() {
@@ -142,7 +144,7 @@ public class HomeActivity extends AppCompatActivity implements MyAccountFragment
         tvTitle = toolbar.findViewById(R.id.tvTitle);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("");
-        tvTitle.setText(getString(R.string.all_accounts));
+        tvTitle.setText("");
         //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -194,7 +196,7 @@ public class HomeActivity extends AppCompatActivity implements MyAccountFragment
         if (fm.getBackStackEntryCount() > 0) {
             Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.homeFlContainer);
             if (fragment instanceof MyAccountFragment) {
-                setToolbarTitle(getString(R.string.all_accounts));
+                setToolbarTitle("");
             }
             fm.popBackStack();
         } else {

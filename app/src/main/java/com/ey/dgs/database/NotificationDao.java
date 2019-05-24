@@ -17,6 +17,9 @@ public interface NotificationDao {
     @Query("SELECT * FROM Notification")
     List<Notification> getAll();
 
+    @Query("SELECT * FROM Notification WHERE accountNumber=:accountNumber ")
+    List<Notification> getAccountNotifications(String accountNumber);
+
     @Insert
     void insert(Notification notification);
 

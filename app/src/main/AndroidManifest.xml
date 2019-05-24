@@ -5,6 +5,7 @@
 
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -13,7 +14,14 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar"
         tools:replace="android:icon">
-        <uses-library android:name="org.apache.http.legacy" android:required="false" />
+        <activity
+            android:name=".dashboard.questions.QuestionActivity"
+            android:theme="@style/AppTheme.NoActionBar.NoActionBar"/>
+
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
+
         <activity
             android:name=".notifications.NotificationDetailPage"
             android:label="@string/title_activity_notification_detail_page"
@@ -41,25 +49,19 @@
             </intent-filter>
         </activity>
 
-
         <service android:name=".notifications.pushnotifications.FireBaseMessagingService">
-
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-
         <service android:name=".notifications.pushnotifications.FireBaseInstanceIDService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
-
         <service
             android:name=".notifications.pushnotifications.AzureRegistrationIntentService"
-            android:exported="false"></service>
-
-
+            android:exported="false" />
     </application>
 
 </manifest>

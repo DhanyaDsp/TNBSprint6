@@ -37,4 +37,13 @@
     <string name="notification_toggle_heading">Set notifications for account below</string>
     <string name="title_activity_notification_detail_page">NotificationDetailPage</string>
     <string name="here_is_a_tip">Here\'s a tip!</string>
+    <string name="set_primary_account">Set Primary Account</string>
+    <string name="go_to_account">Go to Account</string>
+    <string name="manage_consumptions">Manage Consumptions</string>
+    <string name="next">Next</string>
+    <string name="not_sure">I\'m not sure</string>
+    <string name="pay_bills">Pay Bills</string>
+    <string name="title_activity_question">QuestionActivity</string>
+    <string name="lifestyle_offers">Lifestyle Offers</string>
+    <string name="personalise_your_offers">Personalise your offers</string>
 </resources>

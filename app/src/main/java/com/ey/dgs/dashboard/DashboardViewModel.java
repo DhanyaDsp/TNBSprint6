@@ -14,6 +14,7 @@ import com.ey.dgs.model.Account;
 import com.ey.dgs.model.EnergyConsumptions;
 import com.ey.dgs.notifications.NotificationViewModel;
 import com.ey.dgs.utils.AppPreferences;
+import com.ey.dgs.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -93,7 +94,8 @@ public class DashboardViewModel extends ViewModel implements DatabaseCallback {
 
     @Override
     public void onUpdate(Object object, int requestCode, int responseCode) {
-
+        if (requestCode == Account.REQUEST_CODE_UPDATE_ACCOUNT) {
+        }
     }
 
     @Override
@@ -114,5 +116,9 @@ public class DashboardViewModel extends ViewModel implements DatabaseCallback {
         accounts.add(new Account(2, "Saujana Alam Indiah 2 ", "20-09-2009", "110", user_id, false));
         accounts.add(new Account(3, "Satori Residence", "20-09-2009", "89", user_id, false));
         addAccountsToLocalDB(accounts);*/
+    }
+
+    public void updateAccount(Account selectedAccount) {
+        DatabaseClient.getInstance(context).updateAccount(Account.REQUEST_CODE_UPDATE_ACCOUNT, selectedAccount, this);
     }
 }

@@ -21,6 +21,9 @@ public interface AccountDao {
     @Insert
     void insert(Account account);
 
+    @Query("SELECT * FROM Account WHERE isPrimaryAccount='true'")
+    Account getPrimaryAccount();
+
     @Delete
     void delete(Account account);
 

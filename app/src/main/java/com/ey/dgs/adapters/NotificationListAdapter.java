@@ -39,7 +39,8 @@ public class NotificationListAdapter extends RecyclerView.Adapter<RecyclerView.V
         final Notification notification = this.notifications.get(i);
         NotificationHolder notificationHolder = (NotificationHolder) holder;
         notificationHolder.tvDetailMessage.setText(notification.getMessage());
-        if (notification.getNotificationType().equalsIgnoreCase(Notification.MMC)) {
+        if (notification.getNotificationType().equalsIgnoreCase(Notification.MMC)
+                || notification.getNotificationType().equalsIgnoreCase(Notification.ADVANCED)) {
             notificationHolder.tvMessage.setText("Consumption");
         } else {
             notificationHolder.tvMessage.setText("Service Availability");
