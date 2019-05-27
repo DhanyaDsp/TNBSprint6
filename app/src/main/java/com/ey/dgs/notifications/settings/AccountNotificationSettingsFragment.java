@@ -80,11 +80,16 @@ public class AccountNotificationSettingsFragment extends Fragment {
         accountSettingsViewModel = ViewModelProviders.of(this).get(AccountSettingsViewModel.class);
         accountSettingsViewModel.setContext(getActivity());
         loginViewModel = ViewModelProviders.of(this).get(LoginViewModel.class);
+        loginViewModel.setContext(getActivity());
+        loginViewModel.getUserDetail(appPreferences.getUser_id());
+        loginViewModel.getUserDetail().observe(getViewLifecycleOwner(), user -> {
+            this.user = user;
+        });
         showProgress(true);
         accountSettingsViewModel.loadAccountSettingsFromLocalDB(account.getAccountNumber());
-        accountSettingsViewModel.getAccountSettingsData().observe(this, accountSettings -> {
+        accountSettingsViewModel.getAccountSettingsData().observe(getViewLifecycleOwner(), accountSettings -> {
             if (accountSettings == null) {
-                accountSettingsViewModel.getNotificationsFromServer(account.getAccountNumber());
+                accountSettingsViewModel.getAccountSettingsFromServer(user.getEmail(), account.getAccountNumber());
             } else {
                 this.accountSettings = accountSettings;
                 accountSettingsViewModel.loadEnergyConsumptionsFromLocalDB(accountSettings.getAccountNumber());
@@ -100,10 +105,6 @@ public class AccountNotificationSettingsFragment extends Fragment {
                 });
             }
         });
-        loginViewModel.getUserDetail(appPreferences.getUser_id());
-        loginViewModel.getUserDetail().observeForever(user -> {
-            this.user = user;
-        });
         accountSettingsViewModel.getIsAccountDetailsUpdated().observeForever(isUserUpdated -> {
             if (isUserUpdated) {
                 notificationSettingsAdapter.setUpdated(true);
@@ -113,6 +114,9 @@ public class AccountNotificationSettingsFragment extends Fragment {
                     ((NotificationSettingsActivity) activity).onBackPressed();
                 }
             }
+        });
+        accountSettingsViewModel.getLoaderData().observe(getViewLifecycleOwner(), showProgress -> {
+            showProgress(showProgress);
         });
         return binding.getRoot();
     }

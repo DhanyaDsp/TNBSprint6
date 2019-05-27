@@ -22,9 +22,6 @@ public class MmcQuestionsViewModel extends ViewModel {
 
     public void loadQuestions() {
         ArrayList<Question> questions = new ArrayList<>();
-        questions.add(new Question("How many people are staying in Sooraya", Question.TYPE_TEXT, null));
-        questions.add(new Question("How many people are staying in Sooraya", Question.TYPE_MULTI_CHOICE, null));
-        questions.add(new Question("How many people are staying in Sooraya", Question.TYPE_DROPDOWN, new String[]{"1", "2", "3"}));
         setQuestions(questions);
     }
 }

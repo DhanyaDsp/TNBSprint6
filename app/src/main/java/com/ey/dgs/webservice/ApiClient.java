@@ -1,10 +1,18 @@
 package com.ey.dgs.webservice;
 
+import com.ey.dgs.api_response.APIResponse;
+import com.ey.dgs.api_response.AccountSettingsResponse;
+import com.ey.dgs.api_response.BillingDetailsResponse;
+import com.ey.dgs.api_response.GetQuestionsResponse;
 import com.ey.dgs.api_response.LoginRequest;
 import com.ey.dgs.api_response.LoginResponse;
+import com.ey.dgs.api_response.PrimaryAccountResponse;
 import com.ey.dgs.api_response.UserDetailResponse;
+import com.ey.dgs.model.Account;
 import com.ey.dgs.model.AccountSettings;
+import com.ey.dgs.model.BillingPeriodReqest;
 import com.ey.dgs.model.NotificationSettingsRequest;
+import com.ey.dgs.model.SetPrimaryAccountRequest;
 import com.ey.dgs.model.User;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -16,8 +24,9 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiClient {
-    public static final String BASE_URL = "https://apscadvdgsapm01.azure-api.net/Login/v1/";
-    public static final String LOGIN_BASE_URL = "https://apscadvdgsapm01.azure-api.net/UserDetails/v1/";
+    public static final String BASE_URL = "https://apscadvdgsapm01.azure-api.net/Login/v3/";
+    public static final String LOGIN_BASE_URL = "https://apscadvdgsapm01.azure-api.net/UserDetails/v3/";
+    public static final String BILLING_BASE_URL = "https://apscadvdgsapm01.azure-api.net/BillingHistory/v3/";
     private static Retrofit retrofit = null;
 
     public static int REQUEST_CODE_UPDATE_USER = 100;
@@ -25,6 +34,9 @@ public class ApiClient {
     public static int REQUEST_CODE_GET_USER = 102;
     public static int REQUEST_CODE_UPDATE_ACCOUNT_DETAILS = 103;
     public static int REQUEST_CODE_GET_ACCOUNT_DETAILS = 104;
+    public static int REQUEST_CODE_SET_PRIMARY_ACCOUNT = 105;
+    public static int REQUEST_CODE_GET_QUESTIONS = 106;
+    public static int REQUEST_CODE_GET_BILLING_HISTORY = 107;
 
     public static Retrofit getClient() {
         return new Retrofit.Builder()
@@ -37,6 +49,13 @@ public class ApiClient {
     public static Retrofit getUserDetailsClient() {
         return retrofit = new Retrofit.Builder()
                 .baseUrl(LOGIN_BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+    }
+
+    public static Retrofit getBillingHistoryClient() {
+        return retrofit = new Retrofit.Builder()
+                .baseUrl(BILLING_BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
     }
@@ -83,10 +102,10 @@ public class ApiClient {
         });
     }
 
-    public void getUser(User user, APICallback callback) {
+    public void getUser(String token, User user, APICallback callback) {
         ApiInterface apiService = ApiClient.getUserDetailsClient().create(ApiInterface.class);
 
-        Call<UserDetailResponse> call = apiService.getUserDetails(user.getEmail());
+        Call<UserDetailResponse> call = apiService.getUserDetails(token, user.getEmail());
         call.enqueue(new Callback<UserDetailResponse>() {
             @Override
             public void onResponse(Call<UserDetailResponse> call, Response<UserDetailResponse> response) {
@@ -118,15 +137,15 @@ public class ApiClient {
         });
     }
 
-    public void updateUser(User user, APICallback callback) {
+    public void updateUser(String token, User user, APICallback callback) {
         ApiInterface apiService = ApiClient.getRawTextClient().create(ApiInterface.class);
 
-        Call<String> call = apiService.updateUser(user);
-        call.enqueue(new Callback<String>() {
+        Call<PrimaryAccountResponse> call = apiService.updateUser(token, user);
+        call.enqueue(new Callback<PrimaryAccountResponse>() {
             @Override
-            public void onResponse(Call<String> call, Response<String> response) {
-                String res = response.body();
-                if (res.equalsIgnoreCase("Updated")) {
+            public void onResponse(Call<PrimaryAccountResponse> call, Response<PrimaryAccountResponse> response) {
+                PrimaryAccountResponse accountResponse = response.body();
+                if (accountResponse != null && accountResponse.isSuccess()) {
                     callback.onSuccess(REQUEST_CODE_UPDATE_USER, user, response.code());
                 } else {
                     callback.onFailure(REQUEST_CODE_UPDATE_USER, "Failed to update User", response.code());
@@ -134,59 +153,137 @@ public class ApiClient {
             }
 
             @Override
-            public void onFailure(Call<String> call, Throwable t) {
+            public void onFailure(Call<PrimaryAccountResponse> call, Throwable t) {
                 callback.onFailure(REQUEST_CODE_UPDATE_USER, "Failed to update User", 0);
             }
         });
     }
 
-    public void getAccountSettingsFromServer(String accountNumber, APICallback callback) {
-        ApiInterface apiService = ApiClient.getUserDetailsClient().create(ApiInterface.class);
+    public void setPrimaryAccount(User user, Account account, String token, APICallback callback) {
+        SetPrimaryAccountRequest primaryAccountRequest = new SetPrimaryAccountRequest();
+        primaryAccountRequest.setUserName(user.getEmail());
+        primaryAccountRequest.setAccountNumber(account.getAccountNumber());
+        ApiInterface apiService = ApiClient.getRawTextClient().create(ApiInterface.class);
 
-        Call<AccountSettings> call = apiService.getAccountSettings(accountNumber);
-        call.enqueue(new Callback<AccountSettings>() {
+        Call<PrimaryAccountResponse> call = apiService.setPrimaryAccount(token, primaryAccountRequest);
+        call.enqueue(new Callback<PrimaryAccountResponse>() {
             @Override
-            public void onResponse(Call<AccountSettings> call, Response<AccountSettings> response) {
-                AccountSettings accountSettings = response.body();
-                if (accountSettings != null) {
-                    accountSettings.setAccountNumber(accountNumber);
-                    callback.onSuccess(REQUEST_CODE_GET_ACCOUNT_DETAILS, accountSettings, response.code());
+            public void onResponse(Call<PrimaryAccountResponse> call, Response<PrimaryAccountResponse> response) {
+                PrimaryAccountResponse primaryAccountResponse = response.body();
+                if (primaryAccountResponse.isSuccess()) {
+                    callback.onSuccess(REQUEST_CODE_SET_PRIMARY_ACCOUNT, account, response.code());
                 } else {
-                    accountSettings = new AccountSettings();
-                    accountSettings.setMessage("Please try again!");
-                    callback.onFailure(REQUEST_CODE_GET_ACCOUNT_DETAILS, accountSettings, response.code());
+                    callback.onFailure(REQUEST_CODE_SET_PRIMARY_ACCOUNT, "Failed to Set Primary Account", response.code());
                 }
-
             }
 
             @Override
-            public void onFailure(Call<AccountSettings> call, Throwable t) {
-                UserDetailResponse userDetailResponse = new UserDetailResponse();
-                userDetailResponse.setMessage("Please try again!");
-                callback.onFailure(REQUEST_CODE_GET_ACCOUNT_DETAILS, userDetailResponse, 0);
+            public void onFailure(Call<PrimaryAccountResponse> call, Throwable t) {
+                callback.onFailure(REQUEST_CODE_SET_PRIMARY_ACCOUNT, "Failed to Set Primary Account", 0);
             }
         });
     }
 
-    public void updateAccountSettingsInServer(NotificationSettingsRequest notificationSettingsRequest, APICallback callback) {
-        ApiInterface apiService = ApiClient.getRawTextClient().create(ApiInterface.class);
-        Call<String> call = apiService.updateAccountSettings(notificationSettingsRequest);
-        call.enqueue(new Callback<String>() {
+    public void getAccountSettingsFromServer(String token, String accountNumber, String userName, APICallback callback) {
+        ApiInterface apiService = ApiClient.getUserDetailsClient().create(ApiInterface.class);
+
+        Call<AccountSettingsResponse> call = apiService.getAccountSettings(token, accountNumber, userName);
+        call.enqueue(new Callback<AccountSettingsResponse>() {
             @Override
-            public void onResponse(Call<String> call, Response<String> response) {
-                String res = response.body();
-                if (res != null) {
-                    if (res.equalsIgnoreCase("Updated")) {
+            public void onResponse(Call<AccountSettingsResponse> call, Response<AccountSettingsResponse> response) {
+                AccountSettingsResponse accountSettingsResponse = response.body();
+                if (accountSettingsResponse != null) {
+                    accountSettingsResponse.getResult().setAccountNumber(accountNumber);
+                    callback.onSuccess(REQUEST_CODE_GET_ACCOUNT_DETAILS, accountSettingsResponse.getResult(), response.code());
+                } else {
+                    accountSettingsResponse = new AccountSettingsResponse();
+                    accountSettingsResponse.setMessage("Please try again");
+                    callback.onFailure(REQUEST_CODE_GET_ACCOUNT_DETAILS, accountSettingsResponse.getMessage(), response.code());
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<AccountSettingsResponse> call, Throwable t) {
+                AccountSettingsResponse accountSettingsResponse = new AccountSettingsResponse();
+                accountSettingsResponse.setMessage("Please try again");
+                callback.onFailure(REQUEST_CODE_GET_ACCOUNT_DETAILS, accountSettingsResponse.getMessage(), 0);
+            }
+        });
+    }
+
+    public void updateAccountSettingsInServer(String token, NotificationSettingsRequest notificationSettingsRequest, APICallback callback) {
+        ApiInterface apiService = ApiClient.getRawTextClient().create(ApiInterface.class);
+        Call<APIResponse> call = apiService.updateAccountSettings(token, notificationSettingsRequest);
+        call.enqueue(new Callback<APIResponse>() {
+            @Override
+            public void onResponse(Call<APIResponse> call, Response<APIResponse> response) {
+                APIResponse apiResponse = response.body();
+                if (apiResponse != null) {
+                    if (apiResponse.isSuccess()) {
                         callback.onSuccess(REQUEST_CODE_UPDATE_ACCOUNT_DETAILS, notificationSettingsRequest, response.code());
+                    } else {
+                        callback.onSuccess(REQUEST_CODE_UPDATE_ACCOUNT_DETAILS, "Failed to update Account Settings", response.code());
                     }
                 } else {
-                    callback.onFailure(REQUEST_CODE_UPDATE_ACCOUNT_DETAILS, notificationSettingsRequest, response.code());
+                    callback.onFailure(REQUEST_CODE_UPDATE_ACCOUNT_DETAILS, "Failed to update Account Settings", response.code());
                 }
             }
 
             @Override
-            public void onFailure(Call<String> call, Throwable t) {
-                callback.onFailure(REQUEST_CODE_UPDATE_ACCOUNT_DETAILS, "Failed to update Account Aettings", 0);
+            public void onFailure(Call<APIResponse> call, Throwable t) {
+                callback.onFailure(REQUEST_CODE_UPDATE_ACCOUNT_DETAILS, "Failed to update Account Settings", 0);
+            }
+        });
+    }
+
+    public void getQuestionsFromServer(String token, String accountNumber, String userName, APICallback callback) {
+        ApiInterface apiService = ApiClient.getUserDetailsClient().create(ApiInterface.class);
+
+        Call<GetQuestionsResponse> call = apiService.getQuestions(token, userName, accountNumber);
+        call.enqueue(new Callback<GetQuestionsResponse>() {
+            @Override
+            public void onResponse(Call<GetQuestionsResponse> call, Response<GetQuestionsResponse> response) {
+                GetQuestionsResponse getQuestionsResponse = response.body();
+                if (getQuestionsResponse != null) {
+                    callback.onSuccess(REQUEST_CODE_GET_ACCOUNT_DETAILS, getQuestionsResponse, response.code());
+                } else {
+                    getQuestionsResponse = new GetQuestionsResponse();
+                    callback.onFailure(REQUEST_CODE_GET_ACCOUNT_DETAILS, getQuestionsResponse, response.code());
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<GetQuestionsResponse> call, Throwable t) {
+                GetQuestionsResponse getQuestionsResponse = new GetQuestionsResponse();
+                callback.onFailure(REQUEST_CODE_GET_ACCOUNT_DETAILS, getQuestionsResponse, 0);
+            }
+        });
+    }
+
+    public void getBillingHistoryFromServer(String token, Account account, String userName, APICallback callback) {
+        ApiInterface apiService = ApiClient.getBillingHistoryClient().create(ApiInterface.class);
+        BillingPeriodReqest billingPeriodReqest = new BillingPeriodReqest(account.getAccountNumber(), 1);
+        Call<BillingDetailsResponse> call = apiService.getBillingHistory(token, billingPeriodReqest);
+        call.enqueue(new Callback<BillingDetailsResponse>() {
+            @Override
+            public void onResponse(Call<BillingDetailsResponse> call, Response<BillingDetailsResponse> response) {
+                BillingDetailsResponse billingDetailsResponse = response.body();
+                if (billingDetailsResponse != null) {
+                    account.setBillingDetails(billingDetailsResponse.getResult().getBillingDetails());
+                    callback.onSuccess(REQUEST_CODE_GET_BILLING_HISTORY, account, response.code());
+                } else {
+                    billingDetailsResponse = new BillingDetailsResponse();
+                    callback.onFailure(REQUEST_CODE_GET_BILLING_HISTORY, billingDetailsResponse.getMessage(), response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BillingDetailsResponse> call, Throwable t) {
+                BillingDetailsResponse billingDetailsResponse = new BillingDetailsResponse();
+                billingDetailsResponse.setMessage("Please try again!");
+                callback.onFailure(REQUEST_CODE_GET_BILLING_HISTORY, billingDetailsResponse.getMessage(), 0);
             }
         });
     }

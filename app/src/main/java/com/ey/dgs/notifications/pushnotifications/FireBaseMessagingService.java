@@ -31,6 +31,7 @@ import java.util.Set;
 public class FireBaseMessagingService extends FirebaseMessagingService {
 
     private static int count = 0;
+    AppPreferences appPreferences;
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
@@ -55,8 +56,11 @@ public class FireBaseMessagingService extends FirebaseMessagingService {
         Gson gson = new Gson();
         Notification notification = gson.fromJson(messageBody, Notification.class);
         DatabaseClient.getInstance(getApplication()).addNotification(Notification.REQUEST_CODE_ADD_NOTIFICATIONS, notification, null);
-        new NotificationHelper(getApplicationContext()).createNotification("",notification, notification.getMessage());
 
+        appPreferences = new AppPreferences(getApplicationContext());
+        if (appPreferences.isLoginned()) {
+            new NotificationHelper(getApplicationContext()).createNotification("", notification, notification.getMessage());
+        }
     }
 }
 

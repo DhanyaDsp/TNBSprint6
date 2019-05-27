@@ -22,6 +22,7 @@ public class AccountSettingsViewModel extends ViewModel implements DatabaseCallb
     private Context context;
     private AppPreferences appPreferences;
     private MutableLiveData<Boolean> isAccountDetailsUpdated = new MutableLiveData<>();
+    private MutableLiveData<Boolean> loaderData = new MutableLiveData<>();
 
     public AccountSettingsViewModel() {
 
@@ -37,6 +38,14 @@ public class AccountSettingsViewModel extends ViewModel implements DatabaseCallb
 
     public LiveData<EnergyConsumptions> getEnergyConsumptions() {
         return energyConsumptionData;
+    }
+
+    public MutableLiveData<Boolean> getLoaderData() {
+        return loaderData;
+    }
+
+    public void setLoader(boolean showLoader) {
+        loaderData.postValue(showLoader);
     }
 
     public LiveData<Boolean> getIsAccountDetailsUpdated() {
@@ -61,6 +70,7 @@ public class AccountSettingsViewModel extends ViewModel implements DatabaseCallb
 
     public void setContext(Context context) {
         this.context = context;
+        appPreferences = new AppPreferences(context);
     }
 
     public Context getContext() {
@@ -83,8 +93,8 @@ public class AccountSettingsViewModel extends ViewModel implements DatabaseCallb
         DatabaseClient.getInstance(context).updateEnergyConsumptions(EnergyConsumptions.REQUEST_CODE_UPDATE_CONSUMPTION, energyConsumptions, this);
     }
 
-    public void getNotificationsFromServer(String accountNumber) {
-        new ApiClient().getAccountSettingsFromServer(accountNumber, this);
+    public void getAccountSettingsFromServer(String userName, String accountNumber) {
+        new ApiClient().getAccountSettingsFromServer(appPreferences.getAuthToken(), accountNumber, userName, this);
     }
 
     @Override
@@ -137,6 +147,9 @@ public class AccountSettingsViewModel extends ViewModel implements DatabaseCallb
         if (requestCode == ApiClient.REQUEST_CODE_UPDATE_ACCOUNT_DETAILS) {
             Utils.showToast(context, (String) obj);
             setAccountDetailsUpdated(true);
+        } else if (requestCode == ApiClient.REQUEST_CODE_GET_ACCOUNT_DETAILS) {
+            setLoader(false);
+            Utils.showToast(context, (String) obj);
         }
     }
 
@@ -146,6 +159,6 @@ public class AccountSettingsViewModel extends ViewModel implements DatabaseCallb
     }
 
     public void updateAccountSettingsInServer(NotificationSettingsRequest notificationSettingsRequest) {
-        new ApiClient().updateAccountSettingsInServer(notificationSettingsRequest, this);
+        new ApiClient().updateAccountSettingsInServer(appPreferences.getAuthToken(), notificationSettingsRequest, this);
     }
 }

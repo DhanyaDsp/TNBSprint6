@@ -1,6 +1,5 @@
 package com.ey.dgs.dashboard;
 
-import android.app.Activity;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
@@ -11,22 +10,27 @@ import android.support.v4.app.FragmentActivity;
 import com.ey.dgs.database.DatabaseCallback;
 import com.ey.dgs.database.DatabaseClient;
 import com.ey.dgs.model.Account;
-import com.ey.dgs.model.EnergyConsumptions;
+import com.ey.dgs.model.BillingDetails;
+import com.ey.dgs.model.User;
 import com.ey.dgs.notifications.NotificationViewModel;
 import com.ey.dgs.utils.AppPreferences;
 import com.ey.dgs.utils.Utils;
+import com.ey.dgs.webservice.APICallback;
+import com.ey.dgs.webservice.ApiClient;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-public class DashboardViewModel extends ViewModel implements DatabaseCallback {
+public class DashboardViewModel extends ViewModel implements DatabaseCallback, APICallback {
 
     private MutableLiveData<ArrayList<Account>> accounts = new MutableLiveData<>();
+    private MutableLiveData<ArrayList<BillingDetails>> billingDetailsData = new MutableLiveData<>();
     private MutableLiveData<Account> selectedAccount = new MutableLiveData<>();
     private NotificationViewModel notificationViewModel;
     private Context context;
     private AppPreferences appPreferences;
+    public MutableLiveData<Boolean> isPrimaryAccountSet = new MutableLiveData<>();
+    private MutableLiveData<Boolean> loaderData = new MutableLiveData<>();
 
     public DashboardViewModel() {
         if (accounts == null) {
@@ -34,8 +38,32 @@ public class DashboardViewModel extends ViewModel implements DatabaseCallback {
         }
     }
 
+    public MutableLiveData<Boolean> getLoaderData() {
+        return loaderData;
+    }
+
+    public void setLoader(boolean showLoader) {
+        loaderData.postValue(showLoader);
+    }
+
+    public void setPrimaryAccountInServer(User user, Account account) {
+        new ApiClient().setPrimaryAccount(user, account, appPreferences.getAuthToken(), this);
+    }
+
+    public void getBillingHistoryFromServer(User user, Account account) {
+        new ApiClient().getBillingHistoryFromServer(appPreferences.getAuthToken(), account, user.getEmail(), this);
+    }
+
     public void loadAccountsFromLocalDB(int user_id) {
         DatabaseClient.getInstance(context).getAccounts(Account.REQUEST_CODE_ADD_ACCOUNTS, user_id, this);
+    }
+
+    public LiveData<Boolean> isPrimaryAccountSet() {
+        return isPrimaryAccountSet;
+    }
+
+    public void setIsPrimaryAccountSet(boolean ssPrimaryAccountSet) {
+        this.isPrimaryAccountSet.postValue(ssPrimaryAccountSet);
     }
 
     public LiveData<ArrayList<Account>> getAccounts() {
@@ -75,9 +103,7 @@ public class DashboardViewModel extends ViewModel implements DatabaseCallback {
     public void onInsert(Object object, int requestCode, int responseCode) {
         if (requestCode == Account.REQUEST_CODE_ADD_ACCOUNTS) {
             if (object != null) {
-                //ArrayList<Account> accounts =object;
                 ArrayList<Account> accounts = new ArrayList((List<Account>) object);
-                //ArrayList<Account> accounts = new ArrayList<Account>(Arrays.asList(object));
                 setAccounts(accounts);
                 //setupNotifications(accounts);
             }
@@ -94,7 +120,8 @@ public class DashboardViewModel extends ViewModel implements DatabaseCallback {
 
     @Override
     public void onUpdate(Object object, int requestCode, int responseCode) {
-        if (requestCode == Account.REQUEST_CODE_UPDATE_ACCOUNT) {
+        if (requestCode == Account.REQUEST_CODE_SET_PRIMARY_ACCOUNT) {
+            setIsPrimaryAccountSet(true);
         }
     }
 
@@ -120,5 +147,44 @@ public class DashboardViewModel extends ViewModel implements DatabaseCallback {
 
     public void updateAccount(Account selectedAccount) {
         DatabaseClient.getInstance(context).updateAccount(Account.REQUEST_CODE_UPDATE_ACCOUNT, selectedAccount, this);
+    }
+
+    public void setPrimaryAccount(Account selectedAccount) {
+        DatabaseClient.getInstance(context).updateAccount(Account.REQUEST_CODE_SET_PRIMARY_ACCOUNT, selectedAccount, this);
+    }
+
+    @Override
+    public void onSuccess(int requestCode, Object obj, int code) {
+        if (requestCode == ApiClient.REQUEST_CODE_SET_PRIMARY_ACCOUNT) {
+            Account account = (Account) obj;
+            account.setPrimaryAccount(true);
+            setPrimaryAccount(account);
+        } else if (requestCode == ApiClient.REQUEST_CODE_GET_BILLING_HISTORY) {
+            Account account = (Account) obj;
+            updateBillingDetailsToAccount(account);
+        }
+    }
+
+    private void updateBillingDetailsToAccount(Account account) {
+        ArrayList<Account> accounts = getAccounts().getValue();
+        if (accounts != null) {
+            for (Account acc : accounts) {
+                if (acc.getAccountNumber().equalsIgnoreCase(account.getAccountNumber())) {
+                    account.setBillingDetails(acc.getBillingDetails());
+                }
+            }
+            setAccounts(accounts);
+        }
+    }
+
+    @Override
+    public void onFailure(int requestCode, Object obj, int code) {
+        setLoader(false);
+        Utils.showToast(context, (String) obj);
+    }
+
+    @Override
+    public void onProgress(int requestCode, boolean isLoading) {
+
     }
 }

@@ -6,17 +6,19 @@ public class Question {
     public static int TYPE_DROPDOWN = 2;
     public static int TYPE_MULTI_CHOICE = 3;
 
-    public Question(String question, int type, String[] options) {
-        this.question = question;
-        this.type = type;
-        this.options = options;
-    }
+    private String questionId;
 
     private String question;
 
-    private int type;
+    private String response;
 
-    private String[] options;
+    public String getQuestionId() {
+        return questionId;
+    }
+
+    public void setQuestionId(String questionId) {
+        this.questionId = questionId;
+    }
 
     public String getQuestion() {
         return question;
@@ -26,19 +28,16 @@ public class Question {
         this.question = question;
     }
 
-    public int getType() {
-        return type;
+    public String getResponse() {
+        return response;
     }
 
-    public void setType(int type) {
-        this.type = type;
+    public void setResponse(String response) {
+        this.response = response;
     }
 
-    public String[] getOptions() {
-        return options;
-    }
-
-    public void setOptions(String[] options) {
-        this.options = options;
+    @Override
+    public String toString() {
+        return "ClassPojo [questionId = " + questionId + ", question = " + question + ", response = " + response + "]";
     }
 }

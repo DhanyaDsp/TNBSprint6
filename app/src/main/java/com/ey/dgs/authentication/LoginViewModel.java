@@ -7,6 +7,8 @@ import android.content.Context;
 import com.ey.dgs.api_response.UserDetailResponse;
 import com.ey.dgs.database.DatabaseCallback;
 import com.ey.dgs.database.DatabaseClient;
+import com.ey.dgs.model.Account;
+import com.ey.dgs.model.SetPrimaryAccountRequest;
 import com.ey.dgs.model.User;
 import com.ey.dgs.utils.AppPreferences;
 import com.ey.dgs.webservice.APICallback;
@@ -35,11 +37,11 @@ public class LoginViewModel extends ViewModel implements DatabaseCallback, APICa
     }
 
     public void getUserDetailFromServer(User user) {
-        new ApiClient().getUser(user, this);
+        new ApiClient().getUser(appPreference.getAuthToken(), user, this);
     }
 
     public void updateUserInServer(User user) {
-        new ApiClient().updateUser(user, this);
+        new ApiClient().updateUser(appPreference.getAuthToken(),user, this);
     }
 
     public void update(User user) {
@@ -97,7 +99,7 @@ public class LoginViewModel extends ViewModel implements DatabaseCallback, APICa
             User serverUser = userDetailResponse.getUser();
           /*  serverUser.setUserId(1);
             serverUser.setRememberMe(true);*/
-            setUserData(serverUser);
+            //setUserData(serverUser);
             update(serverUser);
         }
     }

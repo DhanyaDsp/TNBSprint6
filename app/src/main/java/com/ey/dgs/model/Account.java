@@ -12,6 +12,7 @@ public class Account implements Serializable {
 
     public static int REQUEST_CODE_ADD_ACCOUNTS = 5;
     public static int REQUEST_CODE_UPDATE_ACCOUNT = 15;
+    public static int REQUEST_CODE_SET_PRIMARY_ACCOUNT = 16;
 
     @PrimaryKey(autoGenerate = true)
     @NonNull
@@ -28,7 +29,8 @@ public class Account implements Serializable {
     private int user_id;
     private boolean isAccount;
     private boolean isPrimaryAccount;
-
+    @Ignore
+    BillingDetails[] billingDetails;
 
     public int getAccountId() {
         return accountId;
@@ -132,5 +134,15 @@ public class Account implements Serializable {
 
     public void setPrimaryAccount(boolean primaryAccount) {
         isPrimaryAccount = primaryAccount;
+    }
+
+    @Ignore
+    public BillingDetails[] getBillingDetails() {
+        return billingDetails;
+    }
+
+    @Ignore
+    public void setBillingDetails(BillingDetails[] billingDetails) {
+        this.billingDetails = billingDetails;
     }
 }

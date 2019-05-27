@@ -1,10 +1,17 @@
 package com.ey.dgs.webservice;
 
+import com.ey.dgs.api_response.APIResponse;
+import com.ey.dgs.api_response.AccountSettingsResponse;
+import com.ey.dgs.api_response.BillingDetailsResponse;
+import com.ey.dgs.api_response.GetQuestionsResponse;
 import com.ey.dgs.api_response.LoginRequest;
 import com.ey.dgs.api_response.LoginResponse;
+import com.ey.dgs.api_response.PrimaryAccountResponse;
 import com.ey.dgs.api_response.UserDetailResponse;
 import com.ey.dgs.model.AccountSettings;
+import com.ey.dgs.model.BillingPeriodReqest;
 import com.ey.dgs.model.NotificationSettingsRequest;
+import com.ey.dgs.model.SetPrimaryAccountRequest;
 import com.ey.dgs.model.User;
 
 import java.util.Map;
@@ -30,15 +37,23 @@ public interface ApiInterface {
     Call<LoginResponse> login(@Body LoginRequest loginRequest);
 
     @POST("UserDetails")
-    Call<String> updateUser(@Body User user);
+    Call<PrimaryAccountResponse> updateUser(@Header("Authorization") String token, @Body User user);
+
+    @POST("PrimaryAccount")
+    Call<PrimaryAccountResponse> setPrimaryAccount(@Header("Authorization") String token, @Body SetPrimaryAccountRequest setPrimaryAccountRequest);
 
     @GET("UserDetails")
-    Call<UserDetailResponse> getUserDetails(@Query("UserName") String UserName);
+    Call<UserDetailResponse> getUserDetails(@Header("Authorization") String token, @Query("UserName") String UserName);
 
     @GET("AccountDetails")
-    Call<AccountSettings> getAccountSettings(@Query("AccountNumber") String AccountNumber);
+    Call<AccountSettingsResponse> getAccountSettings(@Header("Authorization") String token, @Query("AccountNumber") String AccountNumber, @Query("UserName") String userName);
 
     @POST("AccountDetails")
-    Call<String> updateAccountSettings(@Body NotificationSettingsRequest notificationSettingsRequest);
+    Call<APIResponse> updateAccountSettings(@Header("Authorization") String token, @Body NotificationSettingsRequest notificationSettingsRequest);
 
+    @GET("Questionnaire")
+    Call<GetQuestionsResponse> getQuestions(@Header("Authorization") String token, @Query("UserName") String UserName, @Query("AccountNumber") String AccountNumber);
+
+    @POST("BillingDetails")
+    Call<BillingDetailsResponse> getBillingHistory(@Header("Authorization") String token, @Body BillingPeriodReqest billingPeriodReqest);
 }

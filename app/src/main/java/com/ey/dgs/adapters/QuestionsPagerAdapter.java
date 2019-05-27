@@ -35,7 +35,7 @@ public class QuestionsPagerAdapter extends PagerAdapter {
         AppCompatEditText etAnswer = layout.findViewById(R.id.etAnswer);
         LinearLayout llMultiChoice = layout.findViewById(R.id.llMultiChoice);
         tvQuestion.setText(questions.get(position).getQuestion());
-        if (question.getType() == Question.TYPE_TEXT) {
+        /*if (question.getType() == Question.TYPE_TEXT) {
             etAnswer.setVisibility(View.VISIBLE);
             llDropDown.setVisibility(View.GONE);
             llMultiChoice.setVisibility(View.GONE);
@@ -47,7 +47,7 @@ public class QuestionsPagerAdapter extends PagerAdapter {
             etAnswer.setVisibility(View.GONE);
             llDropDown.setVisibility(View.VISIBLE);
             llMultiChoice.setVisibility(View.GONE);
-        }
+        }*/
         viewGroup.addView(layout);
         return layout;
     }

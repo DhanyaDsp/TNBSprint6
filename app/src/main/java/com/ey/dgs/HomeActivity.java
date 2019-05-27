@@ -28,6 +28,7 @@ import com.ey.dgs.utils.AppPreferences;
 import com.ey.dgs.utils.FragmentUtils;
 import com.ey.dgs.utils.Utils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class HomeActivity extends AppCompatActivity implements MyAccountFragment.OnFragmentInteractionListener, DashboardFragment.OnFragmentInteractionListener {
@@ -46,6 +47,7 @@ public class HomeActivity extends AppCompatActivity implements MyAccountFragment
     private String TAG = "HomeActivity";
     private boolean isUserDetailsServiceCalled;
     public static boolean isQuestionsShown;
+    private boolean isServerAccountUpdated;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,9 +84,6 @@ public class HomeActivity extends AppCompatActivity implements MyAccountFragment
 
 
     private void subscribe() {
-        dashboardViewModel.getSelectedAccount().observeForever(account -> {
-            this.selectedAccount = account;
-        });
         loginViewModel.getUserDetail(appPreferences.getUser_id());
         loginViewModel.getUserDetail().observeForever(user -> {
             if (user != null) {
@@ -96,14 +95,20 @@ public class HomeActivity extends AppCompatActivity implements MyAccountFragment
                 } else {
                     dashboardViewModel.loadAccountsFromLocalDB(appPreferences.getUser_id());
                     dashboardViewModel.getAccounts().observeForever(accounts -> {
-                        if (accounts == null || accounts.size() <= 0) {
-                            if (this.user.getAccountDetails() != null && this.user.getAccountDetails().length > 0) {
-                                dashboardViewModel.addAccountsToLocalDB(Arrays.asList(this.user.getAccountDetails()));
+                        if (!isServerAccountUpdated) {
+                            if (accounts == null || accounts.size() <= 0) {
+                                if (this.user.getAccountDetails() != null && this.user.getAccountDetails().length > 0) {
+                                    dashboardViewModel.addAccountsToLocalDB(Arrays.asList(this.user.getAccountDetails()));
+                               } else {
+                                }
+                            } else {
+                                //Data from server
+                                if (this.user.getAccountDetails() != null && this.user.getAccountDetails().length > 0) {
+                                    dashboardViewModel.addAccountsToLocalDB(Arrays.asList(this.user.getAccountDetails()));
+                                    isServerAccountUpdated = true;
+                                }
                             }
-                        } else {
-                            //dashboardViewModel.setSelectedAccount(accounts.get(0));
                         }
-
                     });
                 }
 

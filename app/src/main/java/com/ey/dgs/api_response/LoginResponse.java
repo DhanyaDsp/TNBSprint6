@@ -2,7 +2,7 @@ package com.ey.dgs.api_response;
 
 import com.google.gson.annotations.SerializedName;
 
-public class LoginResponse {
+public class    LoginResponse {
 
     @SerializedName("success")
     private boolean success;

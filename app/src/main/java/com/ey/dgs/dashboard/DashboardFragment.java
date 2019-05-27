@@ -40,6 +40,7 @@ import com.ey.dgs.utils.DialogHelper;
 import com.ey.dgs.utils.FragmentUtils;
 import com.ey.dgs.views.BarChart;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import static com.ey.dgs.utils.FragmentUtils.INDEX_MY_ACCOUNT;
@@ -69,6 +70,9 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
     AppCompatImageView ivBanner;
     RelativeLayout rlChart;
     BarChart barChart;
+    View loader;
+    private AccountPagerAdapter accountPagerAdapter;
+    private boolean billingDetailsServiceCalled;
 
     public static DashboardFragment newInstance() {
         return new DashboardFragment();
@@ -82,10 +86,12 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
         loginFragmentBinding.setSelectedAccount(selectedAccount);
         appPreferences = new AppPreferences(getActivity());
         initView();
+        subscribe();
         return rootView;
     }
 
     private void initView() {
+        loader = rootView.findViewById(R.id.loader);
         ivBanner = rootView.findViewById(R.id.ivBanner);
         rlChart = rootView.findViewById(R.id.rlChart);
         barChart = rootView.findViewById(R.id.bar_chart);
@@ -116,14 +122,17 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
         ArrayList<ChartData> chartDatum = new ArrayList<>();
         ChartData chartData;
 
-        for(int i=0; i<6; i++){
+        for (int i = 0; i < 6; i++) {
             chartData = new ChartData();
-            chartData.setTag("LB" + (i+1));
+            chartData.setTag("LB" + (i + 1));
             chartData.setVal(20.0f);
             chartDatum.add(chartData);
         }
 
         barChart.setData(chartDatum).setTitle("Chart_Title");
+
+        accountPagerAdapter = new AccountPagerAdapter(getActivity(), this.accounts);
+        vpAccounts.setAdapter(accountPagerAdapter);
 
     }
 
@@ -137,48 +146,74 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
         loginViewModel.getUserDetail(appPreferences.getUser_id());
         dashboardViewModel = ViewModelProviders.of(getActivity()).get(DashboardViewModel.class);
         dashboardViewModel.setContext(getActivity());
-        loginViewModel.getUserDetail().observeForever(user -> {
+        showProgress(true);
+        loginViewModel.getUserDetail().observe(getViewLifecycleOwner(), user -> {
             onUserDetailsLoaded(user);
+        });
+        dashboardViewModel.getLoaderData().observe(getViewLifecycleOwner(), showProgress -> {
+            showProgress(showProgress);
         });
         //dashboardViewModel.loadAccountsFromLocalDB(appPreferences.getUser_id());
         dashboardViewModel.getAccounts().observeForever(accounts -> {
+            showProgress(false);
             if (accounts.size() > 0) {
                 this.accounts.clear();
                 this.accounts.addAll(accounts);
-                Account addAccount = new Account();
+               /* Account addAccount = new Account();
                 addAccount.setAccount(true);
-                this.accounts.add(addAccount);
-                if (user.isPrimaryAccount()) {
-                    for (Account account : this.accounts) {
-                        if (account.isPrimaryAccount()) {
-                            this.selectedAccount = account;
-                            if (!user.isPrimaryAccount()) {
-                                user.setPrimaryAccount(true);
-                                loginViewModel.update(user);
-                            }
-                        }
+                this.accounts.add(addAccount);*/
+                for (Account account : this.accounts) {
+                    if (account.isPrimaryAccount()) {
+                        this.selectedAccount = account;
+                        //user.setPrimaryAccount(true);
                     }
-                } else {
-                    this.selectedAccount = accounts.get(0);
                 }
+
                 loginFragmentBinding.setSelectedAccount(selectedAccount);
                 dashboardViewModel.setSelectedAccount(selectedAccount);
                 accountAdapter.notifyDataSetChanged();
-                AccountPagerAdapter accountPagerAdapter = new AccountPagerAdapter(getActivity(), this.accounts);
-                vpAccounts.setAdapter(accountPagerAdapter);
+                accountPagerAdapter.notifyDataSetChanged();
+                if (!billingDetailsServiceCalled) {
+                    getBillingDetailsForAccount(accounts);
+                    billingDetailsServiceCalled = true;
+                }
             }
         });
+        dashboardViewModel.isPrimaryAccountSet().observe(getViewLifecycleOwner(), isPrimaryAccountSet -> {
+            if (isPrimaryAccountSet) {
+                for (Account account : accounts) {
+                    if (!selectedAccount.getAccountNumber().equalsIgnoreCase(account.getAccountNumber())) {
+                        if (account.isPrimaryAccount()) {
+                            account.setPrimaryAccount(false);
+                            dashboardViewModel.updateAccount(account);
+                        }
+                    } else {
+                        account.setPrimaryAccount(true);
+                        selectedAccount = account;
+                    }
+                }
+                showProgress(false);
+                onUserDetailsLoaded(user);
+                showPrimaryAccountPopup();
+            }
+        });
+    }
+
+    private void getBillingDetailsForAccount(ArrayList<Account> accounts) {
+        for (Account account : accounts) {
+            dashboardViewModel.getBillingHistoryFromServer(user, account);
+        }
     }
 
     private void onUserDetailsLoaded(User user) {
         if (user != null) {
             this.user = user;
             loginFragmentBinding.setUser(this.user);
-            if (this.user.isMmcAlertFlag()) {
+            /*if (this.user.isMmcAlertFlag()) {
                 subscribePopup.setVisibility(View.GONE);
             } else {
                 subscribePopup.setVisibility(View.GONE);
-            }
+            }*/
             if (this.user.isPrimaryAccount()) {
                 btnSetPrimaryAccount.setVisibility(View.INVISIBLE);
                 llManageBtns.setVisibility(View.VISIBLE);
@@ -217,7 +252,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
     @Override
     public void onResume() {
         super.onResume();
-        subscribe();
+        //subscribe();
     }
 
     @Override
@@ -243,6 +278,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                 moveToNotificationSettingsPage();
                 break;
             case R.id.btnSetPrimaryAccount:
+                showProgress(true);
                 setPrimaryAccount();
                 break;
             case R.id.btnManageConsumption:
@@ -260,12 +296,9 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
 
     private void setPrimaryAccount() {
         if (selectedAccount != null) {
-            selectedAccount.setPrimaryAccount(true);
-            dashboardViewModel.updateAccount(selectedAccount);
-            user.setPrimaryAccount(true);
-            loginViewModel.update(user);
+            dashboardViewModel.setPrimaryAccountInServer(user, selectedAccount);
         }
-        showPrimaryAccountPopup();
+
     }
 
     private void showPrimaryAccountPopup() {
@@ -281,7 +314,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
         if (accounts != null && accounts.size() > 0) {
             Intent intent = new Intent(getActivity(), NotificationSettingsActivity.class);
             intent.putExtra("isComingFromPopup", true);
-            intent.putExtra("account", accounts.get(0));
+            intent.putExtra("account", (Serializable) selectedAccount);
             getActivity().startActivity(intent);
         }
     }
@@ -304,5 +337,13 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
 
     public interface OnFragmentInteractionListener {
         public void onFragmentInteraction(String title);
+    }
+
+    public void showProgress(boolean isProgress) {
+        if (isProgress) {
+            loader.setVisibility(View.VISIBLE);
+        } else {
+            loader.setVisibility(View.GONE);
+        }
     }
 }
