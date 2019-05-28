@@ -47,7 +47,7 @@ public class FragmentUtils {
                 fragmentTransaction.replace(viewId, newFragment, fragmentTag).commitAllowingStateLoss();
                 break;
             case 8:
-                newFragment = MMCQuestionsFragment.newInstance();
+                newFragment = MMCQuestionsFragment.newInstance((Account) object);
                 fragmentTransaction.replace(viewId, newFragment, fragmentTag).commitAllowingStateLoss();
                 break;
             default:

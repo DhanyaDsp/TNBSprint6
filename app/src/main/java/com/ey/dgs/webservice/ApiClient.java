@@ -10,6 +10,7 @@ import com.ey.dgs.api_response.PrimaryAccountResponse;
 import com.ey.dgs.api_response.UserDetailResponse;
 import com.ey.dgs.model.Account;
 import com.ey.dgs.model.AccountSettings;
+import com.ey.dgs.model.AnswerRequest;
 import com.ey.dgs.model.BillingPeriodReqest;
 import com.ey.dgs.model.NotificationSettingsRequest;
 import com.ey.dgs.model.SetPrimaryAccountRequest;
@@ -37,6 +38,7 @@ public class ApiClient {
     public static int REQUEST_CODE_SET_PRIMARY_ACCOUNT = 105;
     public static int REQUEST_CODE_GET_QUESTIONS = 106;
     public static int REQUEST_CODE_GET_BILLING_HISTORY = 107;
+    public static int REQUEST_CODE_ANSWER_QUESTIONS = 108;
 
     public static Retrofit getClient() {
         return new Retrofit.Builder()
@@ -170,8 +172,12 @@ public class ApiClient {
             @Override
             public void onResponse(Call<PrimaryAccountResponse> call, Response<PrimaryAccountResponse> response) {
                 PrimaryAccountResponse primaryAccountResponse = response.body();
-                if (primaryAccountResponse.isSuccess()) {
-                    callback.onSuccess(REQUEST_CODE_SET_PRIMARY_ACCOUNT, account, response.code());
+                if (primaryAccountResponse != null) {
+                    if (primaryAccountResponse.isSuccess()) {
+                        callback.onSuccess(REQUEST_CODE_SET_PRIMARY_ACCOUNT, account, response.code());
+                    } else {
+                        callback.onFailure(REQUEST_CODE_SET_PRIMARY_ACCOUNT, "Failed to Set Primary Account", response.code());
+                    }
                 } else {
                     callback.onFailure(REQUEST_CODE_SET_PRIMARY_ACCOUNT, "Failed to Set Primary Account", response.code());
                 }
@@ -223,7 +229,7 @@ public class ApiClient {
                     if (apiResponse.isSuccess()) {
                         callback.onSuccess(REQUEST_CODE_UPDATE_ACCOUNT_DETAILS, notificationSettingsRequest, response.code());
                     } else {
-                        callback.onSuccess(REQUEST_CODE_UPDATE_ACCOUNT_DETAILS, "Failed to update Account Settings", response.code());
+                        callback.onFailure(REQUEST_CODE_UPDATE_ACCOUNT_DETAILS, "Failed to update Account Settings", response.code());
                     }
                 } else {
                     callback.onFailure(REQUEST_CODE_UPDATE_ACCOUNT_DETAILS, "Failed to update Account Settings", response.code());
@@ -246,23 +252,28 @@ public class ApiClient {
             public void onResponse(Call<GetQuestionsResponse> call, Response<GetQuestionsResponse> response) {
                 GetQuestionsResponse getQuestionsResponse = response.body();
                 if (getQuestionsResponse != null) {
-                    callback.onSuccess(REQUEST_CODE_GET_ACCOUNT_DETAILS, getQuestionsResponse, response.code());
+                    if (getQuestionsResponse.isSuccess()) {
+                        callback.onSuccess(REQUEST_CODE_GET_QUESTIONS, getQuestionsResponse, response.code());
+                    } else {
+                        getQuestionsResponse = new GetQuestionsResponse();
+                        callback.onFailure(REQUEST_CODE_GET_QUESTIONS, getQuestionsResponse.getMessage(), response.code());
+                    }
                 } else {
                     getQuestionsResponse = new GetQuestionsResponse();
-                    callback.onFailure(REQUEST_CODE_GET_ACCOUNT_DETAILS, getQuestionsResponse, response.code());
+                    callback.onFailure(REQUEST_CODE_GET_QUESTIONS, "Failed to load questions", response.code());
                 }
-
             }
 
             @Override
             public void onFailure(Call<GetQuestionsResponse> call, Throwable t) {
                 GetQuestionsResponse getQuestionsResponse = new GetQuestionsResponse();
-                callback.onFailure(REQUEST_CODE_GET_ACCOUNT_DETAILS, getQuestionsResponse, 0);
+                callback.onFailure(REQUEST_CODE_GET_QUESTIONS, "Failed to load questions", 0);
             }
         });
     }
 
-    public void getBillingHistoryFromServer(String token, Account account, String userName, APICallback callback) {
+    public void getBillingHistoryFromServer(String token, Account account, String
+            userName, APICallback callback) {
         ApiInterface apiService = ApiClient.getBillingHistoryClient().create(ApiInterface.class);
         BillingPeriodReqest billingPeriodReqest = new BillingPeriodReqest(account.getAccountNumber(), 1);
         Call<BillingDetailsResponse> call = apiService.getBillingHistory(token, billingPeriodReqest);
@@ -287,4 +298,30 @@ public class ApiClient {
             }
         });
     }
+
+    public void answerQuestion(String token, AnswerRequest answerRequest, APICallback callback) {
+        ApiInterface apiService = ApiClient.getRawTextClient().create(ApiInterface.class);
+        Call<APIResponse> call = apiService.answerQuestions(token, answerRequest);
+        call.enqueue(new Callback<APIResponse>() {
+            @Override
+            public void onResponse(Call<APIResponse> call, Response<APIResponse> response) {
+                APIResponse apiResponse = response.body();
+                if (apiResponse != null) {
+                    if (apiResponse.isSuccess()) {
+                        callback.onSuccess(REQUEST_CODE_ANSWER_QUESTIONS, apiResponse, response.code());
+                    } else {
+                        callback.onFailure(REQUEST_CODE_ANSWER_QUESTIONS, "Failed to anwer this question", response.code());
+                    }
+                } else {
+                    callback.onFailure(REQUEST_CODE_ANSWER_QUESTIONS, "Failed to anwer this question", response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<APIResponse> call, Throwable t) {
+                callback.onFailure(REQUEST_CODE_ANSWER_QUESTIONS, "Failed to update Account Settings", 0);
+            }
+        });
+    }
+
 }

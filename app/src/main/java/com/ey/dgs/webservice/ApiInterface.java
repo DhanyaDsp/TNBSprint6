@@ -9,6 +9,7 @@ import com.ey.dgs.api_response.LoginResponse;
 import com.ey.dgs.api_response.PrimaryAccountResponse;
 import com.ey.dgs.api_response.UserDetailResponse;
 import com.ey.dgs.model.AccountSettings;
+import com.ey.dgs.model.AnswerRequest;
 import com.ey.dgs.model.BillingPeriodReqest;
 import com.ey.dgs.model.NotificationSettingsRequest;
 import com.ey.dgs.model.SetPrimaryAccountRequest;
@@ -51,7 +52,10 @@ public interface ApiInterface {
     @POST("AccountDetails")
     Call<APIResponse> updateAccountSettings(@Header("Authorization") String token, @Body NotificationSettingsRequest notificationSettingsRequest);
 
-    @GET("Questionnaire")
+    @POST("Questionaire")
+    Call<APIResponse> answerQuestions(@Header("Authorization") String token,@Body AnswerRequest answerRequest);
+
+    @GET("Questionaire")
     Call<GetQuestionsResponse> getQuestions(@Header("Authorization") String token, @Query("UserName") String UserName, @Query("AccountNumber") String AccountNumber);
 
     @POST("BillingDetails")

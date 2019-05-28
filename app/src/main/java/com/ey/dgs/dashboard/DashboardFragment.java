@@ -47,6 +47,8 @@ import static com.ey.dgs.utils.FragmentUtils.INDEX_MY_ACCOUNT;
 
 public class DashboardFragment extends Fragment implements View.OnClickListener, ViewPager.OnPageChangeListener {
 
+    private static final int REQUEST_CODE_SET_THRESHOLD = 101;
+    public static boolean IS_THRESHOLD_SET = false;
     private View rootView;
     private RecyclerView rvLeaves;
     private LinearLayoutManager rvLayoutManager;
@@ -168,6 +170,9 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                         //user.setPrimaryAccount(true);
                     }
                 }
+                if (selectedAccount == null) {
+                    selectedAccount = accounts.get(0);
+                }
 
                 loginFragmentBinding.setSelectedAccount(selectedAccount);
                 dashboardViewModel.setSelectedAccount(selectedAccount);
@@ -193,6 +198,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                     }
                 }
                 showProgress(false);
+                user.setPrimaryAccount(true);
                 onUserDetailsLoaded(user);
                 showPrimaryAccountPopup();
             }
@@ -200,8 +206,10 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
     }
 
     private void getBillingDetailsForAccount(ArrayList<Account> accounts) {
-        for (Account account : accounts) {
-            dashboardViewModel.getBillingHistoryFromServer(user, account);
+        if (user != null) {
+            for (Account account : accounts) {
+                dashboardViewModel.getBillingHistoryFromServer(user, account);
+            }
         }
     }
 
@@ -220,6 +228,9 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                 ivBanner.setVisibility(View.INVISIBLE);
                 rlChart.setVisibility(View.VISIBLE);
                 vpAccounts.setVisibility(View.GONE);
+                if (!user.isMmcAlertFlag()) {
+                    DialogHelper.hidePopup();
+                }
             } else {
                 btnSetPrimaryAccount.setVisibility(View.VISIBLE);
                 llManageBtns.setVisibility(View.INVISIBLE);
@@ -252,6 +263,16 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
     @Override
     public void onResume() {
         super.onResume();
+
+        if (IS_THRESHOLD_SET) {
+            loginViewModel.getUserDetail(appPreferences.getUser_id());
+            loginViewModel.getUserDetail().observe(getViewLifecycleOwner(), user -> {
+                this.user = user;
+                this.user.setPrimaryAccount(true);
+                onUserDetailsLoaded(this.user);
+            });
+            IS_THRESHOLD_SET = false;
+        }
         //subscribe();
     }
 
@@ -278,7 +299,6 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                 moveToNotificationSettingsPage();
                 break;
             case R.id.btnSetPrimaryAccount:
-                showProgress(true);
                 setPrimaryAccount();
                 break;
             case R.id.btnManageConsumption:
@@ -291,18 +311,24 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
 
     private void showQuestionsFragment() {
         Intent intent = new Intent(getActivity(), QuestionActivity.class);
+        intent.putExtra("account", (Serializable) selectedAccount);
+        intent.putExtra("user", (Serializable) user);
         startActivity(intent);
     }
 
     private void setPrimaryAccount() {
         if (selectedAccount != null) {
-            dashboardViewModel.setPrimaryAccountInServer(user, selectedAccount);
+            //dashboardViewModel.setPrimaryAccountInServer(user, selectedAccount);
+            /*Demo*/
+            user.setPrimaryAccount(true);
+            selectedAccount.setPrimaryAccount(true);
+            showPrimaryAccountPopup();
         }
 
     }
 
     private void showPrimaryAccountPopup() {
-        new DialogHelper().showPrimaryAccountDialog(selectedAccount, getActivity(), new View.OnClickListener() {
+        DialogHelper.showPrimaryAccountDialog(selectedAccount, getActivity(), new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 moveToNotificationSettingsPage();
@@ -315,7 +341,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
             Intent intent = new Intent(getActivity(), NotificationSettingsActivity.class);
             intent.putExtra("isComingFromPopup", true);
             intent.putExtra("account", (Serializable) selectedAccount);
-            getActivity().startActivity(intent);
+            getActivity().startActivityForResult(intent, REQUEST_CODE_SET_THRESHOLD);
         }
     }
 

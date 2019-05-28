@@ -6,17 +6,19 @@ public class Question {
     public static int TYPE_DROPDOWN = 2;
     public static int TYPE_MULTI_CHOICE = 3;
 
-    private String questionId;
+    private int questionId;
 
     private String question;
 
     private String response;
 
-    public String getQuestionId() {
+    private String type;
+
+    public int getQuestionId() {
         return questionId;
     }
 
-    public void setQuestionId(String questionId) {
+    public void setQuestionId(int questionId) {
         this.questionId = questionId;
     }
 
@@ -34,6 +36,14 @@ public class Question {
 
     public void setResponse(String response) {
         this.response = response;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     @Override

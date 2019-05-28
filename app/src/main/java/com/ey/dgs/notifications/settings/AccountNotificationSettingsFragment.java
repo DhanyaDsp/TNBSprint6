@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import com.ey.dgs.R;
 import com.ey.dgs.adapters.NotificationSettingsAdapter;
 import com.ey.dgs.authentication.LoginViewModel;
+import com.ey.dgs.dashboard.DashboardFragment;
 import com.ey.dgs.dashboard.myaccount.AccountSettingsViewModel;
 import com.ey.dgs.databinding.FragmentAccountNotificationSettingsBinding;
 import com.ey.dgs.model.Account;
@@ -111,6 +112,7 @@ public class AccountNotificationSettingsFragment extends Fragment {
                 showProgress(false);
                 if (activity != null) {
                     Utils.hideKeyBoard(activity);
+                    DashboardFragment.IS_THRESHOLD_SET = true;
                     ((NotificationSettingsActivity) activity).onBackPressed();
                 }
             }

@@ -10,11 +10,14 @@ import android.view.View;
 
 import com.ey.dgs.HomeActivity;
 import com.ey.dgs.R;
+import com.ey.dgs.model.Account;
 import com.ey.dgs.utils.FragmentUtils;
 
 import static com.ey.dgs.utils.FragmentUtils.INDEX_QUESTIONS_FRAGMENT;
 
 public class QuestionActivity extends AppCompatActivity {
+
+    Account account;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +28,7 @@ public class QuestionActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("");
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        account = (Account) getIntent().getSerializableExtra("account");
         showQuestionsFragment();
 
     }
@@ -40,7 +44,7 @@ public class QuestionActivity extends AppCompatActivity {
 
     private void showQuestionsFragment() {
         FragmentUtils.newInstance(getSupportFragmentManager())
-                .replaceFragment(INDEX_QUESTIONS_FRAGMENT, null, MMCQuestionsFragment.class.getName(), R.id.flQuestions);
+                .replaceFragment(INDEX_QUESTIONS_FRAGMENT, account, MMCQuestionsFragment.class.getName(), R.id.flQuestions);
     }
 
 }

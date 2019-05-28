@@ -2,6 +2,7 @@ package com.ey.dgs.adapters;
 
 import android.content.Context;
 import android.support.v4.view.PagerAdapter;
+import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatTextView;
 import android.view.LayoutInflater;
@@ -34,6 +35,7 @@ public class QuestionsPagerAdapter extends PagerAdapter {
         LinearLayout llDropDown = layout.findViewById(R.id.llDropDown);
         AppCompatEditText etAnswer = layout.findViewById(R.id.etAnswer);
         LinearLayout llMultiChoice = layout.findViewById(R.id.llMultiChoice);
+        AppCompatButton btnNext = layout.findViewById(R.id.llMultiChoice);
         tvQuestion.setText(questions.get(position).getQuestion());
         /*if (question.getType() == Question.TYPE_TEXT) {
             etAnswer.setVisibility(View.VISIBLE);
