@@ -27,14 +27,21 @@ public class BarsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     BarChart barChart;
     ArrayList<ChartData> chartDatum;
     int parentLayoutWidth;
+    int parentLayoutHeight;
     boolean isSelectionRequired;
 
-    public BarsAdapter(BarChart barChart, Context context, ArrayList<ChartData> chartDatum, int parentLayoutWidth, boolean isSelectionRequired) {
+    float largestValWithBuffer = 0f;
+
+    public BarsAdapter(BarChart barChart, Context context, ArrayList<ChartData> chartDatum,
+                       int parentLayoutWidth, int parentLayoutHeight, boolean isSelectionRequired) {
         this.context = context;
         this.barChart = barChart;
         this.chartDatum = chartDatum;
         this.parentLayoutWidth = parentLayoutWidth;
+        this.parentLayoutHeight = parentLayoutHeight;
         this.isSelectionRequired = isSelectionRequired;
+
+        this.largestValWithBuffer = getLargestValWithBuffer();
     }
 
     public class BarsHolder extends RecyclerView.ViewHolder {
@@ -104,7 +111,7 @@ public class BarsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
 
         ViewGroup.LayoutParams layoutParams = barsHolder.bar_line_structure.getLayoutParams();
-        //layoutParams.height = 30;
+        layoutParams.height = Math.round(getBarHeight(chartDatum.get(position)));
         barsHolder.bar_line_structure.setLayoutParams(layoutParams);
 
         /*final Account account = this.accounts.get(position);
@@ -122,6 +129,21 @@ public class BarsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
                 break;
         }*/
+    }
+
+    private float getLargestValWithBuffer() {
+        float largestVal = 0f;
+        for(ChartData chartData: chartDatum) {
+            if(largestVal <= chartData.getVal()) {
+                largestVal = chartData.getVal();
+            }
+        }
+        largestVal += largestVal * 0.2f;
+        return largestVal;
+    }
+
+    private float getBarHeight(ChartData chartData) {
+        return (chartData.getVal()*parentLayoutHeight/largestValWithBuffer);
     }
 
     @Override

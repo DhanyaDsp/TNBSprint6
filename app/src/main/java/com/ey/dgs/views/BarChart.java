@@ -78,10 +78,10 @@ public class BarChart extends LinearLayout {
         bars_container.getViewTreeObserver().addOnGlobalLayoutListener(new GlobalViewListenerClass());
     }
 
-    public void fillChartBarData(int parentLayoutWidth) {
+    public void fillChartBarData(int parentLayoutWidth, int parentLayoutHeight) {
         RecyclerView barsRecylerView = view.findViewById(R.id.bars);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
-        BarsAdapter barsAdapter = new BarsAdapter(this, context, chartDatum, parentLayoutWidth, isSelectionRequired);
+        BarsAdapter barsAdapter = new BarsAdapter(this, context, chartDatum, parentLayoutWidth, parentLayoutHeight, isSelectionRequired);
         barsRecylerView.setLayoutManager(layoutManager);
         barsRecylerView.setAdapter(barsAdapter);
         barsAdapter.notifyDataSetChanged();
@@ -119,7 +119,7 @@ public class BarChart extends LinearLayout {
             View vw = findViewById(R.id.bars_container);
             if(!widthCreated) {
                 layoutWidth = vw.getWidth();
-                fillChartBarData(vw.getWidth());
+                fillChartBarData(vw.getWidth(), vw.getHeight());
             }
             widthCreated = (vw.getWidth() > 0);
         }
