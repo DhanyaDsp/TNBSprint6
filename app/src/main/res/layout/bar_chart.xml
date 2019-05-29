@@ -28,7 +28,8 @@
 
             <android.support.v7.widget.AppCompatTextView
                 android:fontFamily="@font/museosans_500"
-                android:text="Value"
+                android:text=""
+                android:visibility="gone"
                 android:textColor="@android:color/white"
                 android:id="@+id/highLightedValue"
                 android:layout_width="wrap_content"

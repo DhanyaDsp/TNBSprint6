@@ -5,12 +5,14 @@ import com.ey.dgs.adapters.chart.BarsAdapter;
 import com.ey.dgs.adapters.chart.LegendsAdapter;
 import com.ey.dgs.model.chart.ChartData;
 
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +33,8 @@ public class BarChart extends LinearLayout {
     Context context;
     View view;
     AppCompatTextView titleText;
+    AppCompatTextView highLightedValue;
+    boolean isSelectionRequired;
 
     public BarChart(Context context) {
         super(context);
@@ -53,6 +57,11 @@ public class BarChart extends LinearLayout {
         return this;
     }
 
+    public BarChart setSelectionRequired(boolean isSelectionRequired) {
+        this.isSelectionRequired = isSelectionRequired;
+        return this;
+    }
+
     private void chartEntryPoint() {
         setOrientation(LinearLayout.VERTICAL);
 
@@ -63,34 +72,53 @@ public class BarChart extends LinearLayout {
         LinearLayout bars_container = view.findViewById(R.id.bars_container);
         titleText = view.findViewById(R.id.titleText);
 
-        bars_container.getViewTreeObserver().addOnGlobalLayoutListener(new GlobalViewListenerClass());
+        highLightedValue = view.findViewById(R.id.highLightedValue);
 
+        removeHighLightedValue();
+        bars_container.getViewTreeObserver().addOnGlobalLayoutListener(new GlobalViewListenerClass());
     }
 
     public void fillChartBarData(int parentLayoutWidth) {
         RecyclerView barsRecylerView = view.findViewById(R.id.bars);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
-        BarsAdapter barsAdapter = new BarsAdapter(context, chartDatum, parentLayoutWidth);
+        BarsAdapter barsAdapter = new BarsAdapter(this, context, chartDatum, parentLayoutWidth, isSelectionRequired);
         barsRecylerView.setLayoutManager(layoutManager);
         barsRecylerView.setAdapter(barsAdapter);
         barsAdapter.notifyDataSetChanged();
 
-        RecyclerView legendsRecylerView = view.findViewById(R.id.xmarks);
+        RecyclerView xAxisRecylerView = view.findViewById(R.id.xmarks);
         RecyclerView.LayoutManager legendlayoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
-        LegendsAdapter legendsAdapter = new LegendsAdapter(context, chartDatum, parentLayoutWidth);
-        legendsRecylerView.setLayoutManager(legendlayoutManager);
-        legendsRecylerView.setAdapter(legendsAdapter);
-        legendsAdapter.notifyDataSetChanged();
+        LegendsAdapter xAxisAdapter = new LegendsAdapter(context, chartDatum, parentLayoutWidth);
+        xAxisRecylerView.setLayoutManager(legendlayoutManager);
+        xAxisRecylerView.setAdapter(xAxisAdapter);
+        xAxisAdapter.notifyDataSetChanged();
+    }
 
+    int layoutWidth = 0;
+    public void setHighLightedValue(String highLightedValue, int position) {
+        this.highLightedValue.setVisibility(View.VISIBLE);
+        this.highLightedValue.setText(highLightedValue);
+        float xVal = layoutWidth*position/chartDatum.size();
+        //this.highLightedValue.setX(xVal);
+        this.highLightedValue.setWidth(layoutWidth/chartDatum.size());
+        this.highLightedValue.setGravity(Gravity.CENTER);
 
+        final ObjectAnimator oa = ObjectAnimator.ofFloat(this.highLightedValue, "x", xVal);
+        oa.setDuration(500);
+        oa.start();
+    }
+
+    public void removeHighLightedValue() {
+        this.highLightedValue.setVisibility(View.GONE);
     }
 
     boolean widthCreated = false;
     class GlobalViewListenerClass implements ViewTreeObserver.OnGlobalLayoutListener {
         @Override
         public void onGlobalLayout() {
-            View vw = (View) findViewById(R.id.bars_container);
+            View vw = findViewById(R.id.bars_container);
             if(!widthCreated) {
+                layoutWidth = vw.getWidth();
                 fillChartBarData(vw.getWidth());
             }
             widthCreated = (vw.getWidth() > 0);

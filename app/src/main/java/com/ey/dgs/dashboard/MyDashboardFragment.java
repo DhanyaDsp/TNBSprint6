@@ -100,11 +100,11 @@ public class MyDashboardFragment extends Fragment implements View.OnClickListene
         for (int i = 0; i < 6; i++) {
             chartData = new ChartData();
             chartData.setTag("LB" + (i + 1));
-            chartData.setVal(20.0f);
+            chartData.setVal((float)(i+1)*3);
             chartDatum.add(chartData);
         }
 
-        barChart.setData(chartDatum).setTitle("Chart_Title");
+        barChart.setData(chartDatum).setTitle("4 Apr - 24 Mar").setSelectionRequired(true);
     }
 
     @Override

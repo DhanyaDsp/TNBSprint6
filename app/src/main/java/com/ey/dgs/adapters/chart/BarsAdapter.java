@@ -16,6 +16,7 @@ import com.ey.dgs.dashboard.DashboardFragment;
 import com.ey.dgs.model.Account;
 import com.ey.dgs.model.chart.ChartData;
 import com.ey.dgs.utils.Utils;
+import com.ey.dgs.views.BarChart;
 
 import java.util.ArrayList;
 
@@ -23,13 +24,17 @@ import java.util.ArrayList;
 public class BarsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     Context context;
+    BarChart barChart;
     ArrayList<ChartData> chartDatum;
     int parentLayoutWidth;
+    boolean isSelectionRequired;
 
-    public BarsAdapter(Context context, ArrayList<ChartData> chartDatum, int parentLayoutWidth) {
+    public BarsAdapter(BarChart barChart, Context context, ArrayList<ChartData> chartDatum, int parentLayoutWidth, boolean isSelectionRequired) {
         this.context = context;
+        this.barChart = barChart;
         this.chartDatum = chartDatum;
         this.parentLayoutWidth = parentLayoutWidth;
+        this.isSelectionRequired = isSelectionRequired;
     }
 
     public class BarsHolder extends RecyclerView.ViewHolder {
@@ -60,28 +65,47 @@ public class BarsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 }
                 i++;
             }
+            enableBarAndAssociated(chartDatum.get(position), position);
+            // barChart.setHighLightedValue(chartDatum.get(position).getVal() + "");
+        }
+        else {
+            // This means, a currently selected bar is being unselected
+            barChart.removeHighLightedValue();
         }
 
         chartDatum.get(position).setIsSelected(!isCurrentlySelected);
         notifyDataSetChanged();
     }
 
+    public void enableBarAndAssociated(ChartData chartData, int position) {
+        barChart.setHighLightedValue(chartData.getVal() + "", position);
+    }
+
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         BarsHolder barsHolder = (BarsHolder) holder;
-        barsHolder.bar_line.setLayoutParams(new LinearLayout.LayoutParams(parentLayoutWidth/chartDatum.size(), LinearLayout.LayoutParams.MATCH_PARENT));
+        RecyclerView.LayoutParams lineHolderParams = (RecyclerView.LayoutParams) barsHolder.bar_line.getLayoutParams();
+        lineHolderParams.width = parentLayoutWidth/chartDatum.size();
+        barsHolder.bar_line.setLayoutParams(lineHolderParams);
+                //new LinearLayout.LayoutParams(parentLayoutWidth/chartDatum.size(), LinearLayout.LayoutParams.MATCH_PARENT));
 
         boolean isSelected = chartDatum.get(position).getIsSelected();
 
         barsHolder.bar_line_structure.setBackground(context.getResources().getDrawable(
                 isSelected?R.drawable.bg_chart_bar_selected: R.drawable.bg_chart_bar_default));
-        barsHolder.bar_line.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                toggleSelection(position);
-            }
-        });
 
+        if(isSelectionRequired) {
+            barsHolder.bar_line.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    toggleSelection(position);
+                }
+            });
+        }
+
+        ViewGroup.LayoutParams layoutParams = barsHolder.bar_line_structure.getLayoutParams();
+        //layoutParams.height = 30;
+        barsHolder.bar_line_structure.setLayoutParams(layoutParams);
 
         /*final Account account = this.accounts.get(position);
         switch (holder.getItemViewType()) {
