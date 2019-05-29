@@ -6,7 +6,7 @@
     android:layout_weight="1"
     android:layout_width="0dp">
     <View
-        android:layout_width="20dp"
+        android:layout_width="18dp"
         android:layout_height="match_parent"
         android:layout_gravity="center_horizontal"
         android:background="@drawable/bg_chart_bar_selected"  />

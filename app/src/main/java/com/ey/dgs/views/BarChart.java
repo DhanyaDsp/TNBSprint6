@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -34,7 +35,12 @@ public class BarChart extends LinearLayout {
     View view;
     AppCompatTextView titleText;
     AppCompatTextView highLightedValue;
+    AppCompatTextView thresholdText;
+    LinearLayout thresholdHolder;
     boolean isSelectionRequired;
+    boolean isThresholdRequired;
+    float thresholdValue = 0f;
+    String unit = "RM";
 
     public BarChart(Context context) {
         super(context);
@@ -62,6 +68,17 @@ public class BarChart extends LinearLayout {
         return this;
     }
 
+    public BarChart setBarUnit(String unit) {
+        this.unit = unit;
+        return this;
+    }
+
+    public BarChart setThreshold(boolean isThresholdRequired, float thresholdValue) {
+        this.isThresholdRequired = isThresholdRequired;
+        this.thresholdValue = thresholdValue;
+        return this;
+    }
+
     private void chartEntryPoint() {
         setOrientation(LinearLayout.VERTICAL);
 
@@ -69,11 +86,15 @@ public class BarChart extends LinearLayout {
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         view = inflater.inflate(R.layout.bar_chart, this, true);
 
-        LinearLayout bars_container = view.findViewById(R.id.bars_container);
+        RelativeLayout bars_container = view.findViewById(R.id.bars_container);
         titleText = view.findViewById(R.id.titleText);
 
         highLightedValue = view.findViewById(R.id.highLightedValue);
 
+        thresholdHolder = view.findViewById(R.id.thresholdHolder);
+        thresholdText = view.findViewById(R.id.thresholdText);
+
+        thresholdHolder.setVisibility(View.GONE);
         removeHighLightedValue();
         bars_container.getViewTreeObserver().addOnGlobalLayoutListener(new GlobalViewListenerClass());
     }
@@ -92,12 +113,27 @@ public class BarChart extends LinearLayout {
         xAxisRecylerView.setLayoutManager(legendlayoutManager);
         xAxisRecylerView.setAdapter(xAxisAdapter);
         xAxisAdapter.notifyDataSetChanged();
+
+        if(isThresholdRequired) {
+            thresholdHolder.setVisibility(View.VISIBLE);
+            thresholdText.setText(unit + " " + this.thresholdValue);
+            //thresholdHolder.setY(40);
+
+            float yVal = 40;
+            final ObjectAnimator oa = ObjectAnimator.ofFloat(this.thresholdHolder, "y", yVal);
+            oa.setDuration(500);
+            oa.start();
+
+        }
+        else {
+            thresholdHolder.setVisibility(View.GONE);
+        }
     }
 
     int layoutWidth = 0;
     public void setHighLightedValue(String highLightedValue, int position) {
         this.highLightedValue.setVisibility(View.VISIBLE);
-        this.highLightedValue.setText(highLightedValue);
+        this.highLightedValue.setText(unit + " " + highLightedValue);
         float xVal = layoutWidth*position/chartDatum.size();
         //this.highLightedValue.setX(xVal);
         this.highLightedValue.setWidth(layoutWidth/chartDatum.size());
@@ -107,6 +143,8 @@ public class BarChart extends LinearLayout {
         oa.setDuration(500);
         oa.start();
     }
+
+
 
     public void removeHighLightedValue() {
         this.highLightedValue.setVisibility(View.GONE);

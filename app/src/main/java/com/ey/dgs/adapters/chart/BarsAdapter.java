@@ -1,5 +1,6 @@
 package com.ey.dgs.adapters.chart;
 
+import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.support.v4.app.Fragment;
@@ -138,7 +139,7 @@ public class BarsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 largestVal = chartData.getVal();
             }
         }
-        largestVal += largestVal * 0.2f;
+        largestVal += largestVal * 0.1f;
         return largestVal;
     }
 

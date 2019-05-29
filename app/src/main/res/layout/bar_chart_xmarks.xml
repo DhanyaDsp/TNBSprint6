@@ -3,6 +3,7 @@
     android:fontFamily="@font/museosans_500"
     android:id="@+id/x_txt_label"
     android:text="MON"
+    android:textSize="10dp"
     android:layout_weight="1"
     android:textColor="#4dffffff"
     android:gravity="center"

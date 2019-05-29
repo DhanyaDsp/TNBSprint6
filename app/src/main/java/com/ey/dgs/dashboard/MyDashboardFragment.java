@@ -97,14 +97,18 @@ public class MyDashboardFragment extends Fragment implements View.OnClickListene
         ArrayList<ChartData> chartDatum = new ArrayList<>();
         ChartData chartData;
 
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < 8f; i++) {
             chartData = new ChartData();
             chartData.setTag("LB" + (i + 1));
             chartData.setVal((float)(i+1)*3);
             chartDatum.add(chartData);
         }
 
-        barChart.setData(chartDatum).setTitle("4 Apr - 24 Mar").setSelectionRequired(true);
+        barChart.setData(chartDatum)
+                .setTitle("4 Apr - 24 Mar")
+                .setBarUnit("RM")
+                .setThreshold(true, 11.0f)
+                .setSelectionRequired(true);
     }
 
     @Override
