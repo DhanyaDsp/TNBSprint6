@@ -10,12 +10,14 @@ import android.view.View;
 
 import com.ey.dgs.HomeActivity;
 import com.ey.dgs.R;
+import com.ey.dgs.dashboard.MyDashboardFragment;
 import com.ey.dgs.model.Account;
 import com.ey.dgs.utils.FragmentUtils;
 
+import static com.ey.dgs.utils.FragmentUtils.INDEX_MY_DASHBOARD_FRAGMENT;
 import static com.ey.dgs.utils.FragmentUtils.INDEX_QUESTIONS_FRAGMENT;
 
-public class QuestionActivity extends AppCompatActivity {
+public class QuestionActivity extends AppCompatActivity implements MyDashboardFragment.OnFragmentInteractionListener {
 
     Account account;
 
@@ -44,7 +46,11 @@ public class QuestionActivity extends AppCompatActivity {
 
     private void showQuestionsFragment() {
         FragmentUtils.newInstance(getSupportFragmentManager())
-                .replaceFragment(INDEX_QUESTIONS_FRAGMENT, account, MMCQuestionsFragment.class.getName(), R.id.flQuestions);
+                .replaceFragment(INDEX_MY_DASHBOARD_FRAGMENT, account, MyDashboardFragment.class.getName(), R.id.flQuestions);
     }
 
+    @Override
+    public void onFragmentInteraction(String title) {
+
+    }
 }

@@ -136,6 +136,7 @@ public class DatabaseClient {
                 DatabaseClient.getInstance(mCtx).getAppDatabase()
                         .accountDao()
                         .clear();
+
                 for (Account account : accounts) {
                     DatabaseClient.getInstance(mCtx).getAppDatabase()
                             .accountDao()
@@ -201,6 +202,29 @@ public class DatabaseClient {
         }
 
         GetAccountsTask st = new GetAccountsTask();
+        st.execute();
+    }
+
+    public void getPrimaryAccount(int requestCode, DatabaseCallback databaseCallback) {
+
+        class GetPrimaryAccountTask extends AsyncTask<Void, Void, Account> {
+
+            @Override
+            protected Account doInBackground(Void... voids) {
+
+                return DatabaseClient.getInstance(mCtx).getAppDatabase()
+                        .accountDao()
+                        .getPrimaryAccount(true);
+            }
+
+            @Override
+            protected void onPostExecute(Account account) {
+                super.onPostExecute(account);
+                databaseCallback.onReceived(account, requestCode, 0);
+            }
+        }
+
+        GetPrimaryAccountTask st = new GetPrimaryAccountTask();
         st.execute();
     }
 

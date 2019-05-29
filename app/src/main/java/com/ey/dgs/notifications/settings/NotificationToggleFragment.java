@@ -77,6 +77,7 @@ public class NotificationToggleFragment extends Fragment {
         rvAccounts.setAdapter(accountAdapter);
         mViewModel = ViewModelProviders.of(this).get(DashboardViewModel.class);
         loginViewModel = ViewModelProviders.of(this).get(LoginViewModel.class);
+        loginViewModel.setContext(getActivity());
         loginViewModel.getUserDetail(appPreferences.getUser_id());
         loginViewModel.getUserDetail().observeForever(user -> {
             this.user = user;

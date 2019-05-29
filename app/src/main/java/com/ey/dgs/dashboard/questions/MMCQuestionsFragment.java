@@ -11,6 +11,8 @@ import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatTextView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -57,6 +59,13 @@ public class MMCQuestionsFragment extends Fragment {
         super.onCreate(savedInstanceState);
         account = (Account) getArguments().getSerializable("account");
         appPreferences = new AppPreferences(getActivity());
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        menu.clear();
     }
 
     @Override
@@ -81,18 +90,22 @@ public class MMCQuestionsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 int position = vpQuestions.getCurrentItem();
-                View currentQuestionView = vpQuestions.getChildAt(position);
-                AppCompatEditText etAnswer = currentQuestionView.findViewById(R.id.etAnswer);
-                String answer = etAnswer.getText().toString();
-                AnswerRequest answerRequest = new AnswerRequest();
-                answerRequest.setUserName(account.getAccountNumber());
-                answerRequest.setUserName(user.getEmail());
-                answerRequest.setResponse(answer);
-                answerRequest.setQuestionId(questions.get(position).getQuestionId());
-                if (!TextUtils.isEmpty(answer)) {
-                    mViewModel.answerQuestion(answerRequest);
+                if (position < questions.size() - 1) {
+                    View currentQuestionView = vpQuestions.getChildAt(position);
+                    AppCompatEditText etAnswer = currentQuestionView.findViewById(R.id.etAnswer);
+                    String answer = etAnswer.getText().toString();
+                    AnswerRequest answerRequest = new AnswerRequest();
+                    answerRequest.setUserName(account.getAccountNumber());
+                    answerRequest.setUserName(user.getEmail());
+                    answerRequest.setResponse(answer);
+                    answerRequest.setQuestionId(questions.get(position).getQuestionId());
+                    if (!TextUtils.isEmpty(answer)) {
+                        mViewModel.answerQuestion(answerRequest);
+                    } else {
+                        Utils.showToast(getActivity(), "Please fill the answer");
+                    }
                 } else {
-                    Utils.showToast(getActivity(), "Please fill the answer");
+                    getActivity().onBackPressed();
                 }
             }
         });
@@ -108,8 +121,9 @@ public class MMCQuestionsFragment extends Fragment {
         loginViewModel.getUserDetail(appPreferences.getUser_id());
         loginViewModel.getUserDetail().observe(getViewLifecycleOwner(), user -> {
             this.user = user;
+            mViewModel.loadQuestionsFromServer(account.getAccountNumber(), this.user.getEmail());
+
         });
-        mViewModel.loadQuestionsFromServer(account.getAccountNumber(), new User().getEmail());
         mViewModel.getLoaderData().observe(getViewLifecycleOwner(), loading -> {
             showProgress(loading);
         });

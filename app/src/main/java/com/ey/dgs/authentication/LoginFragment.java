@@ -16,20 +16,22 @@ import android.view.ViewGroup;
 import com.ey.dgs.HomeActivity;
 import com.ey.dgs.R;
 import com.ey.dgs.api_response.LoginResponse;
+import com.ey.dgs.dashboard.DashboardViewModel;
+import com.ey.dgs.dashboard.questions.QuestionActivity;
 import com.ey.dgs.databinding.LoginFragmentBinding;
 import com.ey.dgs.model.User;
 import com.ey.dgs.utils.AppPreferences;
-import com.ey.dgs.utils.NotificationHelper;
 import com.ey.dgs.utils.Utils;
 import com.ey.dgs.webservice.APICallback;
 import com.ey.dgs.webservice.ApiClient;
 
+import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Random;
 
 public class LoginFragment extends Fragment implements APICallback {
 
     private LoginViewModel loginViewModel;
+    private DashboardViewModel dashboardViewModel;
     LoginFragmentBinding loginFragmentBinding;
     User user = new User();
     ArrayList<User> users = new ArrayList<>();
@@ -62,6 +64,9 @@ public class LoginFragment extends Fragment implements APICallback {
     private void initSetup() {
         loginViewModel = ViewModelProviders.of(this).get(LoginViewModel.class);
         loginViewModel.setContext(getActivity());
+
+        dashboardViewModel = ViewModelProviders.of(this).get(DashboardViewModel.class);
+        dashboardViewModel.setContext(getActivity());
         appPreferences = new AppPreferences(getActivity());
     }
 
@@ -131,6 +136,20 @@ public class LoginFragment extends Fragment implements APICallback {
         getActivity().startActivity(intent);
     }
 
+    private void moveToMyDashboardPage() {
+        dashboardViewModel.getPrimaryAccountFromLocalDB();
+        dashboardViewModel.getPrimaryAccount().observe(getViewLifecycleOwner(), account -> {
+            if (account != null) {
+                getActivity().finish();
+                Intent intent = new Intent(getActivity(), QuestionActivity.class);
+                intent.putExtra("account", (Serializable) account);
+                getActivity().startActivity(intent);
+            } else {
+                Utils.showToast(getActivity(), "Primary Account not found");
+            }
+        });
+    }
+
     @Override
     public void onSuccess(int requestCode, Object obj, int code) {
         onProgress(requestCode, false);
@@ -138,7 +157,7 @@ public class LoginFragment extends Fragment implements APICallback {
         if (loginResponse.isSuccess()) {
             if (appPreferences.isLoginned()) {
                 loginViewModel.update(user);
-                moveToHomePage();
+                //moveToHomePage();
             } else {
                 if (user.isRememberMe()) {
                     user.setUserId(1);
@@ -146,9 +165,10 @@ public class LoginFragment extends Fragment implements APICallback {
                     appPreferences.setLoginned(true);
                     appPreferences.setUser_id(user.getUserId());
                 }
-                moveToHomePage();
+                //moveToHomePage();
             }
             appPreferences.setAuthToken(loginResponse.getToken());
+            moveToHomePage();
         }
     }
 

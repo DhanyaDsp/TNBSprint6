@@ -102,45 +102,6 @@
                     android:textSize="@dimen/text_size_medium1"
                     android:visibility="visible" />
 
-                <LinearLayout
-                    android:id="@+id/llManageBtns"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:layout_alignBottom="@+id/llBanner"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginBottom="@dimen/large_padding"
-                    android:orientation="horizontal"
-                    android:visibility="visible">
-
-                    <android.support.v7.widget.AppCompatButton
-                        android:id="@+id/btnManageConsumption"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/rounded_white"
-                        android:paddingLeft="@dimen/medium_padding"
-                        android:paddingRight="@dimen/medium_padding"
-                        android:text="@string/manage_consumptions"
-                        android:textAllCaps="false"
-                        android:textColor="@android:color/white"
-                        android:textSize="@dimen/text_size_medium1"
-                        android:visibility="visible" />
-
-                    <android.support.v7.widget.AppCompatButton
-                        android:id="@+id/btnSetPayBills"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_marginLeft="@dimen/small_padding"
-                        android:background="@drawable/rounded_white"
-                        android:paddingLeft="@dimen/medium_padding"
-                        android:paddingRight="@dimen/medium_padding"
-                        android:text="@string/pay_bills"
-                        android:textAllCaps="false"
-                        android:textColor="@android:color/white"
-                        android:textSize="@dimen/text_size_medium1"
-                        android:visibility="visible" />
-
-                </LinearLayout>
-
             </RelativeLayout>
 
             <android.support.v4.view.ViewPager
@@ -148,28 +109,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="200dp" />
 
-            <!--<android.support.design.widget.TabLayout
-                android:id="@+id/tabDots"
-                android:layout_alignParentBottom="true"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:tabBackground="@drawable/tab_selector"
-                app:tabGravity="center"
-                app:tabIndicatorHeight="0dp"/>-->
-
-            <RelativeLayout
-                android:id="@+id/rlChart"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:visibility="gone">
-
-                <com.ey.dgs.views.BarChart
-                    android:id="@+id/bar_chart"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginBottom="@dimen/large_padding"
-                    android:adjustViewBounds="true" />
-            </RelativeLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"

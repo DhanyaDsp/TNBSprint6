@@ -9,12 +9,12 @@ import com.ey.dgs.api_response.LoginResponse;
 import com.ey.dgs.api_response.PrimaryAccountResponse;
 import com.ey.dgs.api_response.UserDetailResponse;
 import com.ey.dgs.model.Account;
-import com.ey.dgs.model.AccountSettings;
 import com.ey.dgs.model.AnswerRequest;
 import com.ey.dgs.model.BillingPeriodReqest;
 import com.ey.dgs.model.NotificationSettingsRequest;
 import com.ey.dgs.model.SetPrimaryAccountRequest;
 import com.ey.dgs.model.User;
+import com.ey.dgs.utils.MockResponse;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -112,21 +112,25 @@ public class ApiClient {
             @Override
             public void onResponse(Call<UserDetailResponse> call, Response<UserDetailResponse> response) {
                 UserDetailResponse userDetailResponse = response.body();
+                /*MOCK RESPONSE*/
+                Gson gson = new Gson();
+                userDetailResponse = gson.fromJson(MockResponse.MOCK_USER_DETAILS_PRIMARY_NOT_SET, UserDetailResponse.class);
+                /*MOCK RESPONSE*/
                 if (userDetailResponse != null) {
                     if (userDetailResponse.getSuccess()) {
                         //setting local user data
-                        userDetailResponse.getUser().setPrimaryAccount(user.isPrimaryAccount());
+                        userDetailResponse.getUser().setPrimaryAccountSet(user.isPrimaryAccountSet());
                         userDetailResponse.getUser().setRememberMe(user.isRememberMe());
                         userDetailResponse.getUser().setUserId(user.getUserId());
                         callback.onSuccess(REQUEST_CODE_GET_USER, userDetailResponse, response.code());
                     } else {
-                        userDetailResponse.setMessage("Invalid Login");
-                        callback.onFailure(REQUEST_CODE_GET_USER, userDetailResponse, response.code());
+                        userDetailResponse.setMessage("Please try again!");
+                        callback.onFailure(REQUEST_CODE_GET_USER, userDetailResponse.getMessage(), response.code());
                     }
                 } else {
                     userDetailResponse = new UserDetailResponse();
                     userDetailResponse.setMessage("Please try again!");
-                    callback.onFailure(REQUEST_CODE_GET_USER, userDetailResponse, response.code());
+                    callback.onFailure(REQUEST_CODE_GET_USER, userDetailResponse.getMessage(), response.code());
                 }
             }
 
@@ -251,6 +255,8 @@ public class ApiClient {
             @Override
             public void onResponse(Call<GetQuestionsResponse> call, Response<GetQuestionsResponse> response) {
                 GetQuestionsResponse getQuestionsResponse = response.body();
+                Gson gson = new Gson();
+                getQuestionsResponse = gson.fromJson(MockResponse.MOCK_QUESTIONS_RESPONSE, GetQuestionsResponse.class);
                 if (getQuestionsResponse != null) {
                     if (getQuestionsResponse.isSuccess()) {
                         callback.onSuccess(REQUEST_CODE_GET_QUESTIONS, getQuestionsResponse, response.code());
@@ -305,7 +311,8 @@ public class ApiClient {
         call.enqueue(new Callback<APIResponse>() {
             @Override
             public void onResponse(Call<APIResponse> call, Response<APIResponse> response) {
-                APIResponse apiResponse = response.body();
+                APIResponse apiResponse = new APIResponse();
+                apiResponse.setSuccess(true);
                 if (apiResponse != null) {
                     if (apiResponse.isSuccess()) {
                         callback.onSuccess(REQUEST_CODE_ANSWER_QUESTIONS, apiResponse, response.code());

@@ -37,7 +37,7 @@ public class User implements Serializable {
 
     private boolean notificationFlag;
 
-    private boolean isPrimaryAccount;
+    private boolean isPrimaryAccountSet;
 
     @Ignore
     private Account[] accountDetails;
@@ -108,11 +108,13 @@ public class User implements Serializable {
         this.accountDetails = accountDetails;
     }
 
-    public boolean isPrimaryAccount() {
-        return isPrimaryAccount;
+    public boolean isPrimaryAccountSet() {
+        return isPrimaryAccountSet;
     }
 
-    public void setPrimaryAccount(boolean primaryAccount) {
-        isPrimaryAccount = primaryAccount;
+    public void setPrimaryAccountSet(boolean primaryAccountSet) {
+        isPrimaryAccountSet = primaryAccountSet;
     }
+
+
 }

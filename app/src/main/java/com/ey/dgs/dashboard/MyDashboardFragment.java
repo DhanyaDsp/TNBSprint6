@@ -9,72 +9,74 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
 import android.support.v7.widget.AppCompatButton;
-import android.support.v7.widget.AppCompatImageView;
-import android.support.v7.widget.AppCompatTextView;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.ey.dgs.HomeActivity;
 import com.ey.dgs.R;
-import com.ey.dgs.adapters.AccountPagerAdapter;
 import com.ey.dgs.authentication.LoginViewModel;
 import com.ey.dgs.dashboard.myaccount.MyAccountFragment;
-import com.ey.dgs.databinding.DashboardFragmentBinding;
+import com.ey.dgs.dashboard.questions.MMCQuestionsFragment;
+import com.ey.dgs.databinding.MyDashboardFragmentBinding;
 import com.ey.dgs.model.Account;
 import com.ey.dgs.model.User;
+import com.ey.dgs.model.chart.ChartData;
 import com.ey.dgs.notifications.settings.NotificationSettingsActivity;
 import com.ey.dgs.utils.AppPreferences;
 import com.ey.dgs.utils.DialogHelper;
 import com.ey.dgs.utils.FragmentUtils;
+import com.ey.dgs.views.BarChart;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 
 import static com.ey.dgs.utils.FragmentUtils.INDEX_MY_ACCOUNT;
 
-public class DashboardFragment extends Fragment implements View.OnClickListener, ViewPager.OnPageChangeListener {
+public class MyDashboardFragment extends Fragment implements View.OnClickListener {
 
     private static final int REQUEST_CODE_SET_THRESHOLD = 101;
     public static boolean IS_THRESHOLD_SET = false;
     private View rootView;
-    private RecyclerView rvLeaves;
-    private LinearLayoutManager rvLayoutManager;
     ArrayList<Account> accounts = new ArrayList<>();
-    private DividerItemDecoration itemDecorator;
     private Context context;
     private DashboardViewModel dashboardViewModel;
     private OnFragmentInteractionListener mListener;
-    AppCompatTextView tvSubscribe;
     AppPreferences appPreferences;
     private LoginViewModel loginViewModel;
     private User user;
-    View subscribePopup;
-    AppCompatButton btnSetPrimaryAccount;
     Account selectedAccount;
-    ViewPager vpAccounts;
-    private DashboardFragmentBinding loginFragmentBinding;
-    AppCompatImageView ivBanner;
+    private MyDashboardFragmentBinding myDashboardFragmentBinding;
+    LinearLayout llManageBtns;
+    AppCompatButton btnManageConsumption;
+    RelativeLayout rlChart;
+    BarChart barChart;
     View loader;
-    private AccountPagerAdapter accountPagerAdapter;
     private boolean billingDetailsServiceCalled;
 
-    public static DashboardFragment newInstance() {
-        return new DashboardFragment();
+    public static MyDashboardFragment newInstance(Account account) {
+        MyDashboardFragment fragment = new MyDashboardFragment();
+        Bundle args = new Bundle();
+        args.putSerializable("account", (Serializable) account);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        selectedAccount = (Account) getArguments().getSerializable("account");
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        loginFragmentBinding = DataBindingUtil.inflate(inflater, R.layout.dashboard_fragment, container, false);
-        rootView = loginFragmentBinding.getRoot();
-        loginFragmentBinding.setSelectedAccount(selectedAccount);
+        myDashboardFragmentBinding = DataBindingUtil.inflate(inflater, R.layout.my_dashboard_fragment, container, false);
+        rootView = myDashboardFragmentBinding.getRoot();
+        myDashboardFragmentBinding.setSelectedAccount(selectedAccount);
         appPreferences = new AppPreferences(getActivity());
         initView();
         subscribe();
@@ -83,27 +85,26 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
 
     private void initView() {
         loader = rootView.findViewById(R.id.loader);
-        ivBanner = rootView.findViewById(R.id.ivBanner);
-        btnSetPrimaryAccount = rootView.findViewById(R.id.btnSetPrimaryAccount);
-        btnSetPrimaryAccount.setOnClickListener(this);
-        subscribePopup = rootView.findViewById(R.id.subscribePopup);
-        vpAccounts = rootView.findViewById(R.id.vpAccounts);
-        vpAccounts.addOnPageChangeListener(this);
-        rvLeaves = rootView.findViewById(R.id.rvAccounts);
-        rvLeaves.setHasFixedSize(true);
-        rvLayoutManager = new LinearLayoutManager(getActivity());
-        rvLeaves.setLayoutManager(rvLayoutManager);
-        itemDecorator = new DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
-        tvSubscribe = rootView.findViewById(R.id.tvSubscribe);
-        tvSubscribe.setOnClickListener(this);
-        rvLeaves.addItemDecoration(itemDecorator);
-        rvLeaves.setItemAnimator(new DefaultItemAnimator());
+        rlChart = rootView.findViewById(R.id.rlChart);
+        barChart = rootView.findViewById(R.id.bar_chart);
+        btnManageConsumption = rootView.findViewById(R.id.btnManageConsumption);
+        btnManageConsumption.setOnClickListener(this);
+        llManageBtns = rootView.findViewById(R.id.llManageBtns);
         if (mListener != null) {
             mListener.onFragmentInteraction("");
         }
-        accountPagerAdapter = new AccountPagerAdapter(this, getActivity(), this.accounts);
-        vpAccounts.setAdapter(accountPagerAdapter);
 
+        ArrayList<ChartData> chartDatum = new ArrayList<>();
+        ChartData chartData;
+
+        for (int i = 0; i < 6; i++) {
+            chartData = new ChartData();
+            chartData.setTag("LB" + (i + 1));
+            chartData.setVal(20.0f);
+            chartDatum.add(chartData);
+        }
+
+        barChart.setData(chartDatum).setTitle("Chart_Title");
     }
 
     @Override
@@ -114,65 +115,52 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
     private void subscribe() {
         loginViewModel = ViewModelProviders.of(this).get(LoginViewModel.class);
         loginViewModel.getUserDetail(appPreferences.getUser_id());
-        dashboardViewModel = ViewModelProviders.of(getActivity()).get(DashboardViewModel.class);
+        dashboardViewModel = ViewModelProviders.of(this).get(DashboardViewModel.class);
         dashboardViewModel.setContext(getActivity());
-        showProgress(true);
         loginViewModel.getUserDetail().observe(getViewLifecycleOwner(), user -> {
             onUserDetailsLoaded(user);
         });
-        dashboardViewModel.getLoaderData().observe(getViewLifecycleOwner(), showProgress -> {
-            showProgress(showProgress);
-        });
-        dashboardViewModel.loadAccountsFromLocalDB(appPreferences.getUser_id());
-        dashboardViewModel.getAccounts().observeForever(accounts -> {
-            showProgress(false);
+        dashboardViewModel.getLoaderData().observe(getViewLifecycleOwner(), this::showProgress);
+        dashboardViewModel.getAccounts().observe(getViewLifecycleOwner(), accounts -> {
             if (accounts.size() > 0) {
                 this.accounts.clear();
                 this.accounts.addAll(accounts);
                 for (Account account : this.accounts) {
                     if (account.isPrimaryAccount()) {
                         this.selectedAccount = account;
+                        //user.setPrimaryAccountSet(true);
                     }
                 }
                 if (selectedAccount == null) {
                     selectedAccount = accounts.get(0);
                 }
 
-                loginFragmentBinding.setSelectedAccount(selectedAccount);
+                myDashboardFragmentBinding.setSelectedAccount(selectedAccount);
                 dashboardViewModel.setSelectedAccount(selectedAccount);
-                accountPagerAdapter.notifyDataSetChanged();
                 if (!billingDetailsServiceCalled) {
                     getBillingDetailsForAccount(accounts);
                     billingDetailsServiceCalled = true;
                 }
             }
         });
-        /*MOCK RESPONSE UNCOMMENT THIS*/
-        /*dashboardViewModel.isPrimaryAccountSet().observe(getViewLifecycleOwner(), isPrimaryAccountSet -> {
+        dashboardViewModel.isPrimaryAccountSet().observe(getViewLifecycleOwner(), isPrimaryAccountSet -> {
             if (isPrimaryAccountSet) {
-                updateOtherAccounts(accounts);
+                for (Account account : accounts) {
+                    if (!selectedAccount.getAccountNumber().equalsIgnoreCase(account.getAccountNumber())) {
+                        if (account.isPrimaryAccount()) {
+                            account.setPrimaryAccount(false);
+                            dashboardViewModel.updateAccount(account);
+                        }
+                    } else {
+                        account.setPrimaryAccount(true);
+                        selectedAccount = account;
+                    }
+                }
                 user.setPrimaryAccountSet(true);
                 onUserDetailsLoaded(user);
                 showPrimaryAccountPopup();
             }
-        });*/
-        /*MOCK RESPONSE*/
-    }
-
-    private void updateOtherAccounts(ArrayList<Account> accounts) {
-        selectedAccount.setPrimaryAccount(true);
-        for (Account account : accounts) {
-            if (!selectedAccount.getAccountNumber().equalsIgnoreCase(account.getAccountNumber())) {
-                if (account.isPrimaryAccount()) {
-                    account.setPrimaryAccount(false);
-                    dashboardViewModel.updateAccount(account);
-                }
-            } else {
-                account.setPrimaryAccount(true);
-                dashboardViewModel.setPrimaryAccount(account);
-                selectedAccount = account;
-            }
-        }
+        });
     }
 
     private void getBillingDetailsForAccount(ArrayList<Account> accounts) {
@@ -184,15 +172,6 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
     }
 
     private void onUserDetailsLoaded(User user) {
-        if (user != null) {
-            this.user = user;
-            loginFragmentBinding.setUser(this.user);
-            if (user.isPrimaryAccountSet()) {
-                btnSetPrimaryAccount.setVisibility(View.GONE);
-            } else {
-                btnSetPrimaryAccount.setVisibility(View.VISIBLE);
-            }
-        }
     }
 
 
@@ -214,6 +193,30 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
         mListener = null;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (IS_THRESHOLD_SET) {
+            loginViewModel.getUserDetail(appPreferences.getUser_id());
+            loginViewModel.getUserDetail().observe(getViewLifecycleOwner(), user -> {
+                this.user = user;
+                this.user.setPrimaryAccountSet(true);
+                onUserDetailsLoaded(this.user);
+            });
+            IS_THRESHOLD_SET = false;
+        }
+        //subscribe();
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+
+        }
+    }
+
     public void openFragment(int index, Object obj) {
         if (index == INDEX_MY_ACCOUNT) {
             dashboardViewModel.setSelectedAccount((Account) obj);
@@ -231,9 +234,17 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
             case R.id.btnSetPrimaryAccount:
                 setPrimaryAccount();
                 break;
+            case R.id.btnManageConsumption:
+                showQuestionsFragment();
+                break;
             default:
                 break;
         }
+    }
+
+    private void showQuestionsFragment() {
+        FragmentUtils.newInstance(getFragmentManager()).addFragment(FragmentUtils.INDEX_QUESTIONS_FRAGMENT,
+                selectedAccount, MMCQuestionsFragment.class.getName(), R.id.homeFlContainer);
     }
 
     private void setPrimaryAccount() {
@@ -241,8 +252,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
             //dashboardViewModel.setPrimaryAccountInServer(user, selectedAccount);
             /*Demo*/
             user.setPrimaryAccountSet(true);
-            loginViewModel.update(user);
-            updateOtherAccounts(accounts);
+            selectedAccount.setPrimaryAccount(true);
             showPrimaryAccountPopup();
         }
 
@@ -252,8 +262,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
         DialogHelper.showPrimaryAccountDialog(selectedAccount, getActivity(), new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogHelper.hidePopup();
-                moveToMyDashboardPage(selectedAccount);
+                moveToNotificationSettingsPage();
             }
         });
     }
@@ -267,33 +276,6 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
         }
     }
 
-    public void moveToMyDashboardPage(Account selectedAccount) {
-        if (selectedAccount != null) {
-           /* Intent intent = new Intent(getActivity(), QuestionActivity.class);
-            intent.putExtra("account", (Serializable) selectedAccount);
-            getActivity().startActivity(intent);*/
-            FragmentUtils.newInstance(getFragmentManager())
-                    .addFragment(FragmentUtils.INDEX_MY_DASHBOARD_FRAGMENT, selectedAccount, MyDashboardFragment.class.getName(), R.id.homeFlContainer);
-
-        }
-    }
-
-    @Override
-    public void onPageScrolled(int i, float v, int i1) {
-
-    }
-
-    @Override
-    public void onPageSelected(int i) {
-        selectedAccount = accounts.get(i);
-        loginFragmentBinding.setSelectedAccount(selectedAccount);
-    }
-
-    @Override
-    public void onPageScrollStateChanged(int i) {
-
-    }
-
     public interface OnFragmentInteractionListener {
         public void onFragmentInteraction(String title);
     }
@@ -304,10 +286,5 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
         } else {
             loader.setVisibility(View.GONE);
         }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
     }
 }

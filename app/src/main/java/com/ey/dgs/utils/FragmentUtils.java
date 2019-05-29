@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentTransaction;
 import com.ey.dgs.R;
 import com.ey.dgs.authentication.LoginFragment;
 import com.ey.dgs.dashboard.DashboardFragment;
+import com.ey.dgs.dashboard.MyDashboardFragment;
 import com.ey.dgs.dashboard.myaccount.MyAccountFragment;
 import com.ey.dgs.dashboard.questions.MMCQuestionsFragment;
 import com.ey.dgs.model.Account;
@@ -28,6 +29,7 @@ public class FragmentUtils {
     public static int INDEX_NOTIFICATION_TOGGLE_FRAGMENT = 6;
     public static int INDEX_NOTIFICATION_SETTINGS_FRAGMENT = 7;
     public static int INDEX_QUESTIONS_FRAGMENT = 8;
+    public static int INDEX_MY_DASHBOARD_FRAGMENT = 9;
 
     public static FragmentUtils newInstance(FragmentManager fragmentManager) {
         fragmentUtils = new FragmentUtils(fragmentManager);
@@ -46,8 +48,8 @@ public class FragmentUtils {
                 newFragment = AccountNotificationSettingsFragment.newInstance((Account) object);
                 fragmentTransaction.replace(viewId, newFragment, fragmentTag).commitAllowingStateLoss();
                 break;
-            case 8:
-                newFragment = MMCQuestionsFragment.newInstance((Account) object);
+            case 9:
+                newFragment = MyDashboardFragment.newInstance((Account) object);
                 fragmentTransaction.replace(viewId, newFragment, fragmentTag).commitAllowingStateLoss();
                 break;
             default:
@@ -81,6 +83,14 @@ public class FragmentUtils {
                 break;
             case 7:
                 newFragment = AccountNotificationSettingsFragment.newInstance((Account) object);
+                fragmentTransaction.add(viewId, newFragment, fragmentTag).addToBackStack(fragmentTag).commit();
+                break;
+            case 8:
+                newFragment = MMCQuestionsFragment.newInstance((Account) object);
+                fragmentTransaction.add(viewId, newFragment, fragmentTag).addToBackStack(fragmentTag).commit();
+                break;
+            case 9:
+                newFragment = MyDashboardFragment.newInstance((Account) object);
                 fragmentTransaction.add(viewId, newFragment, fragmentTag).addToBackStack(fragmentTag).commit();
                 break;
             default:

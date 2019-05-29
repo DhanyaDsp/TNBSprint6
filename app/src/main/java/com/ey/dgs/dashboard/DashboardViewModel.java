@@ -31,6 +31,7 @@ public class DashboardViewModel extends ViewModel implements DatabaseCallback, A
     private AppPreferences appPreferences;
     public MutableLiveData<Boolean> isPrimaryAccountSet = new MutableLiveData<>();
     private MutableLiveData<Boolean> loaderData = new MutableLiveData<>();
+    private MutableLiveData<Account> primaryAccount = new MutableLiveData<>();
 
     public DashboardViewModel() {
         if (accounts == null) {
@@ -44,6 +45,19 @@ public class DashboardViewModel extends ViewModel implements DatabaseCallback, A
 
     public void setLoader(boolean showLoader) {
         loaderData.postValue(showLoader);
+    }
+
+
+    public MutableLiveData<Account> getPrimaryAccount() {
+        return primaryAccount;
+    }
+
+    public void getPrimaryAccountFromLocalDB() {
+        DatabaseClient.getInstance(context).getPrimaryAccount(Account.REQUEST_CODE_GET_PRIMARY_ACCOUNT, this);
+    }
+
+    public void setPrimaryAccountData(Account account) {
+        primaryAccount.postValue(account);
     }
 
     public void setPrimaryAccountInServer(User user, Account account) {
@@ -122,6 +136,7 @@ public class DashboardViewModel extends ViewModel implements DatabaseCallback, A
     public void onUpdate(Object object, int requestCode, int responseCode) {
         if (requestCode == Account.REQUEST_CODE_SET_PRIMARY_ACCOUNT) {
             setIsPrimaryAccountSet(true);
+            setPrimaryAccountData((Account) object);
         }
     }
 
@@ -129,6 +144,8 @@ public class DashboardViewModel extends ViewModel implements DatabaseCallback, A
     public void onReceived(Object object, int requestCode, int responseCode) {
         if (requestCode == Account.REQUEST_CODE_ADD_ACCOUNTS) {
             setAccounts((ArrayList<Account>) object);
+        } else if (requestCode == Account.REQUEST_CODE_GET_PRIMARY_ACCOUNT) {
+            setPrimaryAccountData((Account) object);
         }
     }
 

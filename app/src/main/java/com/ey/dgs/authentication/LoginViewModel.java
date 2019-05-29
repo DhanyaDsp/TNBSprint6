@@ -11,6 +11,7 @@ import com.ey.dgs.model.Account;
 import com.ey.dgs.model.SetPrimaryAccountRequest;
 import com.ey.dgs.model.User;
 import com.ey.dgs.utils.AppPreferences;
+import com.ey.dgs.utils.Utils;
 import com.ey.dgs.webservice.APICallback;
 import com.ey.dgs.webservice.ApiClient;
 
@@ -41,7 +42,7 @@ public class LoginViewModel extends ViewModel implements DatabaseCallback, APICa
     }
 
     public void updateUserInServer(User user) {
-        new ApiClient().updateUser(appPreference.getAuthToken(),user, this);
+        new ApiClient().updateUser(appPreference.getAuthToken(), user, this);
     }
 
     public void update(User user) {
@@ -106,7 +107,7 @@ public class LoginViewModel extends ViewModel implements DatabaseCallback, APICa
 
     @Override
     public void onFailure(int requestCode, Object obj, int code) {
-
+        Utils.showToast(context, (String) obj);
     }
 
     @Override
