@@ -112,10 +112,10 @@ public class ApiClient {
             @Override
             public void onResponse(Call<UserDetailResponse> call, Response<UserDetailResponse> response) {
                 UserDetailResponse userDetailResponse = response.body();
-                /*MOCK RESPONSE*/
-                Gson gson = new Gson();
-                userDetailResponse = gson.fromJson(MockResponse.MOCK_USER_DETAILS_PRIMARY_NOT_SET, UserDetailResponse.class);
-                /*MOCK RESPONSE*/
+//                /*MOCK RESPONSE*/
+//                Gson gson = new Gson();
+//                userDetailResponse = gson.fromJson(MockResponse.MOCK_USER_DETAILS_PRIMARY_NOT_SET, UserDetailResponse.class);
+//                /*MOCK RESPONSE*/
                 if (userDetailResponse != null) {
                     if (userDetailResponse.getSuccess()) {
                         //setting local user data

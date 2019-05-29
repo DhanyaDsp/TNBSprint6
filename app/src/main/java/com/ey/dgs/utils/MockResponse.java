@@ -49,19 +49,33 @@ public class MockResponse {
             "}";
 
     public static String MOCK_QUESTIONS_RESPONSE = "{\n" +
-            "    \"success\": true,\n" +
-            "    \"result\": [\n" +
-            "        {\n" +
-            "            \"questionId\": 1,\n" +
-            "            \"question\": \"How many people are staying in Jalan BU10\",\n" +
-            "            \"response\": \"2\"\n" +
-            "        },\n" +
-            "        {\n" +
-            "            \"questionId\": 2,\n" +
-            "            \"question\": \"Test Question\",\n" +
-            "            \"response\": null\n" +
-            "        }\n" +
-            "    ]\n" +
+            "  \"success\": true,\n" +
+            "  \"result\": [\n" +
+            "    {\n" +
+            "      \"questionId\": 1,\n" +
+            "      \"question\": \"How many air conditioner units are there in this property?\",\n" +
+            "      \"response\": null,\n" +
+            "      \"type\": null\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"questionId\": 2,\n" +
+            "      \"question\": \"How many people are staying in this property?\",\n" +
+            "      \"response\": null,\n" +
+            "      \"type\": null\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"questionId\": 3,\n" +
+            "      \"question\": \"When did you last service your air conditioning units?\",\n" +
+            "      \"response\": null,\n" +
+            "      \"type\": null\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"questionId\": 4,\n" +
+            "      \"question\": \"Notify me when my consumption reaches RM\",\n" +
+            "      \"response\": null,\n" +
+            "      \"type\": null\n" +
+            "    }\n" +
+            "  ]\n" +
             "}";
 
 }

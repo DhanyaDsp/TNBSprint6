@@ -32,8 +32,9 @@ import com.ey.dgs.utils.Utils;
 
 import java.util.Arrays;
 
-public class HomeActivity extends AppCompatActivity implements MyAccountFragment.OnFragmentInteractionListener, DashboardFragment.OnFragmentInteractionListener, MyDashboardFragment.OnFragmentInteractionListener {
+public class HomeActivity extends AppCompatActivity implements MyAccountFragment.OnFragmentInteractionListener, DashboardFragment.OnFragmentInteractionListener, MyDashboardFragment.OnFragmentInteractionListener, FragmentManager.OnBackStackChangedListener {
 
+    public static boolean IS_THRESHOLD = false;
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     public static boolean isVisible;
     private int INDEX_DASHBOARD = 3;
@@ -64,6 +65,7 @@ public class HomeActivity extends AppCompatActivity implements MyAccountFragment
         dashboardViewModel.setContext(this);
         loginViewModel = ViewModelProviders.of(this).get(LoginViewModel.class);
         loginViewModel.setContext(this);
+        getSupportFragmentManager().addOnBackStackChangedListener(this);
         subscribe();
         initViews();
         notificationsSetup();
@@ -108,10 +110,10 @@ public class HomeActivity extends AppCompatActivity implements MyAccountFragment
                                 for (Account account : accounts) {
                                     if (account.isPrimaryAccount()) {
                                         selectedAccount = account;
-                                        if (!user.isPrimaryAccountSet()) {
+                                        /*if (!user.isPrimaryAccountSet()) {
                                             user.setPrimaryAccountSet(true);
                                             loginViewModel.update(user);
-                                        }
+                                        }*/
                                     }
                                 }
                                 if (!dashboardShown) {
@@ -241,5 +243,13 @@ public class HomeActivity extends AppCompatActivity implements MyAccountFragment
 
     private void setToolbarTitle(String title) {
         tvTitle.setText(title);
+    }
+
+    @Override
+    public void onBackStackChanged() {
+        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.homeFlContainer);
+        if (currentFragment != null) {
+
+        }
     }
 }

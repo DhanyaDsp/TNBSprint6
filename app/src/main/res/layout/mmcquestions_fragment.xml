@@ -23,7 +23,7 @@
     <android.support.v7.widget.AppCompatTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="@dimen/small_padding"
         android:fontFamily="@font/museosans_500"
         android:text="@string/manage_consumptions"
         android:textColor="@color/yellow1"
@@ -33,7 +33,7 @@
         android:id="@+id/tvAccountName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/medium_padding"
+        android:layout_marginTop="@dimen/small_padding"
         android:fontFamily="@font/museosans_500"
         android:text="Account Name"
         android:textColor="@android:color/white"
@@ -42,8 +42,8 @@
     <android.support.v4.view.ViewPager
         android:id="@+id/vpQuestions"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:layout_marginTop="@dimen/large_padding" />
+        android:layout_height="350dp"
+        android:layout_marginTop="@dimen/medium_padding" />
 
 
     <android.support.v7.widget.AppCompatButton

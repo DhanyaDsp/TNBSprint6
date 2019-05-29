@@ -44,7 +44,7 @@ public class AccountPagerAdapter extends PagerAdapter {
             chartDatum.add(chartData);
         }
 
-        barChart.setData(chartDatum).setTitle("Chart_Title");
+        barChart.setData(chartDatum).setTitle(account.getNickName());
         layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

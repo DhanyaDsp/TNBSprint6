@@ -6,8 +6,7 @@
     <com.ey.dgs.views.BarChart
         android:id="@+id/bar_chart"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/btnAddThreshold"
+        android:layout_height="match_parent"
         android:layout_marginBottom="@dimen/large_padding"
         android:adjustViewBounds="true"/>
 

@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatImageView;
+import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
@@ -20,10 +21,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 
 import com.ey.dgs.HomeActivity;
 import com.ey.dgs.R;
+import com.ey.dgs.adapters.AccountAdapter;
 import com.ey.dgs.adapters.AccountPagerAdapter;
+import com.ey.dgs.adapters.AccountSpinnerAdapter;
 import com.ey.dgs.authentication.LoginViewModel;
 import com.ey.dgs.dashboard.myaccount.MyAccountFragment;
 import com.ey.dgs.databinding.DashboardFragmentBinding;
@@ -39,7 +43,7 @@ import java.util.ArrayList;
 
 import static com.ey.dgs.utils.FragmentUtils.INDEX_MY_ACCOUNT;
 
-public class DashboardFragment extends Fragment implements View.OnClickListener, ViewPager.OnPageChangeListener {
+public class DashboardFragment extends Fragment implements View.OnClickListener, ViewPager.OnPageChangeListener, AdapterView.OnItemSelectedListener {
 
     private static final int REQUEST_CODE_SET_THRESHOLD = 101;
     public static boolean IS_THRESHOLD_SET = false;
@@ -64,6 +68,9 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
     View loader;
     private AccountPagerAdapter accountPagerAdapter;
     private boolean billingDetailsServiceCalled;
+    AppCompatSpinner spAccounts;
+    AccountSpinnerAdapter accountSpinnerAdapter;
+
 
     public static DashboardFragment newInstance() {
         return new DashboardFragment();
@@ -103,7 +110,10 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
         }
         accountPagerAdapter = new AccountPagerAdapter(this, getActivity(), this.accounts);
         vpAccounts.setAdapter(accountPagerAdapter);
-
+        spAccounts = rootView.findViewById(R.id.spAccounts);
+        spAccounts.setOnItemSelectedListener(this);
+        accountSpinnerAdapter = new AccountSpinnerAdapter(getActivity(), this.accounts);
+        spAccounts.setAdapter(accountSpinnerAdapter);
     }
 
     @Override
@@ -132,15 +142,18 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                 for (Account account : this.accounts) {
                     if (account.isPrimaryAccount()) {
                         this.selectedAccount = account;
+                        vpAccounts.setCurrentItem(accounts.indexOf(account));
+                        spAccounts.setSelection(accounts.indexOf(account));
                     }
                 }
+                accountPagerAdapter.notifyDataSetChanged();
+                accountSpinnerAdapter.notifyDataSetChanged();
                 if (selectedAccount == null) {
                     selectedAccount = accounts.get(0);
                 }
 
                 loginFragmentBinding.setSelectedAccount(selectedAccount);
                 dashboardViewModel.setSelectedAccount(selectedAccount);
-                accountPagerAdapter.notifyDataSetChanged();
                 if (!billingDetailsServiceCalled) {
                     getBillingDetailsForAccount(accounts);
                     billingDetailsServiceCalled = true;
@@ -287,10 +300,26 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
     public void onPageSelected(int i) {
         selectedAccount = accounts.get(i);
         loginFragmentBinding.setSelectedAccount(selectedAccount);
+        spAccounts.setOnItemSelectedListener(null);
+        spAccounts.setSelection(i);
+        spAccounts.setOnItemSelectedListener(this);
     }
 
     @Override
     public void onPageScrollStateChanged(int i) {
+
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        selectedAccount = accounts.get(position);
+        vpAccounts.addOnPageChangeListener(null);
+        vpAccounts.setCurrentItem(position);
+        vpAccounts.addOnPageChangeListener(this);
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
 
     }
 

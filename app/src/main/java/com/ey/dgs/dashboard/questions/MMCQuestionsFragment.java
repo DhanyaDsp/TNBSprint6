@@ -20,6 +20,7 @@ import com.ey.dgs.HomeActivity;
 import com.ey.dgs.R;
 import com.ey.dgs.adapters.QuestionsPagerAdapter;
 import com.ey.dgs.authentication.LoginViewModel;
+import com.ey.dgs.dashboard.MyDashboardFragment;
 import com.ey.dgs.model.Account;
 import com.ey.dgs.model.AnswerRequest;
 import com.ey.dgs.model.Question;
@@ -93,7 +94,13 @@ public class MMCQuestionsFragment extends Fragment {
                 if (position < questions.size() - 1) {
                     View currentQuestionView = vpQuestions.getChildAt(position);
                     AppCompatEditText etAnswer = currentQuestionView.findViewById(R.id.etAnswer);
-                    String answer = etAnswer.getText().toString();
+                    AppCompatEditText etMonths = currentQuestionView.findViewById(R.id.etMonths);
+                    String answer = "";
+                    if (position == questions.size() - 1) {
+                        answer = etAnswer.getText().toString();
+                    } else {
+                        answer = etMonths.getText().toString();
+                    }
                     AnswerRequest answerRequest = new AnswerRequest();
                     answerRequest.setUserName(account.getAccountNumber());
                     answerRequest.setUserName(user.getEmail());
@@ -105,7 +112,10 @@ public class MMCQuestionsFragment extends Fragment {
                         Utils.showToast(getActivity(), "Please fill the answer");
                     }
                 } else {
-                    getActivity().onBackPressed();
+                    user.setMmcAlertFlag(false);
+                    loginViewModel.update(user);
+                    MyDashboardFragment.IS_THRESHOLD_SET = true;
+                    getFragmentManager().popBackStack();
                 }
             }
         });
