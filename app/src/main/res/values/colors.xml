@@ -15,4 +15,5 @@
     <color name="blue1">#3C7DF1</color>
     <color name="green">#009285</color>
     <color name="light_purple">#7BA0F3</color>
+    <color name="legend_disabled">#4dffffff</color>
 </resources>

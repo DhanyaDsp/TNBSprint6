@@ -41,8 +41,7 @@ public class BarsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         this.parentLayoutWidth = parentLayoutWidth;
         this.parentLayoutHeight = parentLayoutHeight;
         this.isSelectionRequired = isSelectionRequired;
-
-        this.largestValWithBuffer = getLargestValWithBuffer();
+        this.largestValWithBuffer = barChart.getLargestValWithBuffer();
     }
 
     public class BarsHolder extends RecyclerView.ViewHolder {
@@ -73,10 +72,12 @@ public class BarsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 }
                 i++;
             }
+            barChart.selectLegends(position);
             enableBarAndAssociated(chartDatum.get(position), position);
             // barChart.setHighLightedValue(chartDatum.get(position).getVal() + "");
         }
         else {
+            barChart.selectLegends(position);
             // This means, a currently selected bar is being unselected
             barChart.removeHighLightedValue();
         }
@@ -95,7 +96,6 @@ public class BarsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         RecyclerView.LayoutParams lineHolderParams = (RecyclerView.LayoutParams) barsHolder.bar_line.getLayoutParams();
         lineHolderParams.width = parentLayoutWidth/chartDatum.size();
         barsHolder.bar_line.setLayoutParams(lineHolderParams);
-                //new LinearLayout.LayoutParams(parentLayoutWidth/chartDatum.size(), LinearLayout.LayoutParams.MATCH_PARENT));
 
         boolean isSelected = chartDatum.get(position).getIsSelected();
 
@@ -132,7 +132,7 @@ public class BarsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }*/
     }
 
-    private float getLargestValWithBuffer() {
+    /*private float getLargestValWithBuffer() {
         float largestVal = 0f;
         for(ChartData chartData: chartDatum) {
             if(largestVal <= chartData.getVal()) {
@@ -141,7 +141,7 @@ public class BarsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
         largestVal += largestVal * 0.1f;
         return largestVal;
-    }
+    }*/
 
     private float getBarHeight(ChartData chartData) {
         return (chartData.getVal()*parentLayoutHeight/largestValWithBuffer);
