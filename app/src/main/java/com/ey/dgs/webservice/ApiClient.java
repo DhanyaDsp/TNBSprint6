@@ -255,8 +255,8 @@ public class ApiClient {
             @Override
             public void onResponse(Call<GetQuestionsResponse> call, Response<GetQuestionsResponse> response) {
                 GetQuestionsResponse getQuestionsResponse = response.body();
-                Gson gson = new Gson();
-                getQuestionsResponse = gson.fromJson(MockResponse.MOCK_QUESTIONS_RESPONSE, GetQuestionsResponse.class);
+             /*   Gson gson = new Gson();
+                getQuestionsResponse = gson.fromJson(MockResponse.MOCK_QUESTIONS_RESPONSE, GetQuestionsResponse.class);*/
                 if (getQuestionsResponse != null) {
                     if (getQuestionsResponse.isSuccess()) {
                         callback.onSuccess(REQUEST_CODE_GET_QUESTIONS, getQuestionsResponse, response.code());

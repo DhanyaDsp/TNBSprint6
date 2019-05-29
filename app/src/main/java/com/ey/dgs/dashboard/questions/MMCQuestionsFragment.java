@@ -8,11 +8,13 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
+import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.AppCompatTextView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -84,6 +86,13 @@ public class MMCQuestionsFragment extends Fragment {
 
     private void initViews() {
         vpQuestions = rootView.findViewById(R.id.vpQuestions);
+        vpQuestions.setOffscreenPageLimit(1);
+        vpQuestions.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return true;
+            }
+        });
         loader = rootView.findViewById(R.id.loader);
         tvAccountName = rootView.findViewById(R.id.tvAccountName);
         btnNext = rootView.findViewById(R.id.btnNext);
@@ -94,12 +103,12 @@ public class MMCQuestionsFragment extends Fragment {
                 if (position < questions.size() - 1) {
                     View currentQuestionView = vpQuestions.getChildAt(position);
                     AppCompatEditText etAnswer = currentQuestionView.findViewById(R.id.etAnswer);
-                    AppCompatEditText etMonths = currentQuestionView.findViewById(R.id.etMonths);
+                    AppCompatSpinner spMonths = currentQuestionView.findViewById(R.id.spMonths);
                     String answer = "";
-                    if (position == questions.size() - 1) {
-                        answer = etAnswer.getText().toString();
+                    if (questions.get(position).getQuestionId() == 3) {
+                        answer = spMonths.getSelectedItem().toString();
                     } else {
-                        answer = etMonths.getText().toString();
+                        answer = etAnswer.getText().toString();
                     }
                     AnswerRequest answerRequest = new AnswerRequest();
                     answerRequest.setUserName(account.getAccountNumber());
@@ -142,6 +151,10 @@ public class MMCQuestionsFragment extends Fragment {
         });
         mViewModel.getQuestionsData().observeForever(questions -> {
             if (questions != null && questions.size() > 0) {
+                Question thresholdQuestion = new Question();
+                thresholdQuestion.setQuestionId(4);
+                thresholdQuestion.setQuestion("Notify me when my consumption reaches (RM)");
+                questions.add(thresholdQuestion);
                 this.questions = questions;
                 setAdapter(this.questions);
             }

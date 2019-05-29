@@ -52,4 +52,9 @@
 
     <style name="AppTheme.NoActionBar.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="mySpinnerItemStyle" parent="@android:style/Widget.Holo.DropDownItem.Spinner">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:background">@color/purple</item>
+    </style>
+
 </resources>

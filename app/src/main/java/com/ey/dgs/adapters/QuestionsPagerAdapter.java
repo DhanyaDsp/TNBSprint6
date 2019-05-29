@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v4.view.PagerAdapter;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
+import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.AppCompatTextView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -79,7 +80,7 @@ public class QuestionsPagerAdapter extends PagerAdapter {
             chartDatum.add(chartData);
         }
 
-        bar_chart.setData(chartDatum).setTitle("Account Name");
+        bar_chart.setData(chartDatum).setTitle(null);
         tvQuestion.setText(questions.get(position).getQuestion());
         if (question.getQuestionId() == 1) {
             etAnswer.setVisibility(View.VISIBLE);

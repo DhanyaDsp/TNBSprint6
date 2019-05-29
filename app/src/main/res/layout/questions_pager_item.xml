@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:clickable="true"
     android:orientation="vertical"
-    android:padding="@dimen/medium_padding">
+    android:paddingLeft="@dimen/medium_padding"
+    android:paddingRight="@dimen/medium_padding"
+    android:paddingBottom="@dimen/medium_padding">
 
     <com.ey.dgs.views.BarChart
         android:id="@+id/bar_chart"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:layout_marginBottom="@dimen/large_padding"
-        android:adjustViewBounds="true" />
+        android:layout_height="150dp" />
 
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/tvQuestion"
@@ -28,6 +30,7 @@
         android:layout_marginTop="@dimen/medium_padding"
         android:background="@drawable/rounded_white"
         android:gravity="right"
+        android:inputType="number"
         android:minWidth="100dp"
         android:paddingLeft="@dimen/small_padding"
         android:paddingTop="@dimen/small_padding"
@@ -50,15 +53,17 @@
             android:orientation="horizontal"
             android:visibility="visible">
 
-            <android.support.v7.widget.AppCompatEditText
-                android:id="@+id/etMonths"
+            <android.support.v7.widget.AppCompatSpinner
+                android:id="@+id/spMonths"
                 android:layout_width="100dp"
                 android:layout_height="40dp"
                 android:layout_marginRight="@dimen/small_padding"
                 android:background="@drawable/rounded_white"
+                android:entries="@array/months"
                 android:gravity="right"
                 android:padding="@dimen/small_padding"
-                android:textColor="@android:color/white" />
+                android:textColor="@android:color/white"
+                android:theme="@style/mySpinnerItemStyle" />
 
             <android.support.v7.widget.AppCompatTextView
                 android:layout_width="wrap_content"

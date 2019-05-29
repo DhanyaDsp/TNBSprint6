@@ -16,7 +16,8 @@
         tools:replace="android:icon">
         <activity
             android:name=".dashboard.questions.QuestionActivity"
-            android:theme="@style/AppTheme.NoActionBar.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar.NoActionBar"
+            android:windowSoftInputMode="adjustPan" />
 
         <uses-library
             android:name="org.apache.http.legacy"

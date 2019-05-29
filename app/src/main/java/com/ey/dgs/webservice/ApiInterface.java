@@ -52,10 +52,10 @@ public interface ApiInterface {
     @POST("AccountDetails")
     Call<APIResponse> updateAccountSettings(@Header("Authorization") String token, @Body NotificationSettingsRequest notificationSettingsRequest);
 
-    @POST("Questionaire")
+    @POST("Questionnaire")
     Call<APIResponse> answerQuestions(@Header("Authorization") String token,@Body AnswerRequest answerRequest);
 
-    @GET("Questionaire")
+    @GET("Questionnaire")
     Call<GetQuestionsResponse> getQuestions(@Header("Authorization") String token, @Query("UserName") String UserName, @Query("AccountNumber") String AccountNumber);
 
     @POST("BillingDetails")
