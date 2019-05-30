@@ -33,10 +33,13 @@ public interface AccountDao {
     @Update
     void update(Account account);
 
+    @Update
+    void update(List<Account> accounts);
+
     @Insert
     void insert(List<Account> accounts);
 
-    @Query("SELECT * FROM Account WHERE user_id=:user_id")
+    @Query("SELECT * FROM Account WHERE user_id=:user_id ORDER BY isPrimaryAccount DESC")
     List<Account> getUserAccounts(int user_id);
 
 }

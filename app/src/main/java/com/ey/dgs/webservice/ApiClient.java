@@ -311,22 +311,21 @@ public class ApiClient {
         call.enqueue(new Callback<APIResponse>() {
             @Override
             public void onResponse(Call<APIResponse> call, Response<APIResponse> response) {
-                APIResponse apiResponse = new APIResponse();
-                apiResponse.setSuccess(true);
+                APIResponse apiResponse = response.body();
                 if (apiResponse != null) {
                     if (apiResponse.isSuccess()) {
-                        callback.onSuccess(REQUEST_CODE_ANSWER_QUESTIONS, apiResponse, response.code());
+                        callback.onSuccess(REQUEST_CODE_ANSWER_QUESTIONS, answerRequest.getQuestionId(), response.code());
                     } else {
-                        callback.onFailure(REQUEST_CODE_ANSWER_QUESTIONS, "Failed to anwer this question", response.code());
+                        callback.onFailure(REQUEST_CODE_ANSWER_QUESTIONS, "Failed to answer this question", response.code());
                     }
                 } else {
-                    callback.onFailure(REQUEST_CODE_ANSWER_QUESTIONS, "Failed to anwer this question", response.code());
+                    callback.onFailure(REQUEST_CODE_ANSWER_QUESTIONS, "Failed to answer this question", response.code());
                 }
             }
 
             @Override
             public void onFailure(Call<APIResponse> call, Throwable t) {
-                callback.onFailure(REQUEST_CODE_ANSWER_QUESTIONS, "Failed to update Account Settings", 0);
+                callback.onFailure(REQUEST_CODE_ANSWER_QUESTIONS, "Failed to answer this question", 0);
             }
         });
     }

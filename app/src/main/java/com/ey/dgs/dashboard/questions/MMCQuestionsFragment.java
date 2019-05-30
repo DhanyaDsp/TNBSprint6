@@ -111,6 +111,7 @@ public class MMCQuestionsFragment extends Fragment {
                         answer = etAnswer.getText().toString();
                     }
                     AnswerRequest answerRequest = new AnswerRequest();
+                    answerRequest.setAccountNumber(account.getAccountNumber());
                     answerRequest.setUserName(account.getAccountNumber());
                     answerRequest.setUserName(user.getEmail());
                     answerRequest.setResponse(answer);

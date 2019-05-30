@@ -27,6 +27,7 @@ public class Account implements Serializable {
     private String name;
     private String date;
     private String rm;
+    private String energyTip;
     private int user_id;
     private boolean isAccount;
     private boolean isPrimaryAccount;
@@ -145,5 +146,13 @@ public class Account implements Serializable {
     @Ignore
     public void setBillingDetails(BillingDetails[] billingDetails) {
         this.billingDetails = billingDetails;
+    }
+
+    public String getEnergyTip() {
+        return energyTip;
+    }
+
+    public void setEnergyTip(String energyTip) {
+        this.energyTip = energyTip;
     }
 }

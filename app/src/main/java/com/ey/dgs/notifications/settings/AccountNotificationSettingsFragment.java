@@ -173,6 +173,7 @@ public class AccountNotificationSettingsFragment extends Fragment {
             EnergyConsumptions energyConsumptions;
             energyConsumptions = notificationSettingsAdapter.getEnergyConsumptions();
             NotificationSettingsRequest notificationSettingsRequest = new NotificationSettingsRequest();
+            notificationSettingsRequest.setUserName(user.getEmail());
             notificationSettingsRequest.setAccountNumber(accountSettings.getAccountNumber());
             Setting setting = new Setting();
             setting.setEnergyConsumptions(energyConsumptions);

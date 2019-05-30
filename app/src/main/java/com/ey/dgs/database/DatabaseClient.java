@@ -425,6 +425,29 @@ public class DatabaseClient {
         UpdateAccountTask st = new UpdateAccountTask();
         st.execute();
     }
+
+    public void updateAccounts(int requestCode, List<Account> accounts, DatabaseCallback databaseCallback) {
+        class UpdateAccountTask extends AsyncTask<Void, Void, Void> {
+
+            @Override
+            protected Void doInBackground(Void... voids) {
+
+                DatabaseClient.getInstance(mCtx).getAppDatabase()
+                        .accountDao()
+                        .update(accounts);
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                databaseCallback.onUpdate(accounts, requestCode, 0);
+            }
+        }
+
+        UpdateAccountTask st = new UpdateAccountTask();
+        st.execute();
+    }
 }
 
 

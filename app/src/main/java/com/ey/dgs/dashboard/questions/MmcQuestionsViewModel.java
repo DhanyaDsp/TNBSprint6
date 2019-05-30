@@ -79,7 +79,7 @@ public class MmcQuestionsViewModel extends ViewModel implements APICallback {
             GetQuestionsResponse getQuestionsResponse = (GetQuestionsResponse) obj;
             setQuestions(new ArrayList<Question>(Arrays.asList(getQuestionsResponse.getResult())));
         } else if (requestCode == REQUEST_CODE_ANSWER_QUESTIONS) {
-            setQuestionsAnswered(1);
+            setQuestionsAnswered((Integer) obj);
         }
     }
 
@@ -87,7 +87,7 @@ public class MmcQuestionsViewModel extends ViewModel implements APICallback {
     public void onFailure(int requestCode, Object obj, int code) {
         setLoader(false);
         if (requestCode == REQUEST_CODE_ANSWER_QUESTIONS) {
-            setQuestionsAnswered(0);
+            //setQuestionsAnswered(0);
         }
         Utils.showToast(context, (String) obj);
 

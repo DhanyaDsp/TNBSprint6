@@ -161,14 +161,17 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
             }
         });
         /*MOCK RESPONSE UNCOMMENT THIS*/
-        /*dashboardViewModel.isPrimaryAccountSet().observe(getViewLifecycleOwner(), isPrimaryAccountSet -> {
+        dashboardViewModel.isPrimaryAccountSet().observe(getViewLifecycleOwner(), isPrimaryAccountSet -> {
             if (isPrimaryAccountSet) {
-                updateOtherAccounts(accounts);
+
+                //updateOtherAccounts(accounts);
                 user.setPrimaryAccountSet(true);
-                onUserDetailsLoaded(user);
+                loginViewModel.update(user);
+                //onUserDetailsLoaded(user);
+                showProgress(false);
                 showPrimaryAccountPopup();
             }
-        });*/
+        });
         /*MOCK RESPONSE*/
     }
 
@@ -251,12 +254,13 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
 
     private void setPrimaryAccount() {
         if (selectedAccount != null) {
-            //dashboardViewModel.setPrimaryAccountInServer(user, selectedAccount);
+            showProgress(true);
+            dashboardViewModel.setPrimaryAccountInServer(user, selectedAccount);
             /*Demo*/
-            user.setPrimaryAccountSet(true);
+            /*user.setPrimaryAccountSet(true);
             loginViewModel.update(user);
             updateOtherAccounts(accounts);
-            showPrimaryAccountPopup();
+            showPrimaryAccountPopup();*/
         }
 
     }

@@ -2,6 +2,7 @@ package com.ey.dgs.adapters;
 
 import android.content.Context;
 import android.support.v4.view.PagerAdapter;
+import android.support.v7.widget.AppCompatTextView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,7 +35,9 @@ public class AccountPagerAdapter extends PagerAdapter {
         viewGroup.addView(layout);
 
         BarChart barChart = layout.findViewById(R.id.bar_chart);
+        AppCompatTextView tvEnergyTip= layout.findViewById(R.id.tvEnergyTip);
         ArrayList<ChartData> chartDatum = new ArrayList<>();
+        tvEnergyTip.setText(account.getEnergyTip());
         ChartData chartData;
 
         for (int i = 0; i < 6; i++) {

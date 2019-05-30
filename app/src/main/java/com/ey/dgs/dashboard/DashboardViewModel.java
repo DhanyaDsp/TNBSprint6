@@ -136,7 +136,8 @@ public class DashboardViewModel extends ViewModel implements DatabaseCallback, A
     public void onUpdate(Object object, int requestCode, int responseCode) {
         if (requestCode == Account.REQUEST_CODE_SET_PRIMARY_ACCOUNT) {
             setIsPrimaryAccountSet(true);
-            setPrimaryAccountData((Account) object);
+            setAccounts((ArrayList<Account>) object);
+            //setPrimaryAccountData((Account) object);
         }
     }
 
@@ -167,7 +168,15 @@ public class DashboardViewModel extends ViewModel implements DatabaseCallback, A
     }
 
     public void setPrimaryAccount(Account selectedAccount) {
-        DatabaseClient.getInstance(context).updateAccount(Account.REQUEST_CODE_SET_PRIMARY_ACCOUNT, selectedAccount, this);
+        List<Account> accounts = getAccounts().getValue();
+        for (Account account : accounts) {
+            if (account.getAccountNumber().equalsIgnoreCase(selectedAccount.getAccountNumber())) {
+                account.setPrimaryAccount(true);
+            } else {
+                account.setPrimaryAccount(false);
+            }
+        }
+        DatabaseClient.getInstance(context).updateAccounts(Account.REQUEST_CODE_SET_PRIMARY_ACCOUNT, accounts, this);
     }
 
     @Override

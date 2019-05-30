@@ -2,9 +2,19 @@ package com.ey.dgs.model;
 
 public class NotificationSettingsRequest {
 
-    String AccountNumber;
+    private String UserName;
 
-    Setting setting;
+    private String AccountNumber;
+
+    private Setting setting;
+
+    public String getUserName() {
+        return UserName;
+    }
+
+    public void setUserName(String userName) {
+        UserName = userName;
+    }
 
     public String getAccountNumber() {
         return AccountNumber;
