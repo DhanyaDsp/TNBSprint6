@@ -29,6 +29,7 @@ import com.ey.dgs.adapters.AccountAdapter;
 import com.ey.dgs.adapters.AccountPagerAdapter;
 import com.ey.dgs.adapters.AccountSpinnerAdapter;
 import com.ey.dgs.authentication.LoginViewModel;
+import com.ey.dgs.dashboard.billing.BillingHistoryViewModel;
 import com.ey.dgs.dashboard.myaccount.MyAccountFragment;
 import com.ey.dgs.databinding.DashboardFragmentBinding;
 import com.ey.dgs.model.Account;
@@ -54,6 +55,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
     private DividerItemDecoration itemDecorator;
     private Context context;
     private DashboardViewModel dashboardViewModel;
+    private BillingHistoryViewModel billingHistoryViewModel;
     private OnFragmentInteractionListener mListener;
     AppCompatTextView tvSubscribe;
     AppPreferences appPreferences;
@@ -108,8 +110,6 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
         if (mListener != null) {
             mListener.onFragmentInteraction("");
         }
-        accountPagerAdapter = new AccountPagerAdapter(this, getActivity(), this.accounts);
-        vpAccounts.setAdapter(accountPagerAdapter);
         spAccounts = rootView.findViewById(R.id.spAccounts);
         spAccounts.setOnItemSelectedListener(this);
         accountSpinnerAdapter = new AccountSpinnerAdapter(getActivity(), this.accounts);
@@ -126,6 +126,8 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
         loginViewModel.getUserDetail(appPreferences.getUser_id());
         dashboardViewModel = ViewModelProviders.of(getActivity()).get(DashboardViewModel.class);
         dashboardViewModel.setContext(getActivity());
+        billingHistoryViewModel = ViewModelProviders.of(getActivity()).get(BillingHistoryViewModel.class);
+        billingHistoryViewModel.setContext(getActivity());
         showProgress(true);
         loginViewModel.getUserDetail().observe(getViewLifecycleOwner(), user -> {
             onUserDetailsLoaded(user);
@@ -139,6 +141,8 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
             if (accounts.size() > 0) {
                 this.accounts.clear();
                 this.accounts.addAll(accounts);
+                accountPagerAdapter = new AccountPagerAdapter(this, getActivity(), this.accounts);
+                vpAccounts.setAdapter(accountPagerAdapter);
                 for (Account account : this.accounts) {
                     if (account.isPrimaryAccount()) {
                         this.selectedAccount = account;
@@ -146,7 +150,6 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                         spAccounts.setSelection(accounts.indexOf(account));
                     }
                 }
-                accountPagerAdapter.notifyDataSetChanged();
                 accountSpinnerAdapter.notifyDataSetChanged();
                 if (selectedAccount == null) {
                     selectedAccount = accounts.get(0);
@@ -154,22 +157,23 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
 
                 loginFragmentBinding.setSelectedAccount(selectedAccount);
                 dashboardViewModel.setSelectedAccount(selectedAccount);
-                if (!billingDetailsServiceCalled) {
+               /* if (!billingDetailsServiceCalled) {
                     getBillingDetailsForAccount(accounts);
                     billingDetailsServiceCalled = true;
-                }
+                }*/
             }
         });
         /*MOCK RESPONSE UNCOMMENT THIS*/
         dashboardViewModel.isPrimaryAccountSet().observe(getViewLifecycleOwner(), isPrimaryAccountSet -> {
             if (isPrimaryAccountSet) {
-
                 //updateOtherAccounts(accounts);
-                user.setPrimaryAccountSet(true);
-                loginViewModel.update(user);
-                //onUserDetailsLoaded(user);
-                showProgress(false);
-                showPrimaryAccountPopup();
+                if (user != null) {
+                    user.setPrimaryAccountSet(true);
+                    loginViewModel.update(user);
+                    //onUserDetailsLoaded(user);
+                    showProgress(false);
+                    showPrimaryAccountPopup();
+                }
             }
         });
         /*MOCK RESPONSE*/
@@ -194,7 +198,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
     private void getBillingDetailsForAccount(ArrayList<Account> accounts) {
         if (user != null) {
             for (Account account : accounts) {
-                dashboardViewModel.getBillingHistoryFromServer(user, account);
+                billingHistoryViewModel.loadBillingHistoryFromLocalDB(account.getAccountNumber());
             }
         }
     }
@@ -342,5 +346,9 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
     @Override
     public void onResume() {
         super.onResume();
+        if (IS_THRESHOLD_SET) {
+            dashboardViewModel.loadAccountsFromLocalDB(appPreferences.getUser_id());
+            IS_THRESHOLD_SET = false;
+        }
     }
 }

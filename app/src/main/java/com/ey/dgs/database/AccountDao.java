@@ -39,7 +39,7 @@ public interface AccountDao {
     @Insert
     void insert(List<Account> accounts);
 
-    @Query("SELECT * FROM Account WHERE user_id=:user_id ORDER BY isPrimaryAccount DESC")
+    @Query("SELECT * FROM Account WHERE user_id=:user_id ORDER BY isPrimaryAccount DESC, nickName")
     List<Account> getUserAccounts(int user_id);
 
 }

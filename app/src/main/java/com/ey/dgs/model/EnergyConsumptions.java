@@ -1,6 +1,7 @@
 package com.ey.dgs.model;
 
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
@@ -23,6 +24,11 @@ public class EnergyConsumptions implements Serializable {
     private boolean energyConsumptionFlag;
 
     private String averageConsumption;
+
+    @Ignore
+    private String[] thresholdSuggestion;
+
+    private String thresholdSuggestions;
 
     public int getAccountId() {
         return accountId;
@@ -62,5 +68,23 @@ public class EnergyConsumptions implements Serializable {
 
     public void setAverageConsumption(String averageConsumption) {
         this.averageConsumption = averageConsumption;
+    }
+
+    @Ignore
+    public String[] getThresholdSuggestion() {
+        return thresholdSuggestion;
+    }
+
+    @Ignore
+    public void setThresholdSuggestion(String[] thresholdSuggestion) {
+        this.thresholdSuggestion = thresholdSuggestion;
+    }
+
+    public String getThresholdSuggestions() {
+        return thresholdSuggestions;
+    }
+
+    public void setThresholdSuggestions(String thresholdSuggestions) {
+        this.thresholdSuggestions = thresholdSuggestions;
     }
 }

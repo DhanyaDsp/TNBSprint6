@@ -24,6 +24,7 @@
         <ScrollView
             android:layout_width="match_parent"
             android:layout_marginBottom="@dimen/large_padding"
+            android:nestedScrollingEnabled="true"
             android:layout_height="wrap_content">
 
             <LinearLayout

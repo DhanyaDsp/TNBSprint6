@@ -53,17 +53,16 @@
             android:orientation="horizontal"
             android:visibility="visible">
 
-            <android.support.v7.widget.AppCompatSpinner
+            <android.support.v7.widget.AppCompatEditText
                 android:id="@+id/spMonths"
                 android:layout_width="100dp"
                 android:layout_height="40dp"
                 android:layout_marginRight="@dimen/small_padding"
                 android:background="@drawable/rounded_white"
-                android:entries="@array/months"
+                android:fontFamily="@font/museosans_500"
                 android:gravity="right"
                 android:padding="@dimen/small_padding"
-                android:textColor="@android:color/white"
-                android:theme="@style/mySpinnerItemStyle" />
+                android:textColor="@android:color/white" />
 
             <android.support.v7.widget.AppCompatTextView
                 android:layout_width="wrap_content"

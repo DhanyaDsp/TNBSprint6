@@ -106,6 +106,7 @@ public class AccountSettingsViewModel extends ViewModel implements DatabaseCallb
 
     @Override
     public void onUpdate(Object object, int requestCode, int responseCode) {
+        Utils.showToast(context, "Account Details Updated");
         setAccountDetailsUpdated(true);
     }
 
@@ -146,7 +147,7 @@ public class AccountSettingsViewModel extends ViewModel implements DatabaseCallb
     public void onFailure(int requestCode, Object obj, int code) {
         if (requestCode == ApiClient.REQUEST_CODE_UPDATE_ACCOUNT_DETAILS) {
             Utils.showToast(context, (String) obj);
-            setAccountDetailsUpdated(true);
+            setAccountDetailsUpdated(false);
         } else if (requestCode == ApiClient.REQUEST_CODE_GET_ACCOUNT_DETAILS) {
             setLoader(false);
             Utils.showToast(context, (String) obj);

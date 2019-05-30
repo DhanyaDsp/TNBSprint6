@@ -21,6 +21,9 @@ import java.util.ArrayList;
 
 public class QuestionsPagerAdapter extends PagerAdapter {
 
+
+    private String thresholdSuggestions;
+    private String[] thresholdSuggestionsArray;
     private Context mContext;
     private ArrayList<Question> questions;
     private View.OnClickListener btnClickListener;
@@ -38,6 +41,9 @@ public class QuestionsPagerAdapter extends PagerAdapter {
         AppCompatTextView tvQuestion = layout.findViewById(R.id.tvQuestion);
         LinearLayout llDropDown = layout.findViewById(R.id.llDropDown);
         AppCompatEditText etAnswer = layout.findViewById(R.id.etAnswer);
+        AppCompatEditText etMonths = layout.findViewById(R.id.spMonths);
+        etAnswer.setText(question.getResponse());
+        etMonths.setText(question.getResponse());
         LinearLayout llMultiChoice = layout.findViewById(R.id.llMultiChoice);
         AppCompatButton btnNext = layout.findViewById(R.id.btnNext);
         BarChart bar_chart = layout.findViewById(R.id.bar_chart);
@@ -45,31 +51,37 @@ public class QuestionsPagerAdapter extends PagerAdapter {
         AppCompatButton btnTwo = layout.findViewById(R.id.btnTwo);
         AppCompatButton btnThree = layout.findViewById(R.id.btnThree);
         AppCompatButton btnFour = layout.findViewById(R.id.btnFour);
-        btnOne.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                etAnswer.setText("70");
-            }
-        });
-        btnTwo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                etAnswer.setText("90");
-            }
-        });
-        btnThree.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                etAnswer.setText("110");
-            }
-        });
-        btnFour.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                etAnswer.setText("130");
-            }
-        });
+        if (thresholdSuggestionsArray != null && thresholdSuggestionsArray.length > 0) {
+            btnOne.setText(thresholdSuggestionsArray[0]);
+            btnTwo.setText(thresholdSuggestionsArray[1]);
+            btnThree.setText(thresholdSuggestionsArray[2]);
+            btnFour.setText(thresholdSuggestionsArray[3]);
 
+            btnOne.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    etAnswer.setText(thresholdSuggestionsArray[0]);
+                }
+            });
+            btnTwo.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    etAnswer.setText(thresholdSuggestionsArray[1]);
+                }
+            });
+            btnThree.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    etAnswer.setText(thresholdSuggestionsArray[2]);
+                }
+            });
+            btnFour.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    etAnswer.setText(thresholdSuggestionsArray[3]);
+                }
+            });
+        }
         ArrayList<ChartData> chartDatum = new ArrayList<>();
         ChartData chartData;
 
@@ -122,4 +134,17 @@ public class QuestionsPagerAdapter extends PagerAdapter {
         return view == object;
     }
 
+    public void setThresholdSuggestions(String thresholdSuggestions) {
+        if (thresholdSuggestions != null) {
+            this.thresholdSuggestions = thresholdSuggestions;
+            this.thresholdSuggestions = this.thresholdSuggestions.replace("[", "");
+            this.thresholdSuggestions = this.thresholdSuggestions.replace("]", "");
+            this.thresholdSuggestionsArray = this.thresholdSuggestions.split(",");
+            notifyDataSetChanged();
+        }
+    }
+
+    public String getThresholdSuggestions() {
+        return thresholdSuggestions;
+    }
 }

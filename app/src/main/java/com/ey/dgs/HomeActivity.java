@@ -249,7 +249,9 @@ public class HomeActivity extends AppCompatActivity implements MyAccountFragment
     public void onBackStackChanged() {
         Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.homeFlContainer);
         if (currentFragment != null) {
-
+            if (currentFragment instanceof DashboardFragment) {
+                ((DashboardFragment) currentFragment).onResume();
+            }
         }
     }
 }

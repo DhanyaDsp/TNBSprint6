@@ -107,14 +107,17 @@ public class AccountNotificationSettingsFragment extends Fragment {
             }
         });
         accountSettingsViewModel.getIsAccountDetailsUpdated().observeForever(isUserUpdated -> {
+            showProgress(false);
             if (isUserUpdated) {
                 notificationSettingsAdapter.setUpdated(true);
-                showProgress(false);
                 if (activity != null) {
                     Utils.hideKeyBoard(activity);
                     DashboardFragment.IS_THRESHOLD_SET = true;
                     ((NotificationSettingsActivity) activity).onBackPressed();
                 }
+            } else {
+
+                Utils.showToast(getActivity(), "Failed to Update Settings");
             }
         });
         accountSettingsViewModel.getLoaderData().observe(getViewLifecycleOwner(), showProgress -> {

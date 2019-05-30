@@ -22,11 +22,18 @@ import com.ey.dgs.HomeActivity;
 import com.ey.dgs.R;
 import com.ey.dgs.adapters.QuestionsPagerAdapter;
 import com.ey.dgs.authentication.LoginViewModel;
+import com.ey.dgs.dashboard.DashboardFragment;
+import com.ey.dgs.dashboard.DashboardViewModel;
 import com.ey.dgs.dashboard.MyDashboardFragment;
+import com.ey.dgs.dashboard.myaccount.AccountSettingsViewModel;
 import com.ey.dgs.model.Account;
+import com.ey.dgs.model.AccountSettings;
 import com.ey.dgs.model.AnswerRequest;
+import com.ey.dgs.model.NotificationSettingsRequest;
 import com.ey.dgs.model.Question;
+import com.ey.dgs.model.Setting;
 import com.ey.dgs.model.User;
+import com.ey.dgs.notifications.settings.NotificationSettingsActivity;
 import com.ey.dgs.utils.AppPreferences;
 import com.ey.dgs.utils.Utils;
 
@@ -47,6 +54,10 @@ public class MMCQuestionsFragment extends Fragment {
     LoginViewModel loginViewModel;
     AppPreferences appPreferences;
     private User user;
+    private AccountSettingsViewModel accountSettingsViewModel;
+    private DashboardViewModel dashboardViewModel;
+    private String thresholdSuggestions;
+    private AccountSettings accountSettings;
 
 
     public static MMCQuestionsFragment newInstance(Account account) {
@@ -101,14 +112,19 @@ public class MMCQuestionsFragment extends Fragment {
             public void onClick(View v) {
                 int position = vpQuestions.getCurrentItem();
                 if (position < questions.size() - 1) {
-                    View currentQuestionView = vpQuestions.getChildAt(position);
-                    AppCompatEditText etAnswer = currentQuestionView.findViewById(R.id.etAnswer);
-                    AppCompatSpinner spMonths = currentQuestionView.findViewById(R.id.spMonths);
-                    String answer = "";
-                    if (questions.get(position).getQuestionId() == 3) {
-                        answer = spMonths.getSelectedItem().toString();
+                    View currentQuestionView;
+                    if (questions.get(position).getQuestionId() == 1) {
+                        currentQuestionView = vpQuestions.getChildAt(0);
                     } else {
-                        answer = etAnswer.getText().toString();
+                        currentQuestionView = vpQuestions.getChildAt(1);
+                    }
+                    AppCompatEditText etAnswer = currentQuestionView.findViewById(R.id.etAnswer);
+                    AppCompatEditText spMonths = currentQuestionView.findViewById(R.id.spMonths);
+                    String answer = "10";
+                    if (questions.get(position).getQuestionId() == 3) {
+                        answer = spMonths.getText().toString().trim();
+                    } else {
+                        answer = etAnswer.getText().toString().trim();
                     }
                     AnswerRequest answerRequest = new AnswerRequest();
                     answerRequest.setAccountNumber(account.getAccountNumber());
@@ -122,10 +138,28 @@ public class MMCQuestionsFragment extends Fragment {
                         Utils.showToast(getActivity(), "Please fill the answer");
                     }
                 } else {
-                    user.setMmcAlertFlag(false);
-                    loginViewModel.update(user);
+                    View currentQuestionView = vpQuestions.getChildAt(1);
+                    AppCompatEditText etAnswer = currentQuestionView.findViewById(R.id.etAnswer);
+                    AppCompatSpinner spMonths = currentQuestionView.findViewById(R.id.spMonths);
+                    String threshold = etAnswer.getText().toString().trim();
+                    if (!TextUtils.isEmpty(threshold)) {
+                        accountSettings.getEnergyConsumptions().setUserThreshold(threshold);
+                        NotificationSettingsRequest notificationSettingsRequest = new NotificationSettingsRequest();
+                        notificationSettingsRequest.setUserName(user.getEmail());
+                        notificationSettingsRequest.setAccountNumber(accountSettings.getAccountNumber());
+                        Setting setting = new Setting();
+                        setting.setEnergyConsumptions(accountSettings.getEnergyConsumptions());
+                        setting.setPushNotificationFlag(accountSettings.isPushNotificationFlag());
+                        setting.setServiceAvailabilityFlag(accountSettings.isServiceAvailabilityFlag());
+                        setting.setSmsNotificationFlag(accountSettings.isSmsNotificationFlag());
+                        notificationSettingsRequest.setSetting(setting);
+                        showProgress(true);
+                        accountSettingsViewModel.updateAccountSettingsInServer(notificationSettingsRequest);
+                    } else {
+                        Utils.showToast(getActivity(), "Please fill the answer");
+                    }
                     MyDashboardFragment.IS_THRESHOLD_SET = true;
-                    getFragmentManager().popBackStack();
+                    //getFragmentManager().popBackStack();
                 }
             }
         });
@@ -134,6 +168,16 @@ public class MMCQuestionsFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        subscribe();
+    }
+
+    private void subscribe() {
+        questionsPagerAdapter = new QuestionsPagerAdapter(getActivity(), questions);
+        vpQuestions.setAdapter(questionsPagerAdapter);
+        accountSettingsViewModel = ViewModelProviders.of(this).get(AccountSettingsViewModel.class);
+        accountSettingsViewModel.setContext(getActivity());
+        dashboardViewModel = ViewModelProviders.of(this).get(DashboardViewModel.class);
+        dashboardViewModel.setContext(getActivity());
         mViewModel = ViewModelProviders.of(this).get(MmcQuestionsViewModel.class);
         mViewModel.setContext(getActivity());
         loginViewModel = ViewModelProviders.of(this).get(LoginViewModel.class);
@@ -141,7 +185,18 @@ public class MMCQuestionsFragment extends Fragment {
         loginViewModel.getUserDetail(appPreferences.getUser_id());
         loginViewModel.getUserDetail().observe(getViewLifecycleOwner(), user -> {
             this.user = user;
-            mViewModel.loadQuestionsFromServer(account.getAccountNumber(), this.user.getEmail());
+            accountSettingsViewModel.loadAccountSettingsFromLocalDB(account.getAccountNumber());
+            accountSettingsViewModel.getAccountSettingsData().observe(this, accountSettings -> {
+                if (accountSettings == null) {
+                    accountSettingsViewModel.getAccountSettingsFromServer(user.getEmail(), account.getAccountNumber());
+                } else {
+                    this.accountSettings = accountSettings;
+                    if (accountSettings.getEnergyConsumptions() != null) {
+                        questionsPagerAdapter.setThresholdSuggestions(accountSettings.getEnergyConsumptions().getThresholdSuggestions());
+                        mViewModel.loadQuestionsFromServer(account.getAccountNumber(), this.user.getEmail());
+                    }
+                }
+            });
 
         });
         mViewModel.getLoaderData().observe(getViewLifecycleOwner(), loading -> {
@@ -155,17 +210,25 @@ public class MMCQuestionsFragment extends Fragment {
                 Question thresholdQuestion = new Question();
                 thresholdQuestion.setQuestionId(4);
                 thresholdQuestion.setQuestion("Notify me when my consumption reaches (RM)");
+                thresholdQuestion.setResponse(accountSettings.getEnergyConsumptions().getUserThreshold());
                 questions.add(thresholdQuestion);
-                this.questions = questions;
-                setAdapter(this.questions);
+                this.questions.clear();
+                this.questions.addAll(questions);
+                questionsPagerAdapter.notifyDataSetChanged();
             }
         });
-    }
 
-    private void setAdapter(ArrayList<Question> questions) {
-        questionsPagerAdapter = new QuestionsPagerAdapter(getActivity(), questions);
-        vpQuestions.setAdapter(questionsPagerAdapter);
-
+        accountSettingsViewModel.getIsAccountDetailsUpdated().observe(getViewLifecycleOwner(), isUserUpdated -> {
+            showProgress(false);
+            if (isUserUpdated) {
+                DashboardFragment.IS_THRESHOLD_SET = true;
+                account.setThreshold(true);
+                dashboardViewModel.updateAccount(account);
+            } else {
+                DashboardFragment.IS_THRESHOLD_SET = false;
+            }
+            getFragmentManager().popBackStack();
+        });
     }
 
     @Override

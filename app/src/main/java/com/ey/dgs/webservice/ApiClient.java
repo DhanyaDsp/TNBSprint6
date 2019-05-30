@@ -288,10 +288,15 @@ public class ApiClient {
             public void onResponse(Call<BillingDetailsResponse> call, Response<BillingDetailsResponse> response) {
                 BillingDetailsResponse billingDetailsResponse = response.body();
                 if (billingDetailsResponse != null) {
-                    account.setBillingDetails(billingDetailsResponse.getResult().getBillingDetails());
-                    callback.onSuccess(REQUEST_CODE_GET_BILLING_HISTORY, account, response.code());
+                    if (billingDetailsResponse.isSuccess()) {
+                        account.setBillingDetails(billingDetailsResponse.getResult().getBillingDetails());
+                        callback.onSuccess(REQUEST_CODE_GET_BILLING_HISTORY, billingDetailsResponse, response.code());
+                    } else {
+                        callback.onFailure(REQUEST_CODE_GET_BILLING_HISTORY, billingDetailsResponse.getMessage(), response.code());
+                    }
                 } else {
                     billingDetailsResponse = new BillingDetailsResponse();
+                    billingDetailsResponse.setMessage("Please try again!");
                     callback.onFailure(REQUEST_CODE_GET_BILLING_HISTORY, billingDetailsResponse.getMessage(), response.code());
                 }
             }

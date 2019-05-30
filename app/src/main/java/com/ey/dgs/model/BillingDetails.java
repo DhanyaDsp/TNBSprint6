@@ -1,8 +1,11 @@
 package com.ey.dgs.model;
 
+
 import java.io.Serializable;
 
 public class BillingDetails implements Serializable {
+
+    private int id;
 
     private String billedDate;
 
@@ -22,5 +25,13 @@ public class BillingDetails implements Serializable {
 
     public void setBilledValue(float billedValue) {
         this.billedValue = billedValue;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

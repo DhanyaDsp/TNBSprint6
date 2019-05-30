@@ -6,7 +6,7 @@ public class BillingDetailsResponse {
 
     private Result result;
 
-    private String success;
+    private boolean success;
 
     private String message;
 
@@ -18,11 +18,11 @@ public class BillingDetailsResponse {
         this.result = result;
     }
 
-    public String getSuccess() {
+    public boolean isSuccess() {
         return success;
     }
 
-    public void setSuccess(String success) {
+    public void setSuccess(boolean success) {
         this.success = success;
     }
 

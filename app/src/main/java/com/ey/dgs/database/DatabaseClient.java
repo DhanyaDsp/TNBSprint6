@@ -7,10 +7,12 @@ import android.text.TextUtils;
 
 import com.ey.dgs.model.Account;
 import com.ey.dgs.model.AccountSettings;
+import com.ey.dgs.model.BillingHistory;
 import com.ey.dgs.model.EnergyConsumptions;
 import com.ey.dgs.model.Notification;
 import com.ey.dgs.model.User;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class DatabaseClient {
@@ -157,6 +159,107 @@ public class DatabaseClient {
         st.execute();
     }
 
+    public void addBillingHistories(int requestCode, List<BillingHistory> billingHistories, DatabaseCallback databaseCallback) {
+        class AddBillingHistoryTask extends AsyncTask<Void, Void, Void> {
+
+            @Override
+            protected Void doInBackground(Void... voids) {
+
+
+                DatabaseClient.getInstance(mCtx).getAppDatabase()
+                        .getBillingHistoryDao()
+                        .clear();
+
+                DatabaseClient.getInstance(mCtx).getAppDatabase()
+                        .getBillingHistoryDao()
+                        .insert(billingHistories);
+
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                databaseCallback.onInsert(billingHistories, requestCode, 0);
+            }
+        }
+
+        AddBillingHistoryTask st = new AddBillingHistoryTask();
+        st.execute();
+    }
+
+    public void addBillingHistory(int requestCode, BillingHistory billingHistory, DatabaseCallback databaseCallback) {
+        class AddBillingHistoryTask extends AsyncTask<Void, Void, Void> {
+
+            @Override
+            protected Void doInBackground(Void... voids) {
+
+                DatabaseClient.getInstance(mCtx).getAppDatabase()
+                        .getBillingHistoryDao()
+                        .delete(billingHistory.getAccountNumber());
+
+                DatabaseClient.getInstance(mCtx).getAppDatabase()
+                        .getBillingHistoryDao()
+                        .insert(billingHistory);
+
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                databaseCallback.onInsert(billingHistory, requestCode, 0);
+            }
+        }
+
+        AddBillingHistoryTask st = new AddBillingHistoryTask();
+        st.execute();
+    }
+
+    public void getBillingHistories(int requestCode, DatabaseCallback databaseCallback) {
+        class GetAccountsTask extends AsyncTask<Void, Void, List<BillingHistory>> {
+
+            @Override
+            protected List<BillingHistory> doInBackground(Void... voids) {
+
+                return DatabaseClient.getInstance(mCtx).getAppDatabase()
+                        .getBillingHistoryDao()
+                        .getAllBillingHistory();
+            }
+
+            @Override
+            protected void onPostExecute(List<BillingHistory> billingHistories) {
+                super.onPostExecute(billingHistories);
+                databaseCallback.onReceived(billingHistories, requestCode, 0);
+            }
+        }
+
+        GetAccountsTask st = new GetAccountsTask();
+        st.execute();
+    }
+
+    public void getBillingHistory(String accountNumber,int requestCode, DatabaseCallback databaseCallback) {
+        class GetAccountsTask extends AsyncTask<Void, Void, BillingHistory> {
+
+            @Override
+            protected BillingHistory doInBackground(Void... voids) {
+
+                return DatabaseClient.getInstance(mCtx).getAppDatabase()
+                        .getBillingHistoryDao()
+                        .getBillingHistory(accountNumber);
+            }
+
+            @Override
+            protected void onPostExecute(BillingHistory billingHistory) {
+                super.onPostExecute(billingHistory);
+                databaseCallback.onReceived(billingHistory, requestCode, 0);
+            }
+        }
+
+        GetAccountsTask st = new GetAccountsTask();
+        st.execute();
+    }
+
     public void addEnergyConsumptionsToLocalDB(int requestCode, List<EnergyConsumptions> energyConsumptions, DatabaseCallback databaseCallback) {
         class AddEnergyConsumptionsTask extends AsyncTask<Void, Void, Void> {
 
@@ -287,9 +390,18 @@ public class DatabaseClient {
             @Override
             protected AccountSettings doInBackground(Void... voids) {
 
-                return DatabaseClient.getInstance(mCtx).getAppDatabase()
+                AccountSettings accountSettings = DatabaseClient.getInstance(mCtx).getAppDatabase()
                         .getAccountSettingsDao()
                         .getAccountSettings(accountNumber);
+                EnergyConsumptions energyConsumptions =
+                        DatabaseClient.getInstance(mCtx).getAppDatabase()
+                                .getEnergyConsumptionsDao()
+                                .getEnergyConsumption(accountNumber);
+                if (accountSettings != null) {
+                    accountSettings.setEnergyConsumptions(energyConsumptions);
+                }
+
+                return accountSettings;
 
             }
 
@@ -336,10 +448,11 @@ public class DatabaseClient {
                 DatabaseClient.getInstance(mCtx).getAppDatabase()
                         .getAccountSettingsDao()
                         .insert(accountSettings);
-
-                accountSettings.getEnergyConsumptions().setAccountNumber(accountSettings.getAccountNumber());
+                EnergyConsumptions energyConsumptions = accountSettings.getEnergyConsumptions();
+                energyConsumptions.setAccountNumber(accountSettings.getAccountNumber());
+                energyConsumptions.setThresholdSuggestions(Arrays.toString((energyConsumptions.getThresholdSuggestion())));
                 DatabaseClient.getInstance(mCtx).getAppDatabase().getEnergyConsumptionsDao()
-                        .insert(accountSettings.getEnergyConsumptions());
+                        .insert(energyConsumptions);
 
                 return null;
             }

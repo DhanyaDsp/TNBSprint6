@@ -31,6 +31,7 @@ public class Account implements Serializable {
     private int user_id;
     private boolean isAccount;
     private boolean isPrimaryAccount;
+    private boolean isThreshold;
     @Ignore
     BillingDetails[] billingDetails;
 
@@ -154,5 +155,13 @@ public class Account implements Serializable {
 
     public void setEnergyTip(String energyTip) {
         this.energyTip = energyTip;
+    }
+
+    public boolean isThreshold() {
+        return isThreshold;
+    }
+
+    public void setThreshold(boolean threshold) {
+        isThreshold = threshold;
     }
 }

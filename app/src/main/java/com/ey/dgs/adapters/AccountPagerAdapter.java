@@ -35,9 +35,13 @@ public class AccountPagerAdapter extends PagerAdapter {
         viewGroup.addView(layout);
 
         BarChart barChart = layout.findViewById(R.id.bar_chart);
-        AppCompatTextView tvEnergyTip= layout.findViewById(R.id.tvEnergyTip);
+        AppCompatTextView tvEnergyTip = layout.findViewById(R.id.tvEnergyTip);
         ArrayList<ChartData> chartDatum = new ArrayList<>();
-        tvEnergyTip.setText(account.getEnergyTip());
+        if (account.isThreshold()) {
+            tvEnergyTip.setText(account.getEnergyTip());
+        } else {
+            tvEnergyTip.setText(null);
+        }
         ChartData chartData;
 
         for (int i = 0; i < 6; i++) {
@@ -54,6 +58,7 @@ public class AccountPagerAdapter extends PagerAdapter {
                 dashboardFragment.moveToMyDashboardPage(account);
             }
         });
+        layout.setTag(account.getAccountNumber());
         return layout;
     }
 

@@ -227,7 +227,7 @@ public class NotificationSettingsAdapter extends RecyclerView.Adapter<RecyclerVi
 
                                 @Override
                                 public void afterTextChanged(Editable s) {
-                                    String threshold = s.toString();
+                                    String threshold = s.toString().trim();
                                     if (!TextUtils.isEmpty(threshold) && Integer.parseInt(threshold) > 0) {
                                         isThresholdChanged = true;
                                         energyConsumptions.setUserThreshold(s.toString());
