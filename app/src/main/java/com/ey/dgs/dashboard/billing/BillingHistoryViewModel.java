@@ -16,6 +16,8 @@ import com.ey.dgs.utils.AppPreferences;
 import com.ey.dgs.utils.Utils;
 import com.ey.dgs.webservice.APICallback;
 import com.ey.dgs.webservice.ApiClient;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,16 +25,25 @@ import java.util.List;
 
 public class BillingHistoryViewModel extends ViewModel implements DatabaseCallback, APICallback {
 
-    private MutableLiveData<ArrayList<BillingHistory>> billingHistoryData = new MutableLiveData<>();
+    private MutableLiveData<ArrayList<BillingHistory>> billingHistories = new MutableLiveData<>();
+    private MutableLiveData<BillingHistory> billingHistory = new MutableLiveData<>();
     private Context context;
     private AppPreferences appPreferences;
 
-    public LiveData<ArrayList<BillingHistory>> getBillingHistory() {
-        return billingHistoryData;
+    public LiveData<ArrayList<BillingHistory>> getBillingHistories() {
+        return billingHistories;
     }
 
-    private void setBillingHistory(ArrayList<BillingHistory> billingHistories) {
-        this.billingHistoryData.postValue(billingHistories);
+    public LiveData<BillingHistory> getBillingHistory() {
+        return billingHistory;
+    }
+
+    private void setBillingHistory(BillingHistory billingHistory) {
+        this.billingHistory.postValue(billingHistory);
+    }
+
+    private void setBillingHistories(ArrayList<BillingHistory> billingHistories) {
+        this.billingHistories.postValue(billingHistories);
     }
 
     public void setContext(Context context) {
@@ -64,8 +75,9 @@ public class BillingHistoryViewModel extends ViewModel implements DatabaseCallba
     public void onInsert(Object object, int requestCode, int responseCode) {
         if (requestCode == BillingHistory.REQUEST_CODE_ADD_BILLING_HISTORY) {
             if (object != null) {
-                ArrayList<BillingHistory> billingHistories = new ArrayList((List<BillingHistory>) object);
-                setBillingHistory(billingHistories);
+                if (object instanceof BillingHistory) {
+                    setBillingHistory((BillingHistory) object);
+                }
             }
         }
     }
@@ -81,7 +93,7 @@ public class BillingHistoryViewModel extends ViewModel implements DatabaseCallba
     public void onReceived(Object object, int requestCode, int responseCode) {
         if (requestCode == BillingHistory.REQUEST_CODE_GET_BILLING_HISTORY) {
             BillingHistory billingHistory = (BillingHistory) object;
-            billingHistoryData.getValue().add(billingHistory);
+            setBillingHistory(billingHistory);
         }
     }
 
@@ -97,7 +109,14 @@ public class BillingHistoryViewModel extends ViewModel implements DatabaseCallba
             BillingDetails[] billingDetails = billingDetailsResponse.getResult().getBillingDetails();
             BillingHistory billingHistory = new BillingHistory();
             billingHistory.setAccountNumber(billingDetailsResponse.getResult().getAccountNumber());
-            billingHistory.setBillingDetails(Arrays.toString(billingDetails));
+            JsonArray billingDetailsJsonArray = new JsonArray();
+            for (BillingDetails billingDetail : billingDetails) {
+                JsonObject object = new JsonObject();
+                object.addProperty("billedValue", billingDetail.getBilledValue());
+                object.addProperty("billedDate", billingDetail.getBilledDate());
+                billingDetailsJsonArray.add(object);
+            }
+            billingHistory.setBillingDetails(billingDetailsJsonArray.toString());
             addBillingHistoryToLocalDB((billingHistory));
         }
     }

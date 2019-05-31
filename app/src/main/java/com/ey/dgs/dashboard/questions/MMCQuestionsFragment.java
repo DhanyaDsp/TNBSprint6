@@ -97,7 +97,6 @@ public class MMCQuestionsFragment extends Fragment {
 
     private void initViews() {
         vpQuestions = rootView.findViewById(R.id.vpQuestions);
-        vpQuestions.setOffscreenPageLimit(1);
         vpQuestions.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -215,6 +214,7 @@ public class MMCQuestionsFragment extends Fragment {
                 this.questions.clear();
                 this.questions.addAll(questions);
                 questionsPagerAdapter.notifyDataSetChanged();
+                btnNext.setVisibility(View.VISIBLE);
             }
         });
 

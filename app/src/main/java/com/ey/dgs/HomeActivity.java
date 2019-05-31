@@ -52,6 +52,7 @@ public class HomeActivity extends AppCompatActivity implements MyAccountFragment
     private boolean isServerAccountUpdated;
     private BottomNavigationView navigation;
     private boolean dashboardShown;
+    private boolean notificationRegistered;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +73,10 @@ public class HomeActivity extends AppCompatActivity implements MyAccountFragment
     }
 
     private void notificationsSetup() {
-        registerWithNotificationHubs(this, "Admin@xyzmail.com");
+        if (!notificationRegistered) {
+            registerWithNotificationHubs(this, user.getEmail());
+            notificationRegistered = true;
+        }
     }
 
     public static void registerWithNotificationHubs(Context context, String emailID) {
@@ -94,6 +98,7 @@ public class HomeActivity extends AppCompatActivity implements MyAccountFragment
         loginViewModel.getUserDetail().observe(this, user -> {
             if (user != null) {
                 this.user = user;
+                notificationsSetup();
                 if (!isUserDetailsServiceCalled) {
                     dashboardViewModel.loadAccountsFromLocalDB(appPreferences.getUser_id());
                     loginViewModel.getUserDetailFromServer(this.user);
@@ -143,6 +148,9 @@ public class HomeActivity extends AppCompatActivity implements MyAccountFragment
         switch (item.getItemId()) {
             case R.id.action_notification:
                 moveToNotificationListPage();
+                return true;
+            case android.R.id.home:
+                onBackPressed();
                 return true;
         }
         return false;

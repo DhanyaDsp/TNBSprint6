@@ -3,51 +3,48 @@ package com.ey.dgs.dashboard;
 import android.app.Activity;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
-import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatButton;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-import com.ey.dgs.HomeActivity;
 import com.ey.dgs.R;
+import com.ey.dgs.adapters.NotificationSettingsAdapter;
 import com.ey.dgs.authentication.LoginViewModel;
-import com.ey.dgs.dashboard.myaccount.MyAccountFragment;
+import com.ey.dgs.dashboard.billing.BillingHistoryViewModel;
+import com.ey.dgs.dashboard.myaccount.AccountSettingsViewModel;
 import com.ey.dgs.dashboard.questions.MMCQuestionsFragment;
 import com.ey.dgs.databinding.MyDashboardFragmentBinding;
 import com.ey.dgs.model.Account;
+import com.ey.dgs.model.AccountSettings;
+import com.ey.dgs.model.BillingDetails;
+import com.ey.dgs.model.EnergyConsumptions;
 import com.ey.dgs.model.User;
 import com.ey.dgs.model.chart.ChartData;
-import com.ey.dgs.notifications.settings.NotificationSettingsActivity;
 import com.ey.dgs.utils.AppPreferences;
-import com.ey.dgs.utils.DialogHelper;
 import com.ey.dgs.utils.FragmentUtils;
+import com.ey.dgs.utils.Utils;
 import com.ey.dgs.views.BarChart;
+import com.google.gson.Gson;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-
-import static com.ey.dgs.utils.FragmentUtils.INDEX_MY_ACCOUNT;
 
 public class MyDashboardFragment extends Fragment implements View.OnClickListener {
 
     private static final int REQUEST_CODE_SET_THRESHOLD = 101;
     public static boolean IS_THRESHOLD_SET = false;
     private View rootView;
-    ArrayList<Account> accounts = new ArrayList<>();
-    private Context context;
-    private DashboardViewModel dashboardViewModel;
     private OnFragmentInteractionListener mListener;
     AppPreferences appPreferences;
-    private LoginViewModel loginViewModel;
-    private User user;
     Account selectedAccount;
     private MyDashboardFragmentBinding myDashboardFragmentBinding;
     LinearLayout llManageBtns;
@@ -56,6 +53,14 @@ public class MyDashboardFragment extends Fragment implements View.OnClickListene
     BarChart barChart;
     View loader;
     private boolean billingDetailsServiceCalled;
+    BillingHistoryViewModel billingHistoryViewModel;
+    LoginViewModel loginViewModel;
+    private Context context;
+    BillingDetails[] billingDetails;
+    private User user;
+    private AccountSettingsViewModel accountSettingsViewModel;
+    private AccountSettings accountSettings;
+    private EnergyConsumptions energyConsumptions;
 
     public static MyDashboardFragment newInstance(Account account) {
         MyDashboardFragment fragment = new MyDashboardFragment();
@@ -93,91 +98,82 @@ public class MyDashboardFragment extends Fragment implements View.OnClickListene
         if (mListener != null) {
             mListener.onFragmentInteraction("");
         }
-
-        ArrayList<ChartData> chartDatum = new ArrayList<>();
-        ChartData chartData;
-
-        for (int i = 0; i < 8; i++) {
-            chartData = new ChartData();
-            chartData.setTag("LB" + (i + 1));
-            chartData.setVal((float)(i+1)*3);
-            chartDatum.add(chartData);
-        }
-
-        barChart.setData(chartDatum)
-                .setTitle("4 Apr - 24 Mar")
-                .setBarUnit("RM")
-                .setThreshold(true, 16.0f)
-                .setSelectionRequired(true);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        loginViewModel = ViewModelProviders.of(this).get(LoginViewModel.class);
+        loginViewModel.setContext(getActivity());
+        loginViewModel.getUserDetail(appPreferences.getUser_id());
+        accountSettingsViewModel = ViewModelProviders.of(this).get(AccountSettingsViewModel.class);
+        accountSettingsViewModel.setContext(getActivity());
+        billingHistoryViewModel = ViewModelProviders.of(this).get(BillingHistoryViewModel.class);
+        billingHistoryViewModel.setContext(getActivity());
+        billingHistoryViewModel.loadBillingHistoryFromLocalDB(selectedAccount.getAccountNumber());
+        loginViewModel.getUserDetail().observe(getViewLifecycleOwner(), user -> {
+            if (user != null) {
+                this.user = user;
+                accountSettingsViewModel.loadAccountSettingsFromLocalDB(selectedAccount.getAccountNumber());
+                accountSettingsViewModel.getAccountSettingsData().observe(getViewLifecycleOwner(), accountSettings -> {
+                    if (accountSettings == null) {
+                        accountSettingsViewModel.getAccountSettingsFromServer(user.getEmail(), selectedAccount.getAccountNumber());
+                    } else {
+                        this.accountSettings = accountSettings;
+                        accountSettingsViewModel.loadEnergyConsumptionsFromLocalDB(accountSettings.getAccountNumber());
+                        accountSettingsViewModel.getEnergyConsumptions().observeForever(energyConsumptions -> {
+                            this.energyConsumptions = energyConsumptions;
+                            if (energyConsumptions != null) {
+                                billingHistoryViewModel.getBillingHistory().observe(getViewLifecycleOwner(), billingHistory -> {
+                                    if (billingHistory == null) {
+                                        billingHistoryViewModel.getBillingHistoryFromServer(user, selectedAccount);
+                                    } else {
+                                        Gson gson = new Gson();
+                                        BillingDetails[] billingDetails = gson.fromJson(billingHistory.getBillingDetails(), BillingDetails[].class);
+                                        setChartData(billingDetails);
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+            }
+        });
+
+    }
+
+    private void setChartData(BillingDetails[] billingDetails) {
+        ArrayList<ChartData> chartDatum = new ArrayList<>();
+        ChartData chartData;
+
+        for (int i = 0; i < billingDetails.length; i++) {
+            BillingDetails billingDetail = billingDetails[i];
+            chartData = new ChartData();
+            chartData.setTag(Utils.formatAccountDate(billingDetail.getBilledDate()));
+            chartData.setVal(billingDetail.getBilledValue());
+            chartDatum.add(chartData);
+        }
+        String startDate = Utils.formatAccountDate(billingDetails[0].getBilledDate());
+        String endDate = Utils.formatAccountDate(billingDetails[billingDetails.length - 1].getBilledDate());
+
+        barChart.setData(chartDatum)
+                .setTitle(startDate + " - " + endDate)
+                .setBarUnit("RM")
+                .setThreshold(selectedAccount.isThreshold(), Float.parseFloat(energyConsumptions.getUserThreshold()))
+                .setSelectionRequired(true);
     }
 
     private void subscribe() {
-        loginViewModel = ViewModelProviders.of(this).get(LoginViewModel.class);
-        loginViewModel.getUserDetail(appPreferences.getUser_id());
-        dashboardViewModel = ViewModelProviders.of(this).get(DashboardViewModel.class);
-        dashboardViewModel.setContext(getActivity());
-        loginViewModel.getUserDetail().observe(getViewLifecycleOwner(), user -> {
-            onUserDetailsLoaded(user);
-        });
-        dashboardViewModel.getLoaderData().observe(getViewLifecycleOwner(), this::showProgress);
-        dashboardViewModel.getAccounts().observe(getViewLifecycleOwner(), accounts -> {
-            if (accounts.size() > 0) {
-                this.accounts.clear();
-                this.accounts.addAll(accounts);
-                for (Account account : this.accounts) {
-                    if (account.isPrimaryAccount()) {
-                        this.selectedAccount = account;
-                        //user.setPrimaryAccountSet(true);
-                    }
-                }
-                if (selectedAccount == null) {
-                    selectedAccount = accounts.get(0);
-                }
-
-                myDashboardFragmentBinding.setSelectedAccount(selectedAccount);
-                dashboardViewModel.setSelectedAccount(selectedAccount);
-                if (!billingDetailsServiceCalled) {
-                    getBillingDetailsForAccount(accounts);
-                    billingDetailsServiceCalled = true;
-                }
-            }
-        });
-        dashboardViewModel.isPrimaryAccountSet().observe(getViewLifecycleOwner(), isPrimaryAccountSet -> {
-            if (isPrimaryAccountSet) {
-                for (Account account : accounts) {
-                    if (!selectedAccount.getAccountNumber().equalsIgnoreCase(account.getAccountNumber())) {
-                        if (account.isPrimaryAccount()) {
-                            account.setPrimaryAccount(false);
-                            dashboardViewModel.updateAccount(account);
-                        }
-                    } else {
-                        account.setPrimaryAccount(true);
-                        selectedAccount = account;
-                    }
-                }
-                user.setPrimaryAccountSet(true);
-                onUserDetailsLoaded(user);
-                showPrimaryAccountPopup();
-            }
-        });
+        ;
     }
 
-    private void getBillingDetailsForAccount(ArrayList<Account> accounts) {
+    /*private void getBillingDetailsForAccount(ArrayList<Account> accounts) {
         if (user != null) {
             for (Account account : accounts) {
                 dashboardViewModel.getBillingHistoryFromServer(user, account);
             }
         }
-    }
-
-    private void onUserDetailsLoaded(User user) {
-    }
-
+    }*/
 
     @Override
     public void onAttach(Activity activity) {
@@ -197,21 +193,6 @@ public class MyDashboardFragment extends Fragment implements View.OnClickListene
         mListener = null;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        if (IS_THRESHOLD_SET) {
-            loginViewModel.getUserDetail(appPreferences.getUser_id());
-            loginViewModel.getUserDetail().observe(getViewLifecycleOwner(), user -> {
-                this.user = user;
-                this.user.setPrimaryAccountSet(true);
-                onUserDetailsLoaded(this.user);
-            });
-            IS_THRESHOLD_SET = false;
-        }
-        //subscribe();
-    }
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
@@ -221,23 +202,9 @@ public class MyDashboardFragment extends Fragment implements View.OnClickListene
         }
     }
 
-    public void openFragment(int index, Object obj) {
-        if (index == INDEX_MY_ACCOUNT) {
-            dashboardViewModel.setSelectedAccount((Account) obj);
-            FragmentUtils.newInstance(((HomeActivity) getActivity()).getSupportFragmentManager())
-                    .addFragment(index, obj, MyAccountFragment.class.getName(), R.id.homeFlContainer);
-        }
-    }
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.tvSubscribe:
-                moveToNotificationSettingsPage();
-                break;
-            case R.id.btnSetPrimaryAccount:
-                setPrimaryAccount();
-                break;
             case R.id.btnManageConsumption:
                 showQuestionsFragment();
                 break;
@@ -251,35 +218,6 @@ public class MyDashboardFragment extends Fragment implements View.OnClickListene
                 selectedAccount, MMCQuestionsFragment.class.getName(), R.id.homeFlContainer);
     }
 
-    private void setPrimaryAccount() {
-        if (selectedAccount != null) {
-            //dashboardViewModel.setPrimaryAccountInServer(user, selectedAccount);
-            /*Demo*/
-            user.setPrimaryAccountSet(true);
-            selectedAccount.setPrimaryAccount(true);
-            showPrimaryAccountPopup();
-        }
-
-    }
-
-    private void showPrimaryAccountPopup() {
-        DialogHelper.showPrimaryAccountDialog(selectedAccount, getActivity(), new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                moveToNotificationSettingsPage();
-            }
-        });
-    }
-
-    private void moveToNotificationSettingsPage() {
-        if (accounts != null && accounts.size() > 0) {
-            Intent intent = new Intent(getActivity(), NotificationSettingsActivity.class);
-            intent.putExtra("isComingFromPopup", true);
-            intent.putExtra("account", (Serializable) selectedAccount);
-            getActivity().startActivityForResult(intent, REQUEST_CODE_SET_THRESHOLD);
-        }
-    }
-
     public interface OnFragmentInteractionListener {
         public void onFragmentInteraction(String title);
     }
@@ -289,6 +227,28 @@ public class MyDashboardFragment extends Fragment implements View.OnClickListene
             loader.setVisibility(View.VISIBLE);
         } else {
             loader.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (IS_THRESHOLD_SET) {
+            accountSettingsViewModel.loadAccountSettingsFromLocalDB(selectedAccount.getAccountNumber());
+            accountSettingsViewModel.getAccountSettingsData().observe(getViewLifecycleOwner(), accountSettings -> {
+                if (accountSettings == null) {
+                    accountSettingsViewModel.getAccountSettingsFromServer(user.getEmail(), selectedAccount.getAccountNumber());
+                } else {
+                    this.accountSettings = accountSettings;
+                    accountSettingsViewModel.loadEnergyConsumptionsFromLocalDB(accountSettings.getAccountNumber());
+                    accountSettingsViewModel.getEnergyConsumptions().observeForever(energyConsumptions -> {
+                        this.energyConsumptions = energyConsumptions;
+                        if (energyConsumptions != null) {
+                            barChart.setThreshold(true, Float.parseFloat(energyConsumptions.getUserThreshold()));
+                        }
+                    });
+                }
+            });
         }
     }
 }

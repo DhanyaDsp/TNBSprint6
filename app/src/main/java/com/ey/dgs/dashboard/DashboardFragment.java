@@ -28,6 +28,7 @@ import com.ey.dgs.R;
 import com.ey.dgs.adapters.AccountAdapter;
 import com.ey.dgs.adapters.AccountPagerAdapter;
 import com.ey.dgs.adapters.AccountSpinnerAdapter;
+import com.ey.dgs.adapters.AccountsPagerAdapter;
 import com.ey.dgs.authentication.LoginViewModel;
 import com.ey.dgs.dashboard.billing.BillingHistoryViewModel;
 import com.ey.dgs.dashboard.myaccount.MyAccountFragment;
@@ -68,10 +69,11 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
     private DashboardFragmentBinding loginFragmentBinding;
     AppCompatImageView ivBanner;
     View loader;
-    private AccountPagerAdapter accountPagerAdapter;
+    //private AccountPagerAdapter accountPagerAdapter;
     private boolean billingDetailsServiceCalled;
     AppCompatSpinner spAccounts;
     AccountSpinnerAdapter accountSpinnerAdapter;
+    AccountsPagerAdapter accountsPagerAdapter;
 
 
     public static DashboardFragment newInstance() {
@@ -141,8 +143,11 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
             if (accounts.size() > 0) {
                 this.accounts.clear();
                 this.accounts.addAll(accounts);
-                accountPagerAdapter = new AccountPagerAdapter(this, getActivity(), this.accounts);
-                vpAccounts.setAdapter(accountPagerAdapter);
+                vpAccounts.setOffscreenPageLimit(accounts.size());
+                accountsPagerAdapter = new AccountsPagerAdapter(getFragmentManager(), this.accounts);
+                vpAccounts.setAdapter(accountsPagerAdapter);
+                //accountPagerAdapter = new AccountPagerAdapter(this, getActivity(), this.accounts);
+                //vpAccounts.setAdapter(accountPagerAdapter);
                 for (Account account : this.accounts) {
                     if (account.isPrimaryAccount()) {
                         this.selectedAccount = account;
