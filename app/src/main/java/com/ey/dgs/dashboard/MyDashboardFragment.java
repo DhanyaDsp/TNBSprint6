@@ -91,7 +91,6 @@ public class MyDashboardFragment extends Fragment implements View.OnClickListene
     private void initView() {
         loader = rootView.findViewById(R.id.loader);
         rlChart = rootView.findViewById(R.id.rlChart);
-        barChart = rootView.findViewById(R.id.bar_chart);
         btnManageConsumption = rootView.findViewById(R.id.btnManageConsumption);
         btnManageConsumption.setOnClickListener(this);
         llManageBtns = rootView.findViewById(R.id.llManageBtns);
@@ -103,6 +102,39 @@ public class MyDashboardFragment extends Fragment implements View.OnClickListene
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+    }
+
+    private void setChartData(BillingDetails[] billingDetails) {
+        barChart = rootView.findViewById(R.id.accountChart);
+        ArrayList<ChartData> chartDatum = new ArrayList<>();
+        ChartData chartData;
+
+        for (int i = 0; i < billingDetails.length; i++) {
+            BillingDetails billingDetail = billingDetails[i];
+            chartData = new ChartData();
+            chartData.setTag(Utils.formatAccountDate(billingDetail.getBilledDate()));
+            chartData.setVal(billingDetail.getBilledValue());
+            chartDatum.add(chartData);
+        }
+        String startDate = Utils.formatAccountDate(billingDetails[0].getBilledDate());
+        String endDate = Utils.formatAccountDate(billingDetails[billingDetails.length - 1].getBilledDate());
+        if (selectedAccount.isThreshold()) {
+            barChart.setData(chartDatum)
+                    .setTitle(startDate + " - " + endDate)
+                    .setBarUnit("RM")
+                    .setThreshold(true, Float.parseFloat(energyConsumptions.getUserThreshold()))
+                    .setSelectionRequired(true);
+        } else {
+            barChart.setData(chartDatum)
+                    .setTitle(startDate + " - " + endDate)
+                    .setBarUnit("RM")
+                    .setBarUnit("RM")
+                    .setSelectionRequired(false);
+        }
+    }
+
+    private void subscribe() {
         loginViewModel = ViewModelProviders.of(this).get(LoginViewModel.class);
         loginViewModel.setContext(getActivity());
         loginViewModel.getUserDetail(appPreferences.getUser_id());
@@ -139,32 +171,6 @@ public class MyDashboardFragment extends Fragment implements View.OnClickListene
                 });
             }
         });
-
-    }
-
-    private void setChartData(BillingDetails[] billingDetails) {
-        ArrayList<ChartData> chartDatum = new ArrayList<>();
-        ChartData chartData;
-
-        for (int i = 0; i < billingDetails.length; i++) {
-            BillingDetails billingDetail = billingDetails[i];
-            chartData = new ChartData();
-            chartData.setTag(Utils.formatAccountDate(billingDetail.getBilledDate()));
-            chartData.setVal(billingDetail.getBilledValue());
-            chartDatum.add(chartData);
-        }
-        String startDate = Utils.formatAccountDate(billingDetails[0].getBilledDate());
-        String endDate = Utils.formatAccountDate(billingDetails[billingDetails.length - 1].getBilledDate());
-
-        barChart.setData(chartDatum)
-                .setTitle(startDate + " - " + endDate)
-                .setBarUnit("RM")
-                .setThreshold(selectedAccount.isThreshold(), Float.parseFloat(energyConsumptions.getUserThreshold()))
-                .setSelectionRequired(true);
-    }
-
-    private void subscribe() {
-        ;
     }
 
     /*private void getBillingDetailsForAccount(ArrayList<Account> accounts) {
@@ -234,21 +240,25 @@ public class MyDashboardFragment extends Fragment implements View.OnClickListene
     public void onResume() {
         super.onResume();
         if (IS_THRESHOLD_SET) {
-            accountSettingsViewModel.loadAccountSettingsFromLocalDB(selectedAccount.getAccountNumber());
-            accountSettingsViewModel.getAccountSettingsData().observe(getViewLifecycleOwner(), accountSettings -> {
-                if (accountSettings == null) {
-                    accountSettingsViewModel.getAccountSettingsFromServer(user.getEmail(), selectedAccount.getAccountNumber());
-                } else {
-                    this.accountSettings = accountSettings;
-                    accountSettingsViewModel.loadEnergyConsumptionsFromLocalDB(accountSettings.getAccountNumber());
-                    accountSettingsViewModel.getEnergyConsumptions().observeForever(energyConsumptions -> {
-                        this.energyConsumptions = energyConsumptions;
-                        if (energyConsumptions != null) {
-                            barChart.setThreshold(true, Float.parseFloat(energyConsumptions.getUserThreshold()));
-                        }
-                    });
-                }
-            });
+            selectedAccount.setThreshold(true);
+            //subscribe();
+            //IS_THRESHOLD_SET = false;
+            ArrayList<ChartData> chartDatum = new ArrayList<>();
+            ChartData chartData;
+            for (int i = 0; i < 8; i++) {
+                chartData = new ChartData();
+                chartData.setTag("LB" + (i + 1));
+                chartData.setVal((float) (i + 1) * 3);
+                chartDatum.add(chartData);
+            }
+            barChart = rootView.findViewById(R.id.accountChart);
+            barChart.setData(chartDatum);
+            barChart.setTitle("Title");
+            barChart.setBarUnit("RM");
+            barChart.setThreshold(selectedAccount.isThreshold(), Float.parseFloat(energyConsumptions.getUserThreshold()));
+            barChart.setSelectionRequired(true);
+            barChart.invalidate();
         }
+
     }
 }

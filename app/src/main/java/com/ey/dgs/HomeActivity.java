@@ -260,6 +260,9 @@ public class HomeActivity extends AppCompatActivity implements MyAccountFragment
             if (currentFragment instanceof DashboardFragment) {
                 ((DashboardFragment) currentFragment).onResume();
             }
+            else if (currentFragment instanceof MyDashboardFragment) {
+                ((MyDashboardFragment) currentFragment).onResume();
+            }
         }
     }
 }

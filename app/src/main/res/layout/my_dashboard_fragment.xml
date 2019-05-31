@@ -95,7 +95,7 @@
                 android:visibility="visible">
 
                 <com.ey.dgs.views.BarChart
-                    android:id="@+id/bar_chart"
+                    android:id="@+id/accountChart"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_alignParentTop="true"

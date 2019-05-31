@@ -222,12 +222,14 @@ public class MMCQuestionsFragment extends Fragment {
             showProgress(false);
             if (isUserUpdated) {
                 DashboardFragment.IS_THRESHOLD_SET = true;
+                MyDashboardFragment.IS_THRESHOLD_SET = true;
                 account.setThreshold(true);
                 dashboardViewModel.updateAccount(account);
+                getFragmentManager().popBackStack();
             } else {
+                MyDashboardFragment.IS_THRESHOLD_SET = false;
                 DashboardFragment.IS_THRESHOLD_SET = false;
             }
-            getFragmentManager().popBackStack();
         });
     }
 

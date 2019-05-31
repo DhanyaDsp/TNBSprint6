@@ -138,6 +138,7 @@ public class DashboardViewModel extends ViewModel implements DatabaseCallback, A
             setIsPrimaryAccountSet(true);
             setAccounts((ArrayList<Account>) object);
             //setPrimaryAccountData((Account) object);
+        } else if (requestCode == Account.REQUEST_CODE_UPDATE_ACCOUNT) {
         }
     }
 

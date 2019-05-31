@@ -53,6 +53,7 @@ public class AccountNotificationSettingsFragment extends Fragment {
     AppPreferences appPreferences;
     Activity activity;
     private boolean isProgressing;
+    private boolean serverCalled;
 
     public AccountNotificationSettingsFragment() {
     }
@@ -104,6 +105,10 @@ public class AccountNotificationSettingsFragment extends Fragment {
                         showProgress(false);
                     }
                 });
+                /*if (!serverCalled) {
+                    accountSettingsViewModel.getAccountSettingsFromServer(user.getEmail(), account.getAccountNumber());
+                    serverCalled = true;
+                }*/
             }
         });
         accountSettingsViewModel.getIsAccountDetailsUpdated().observeForever(isUserUpdated -> {
