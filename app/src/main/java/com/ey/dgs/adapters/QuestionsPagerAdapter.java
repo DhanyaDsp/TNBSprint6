@@ -130,8 +130,8 @@ public class QuestionsPagerAdapter extends PagerAdapter implements TextWatcher {
         ArrayList<ChartData> chartDatum = new ArrayList<>();
         ChartData chartData;
 
-        String startDate = Utils.formatAccountDate(billingDetails[0].getBilledDate());
-        String endDate = Utils.formatAccountDate(billingDetails[billingDetails.length - 1].getBilledDate());
+        String startDate = Utils.formatAccountDate(billingHistory.getAccount().getBillingCycleStartDate());
+        String endDate = Utils.formatAccountDate(billingHistory.getAccount().getBillingCycleEndDate());
         for (int i = 0; i < billingDetails.length; i++) {
             BillingDetails billingDetail = billingDetails[i];
             chartData = new ChartData();
@@ -155,8 +155,8 @@ public class QuestionsPagerAdapter extends PagerAdapter implements TextWatcher {
         ArrayList<ChartData> chartDatum = new ArrayList<>();
         ChartData chartData;
 
-        String startDate = Utils.formatAccountDate(billingDetails[0].getBilledDate());
-        String endDate = Utils.formatAccountDate(billingDetails[billingDetails.length - 1].getBilledDate());
+        String startDate = Utils.formatAccountDate(billingHistory.getAccount().getBillingCycleStartDate());
+        String endDate = Utils.formatAccountDate(billingHistory.getAccount().getBillingCycleEndDate());
         for (int i = 0; i < billingDetails.length; i++) {
             BillingDetails billingDetail = billingDetails[i];
             chartData = new ChartData();

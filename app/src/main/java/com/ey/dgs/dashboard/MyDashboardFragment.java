@@ -114,8 +114,8 @@ public class MyDashboardFragment extends Fragment implements View.OnClickListene
         ArrayList<ChartData> chartDatum = new ArrayList<>();
         ChartData chartData;
 
-        String startDate = Utils.formatAccountDate(billingDetails[0].getBilledDate());
-        String endDate = Utils.formatAccountDate(billingDetails[billingDetails.length - 1].getBilledDate());
+        String startDate = Utils.formatAccountDate(selectedAccount.getBillingCycleStartDate());
+        String endDate = Utils.formatAccountDate(selectedAccount.getBillingCycleEndDate());
         if (!IS_THRESHOLD_SET) {
             for (int i = 0; i < billingDetails.length; i++) {
                 BillingDetails billingDetail = billingDetails[i];
@@ -154,7 +154,8 @@ public class MyDashboardFragment extends Fragment implements View.OnClickListene
             ((ViewGroup) rootView.findViewById(R.id.rlChart)).addView(tmpBarChart);
 
             tmpBarChart.setData(chartDatum)
-                    .setTitle("Title_test").setBarUnit("RM")
+                    .setTitle(startDate + " - " + endDate)
+                    .setBarUnit("RM")
                     .setThreshold(true, Float.parseFloat(energyConsumptions.getUserThreshold()))
                     //.setThreshold(selectedAccount.isThreshold(), Float.parseFloat(energyConsumptions.getUserThreshold()))
                     .setSelectionRequired(true); //.updateData(); // .invalidate();

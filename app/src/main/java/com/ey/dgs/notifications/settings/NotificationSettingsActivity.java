@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import com.ey.dgs.HomeActivity;
 import com.ey.dgs.R;
 import com.ey.dgs.dashboard.myaccount.AccountSettingsViewModel;
 import com.ey.dgs.model.Account;
@@ -98,6 +99,7 @@ public class NotificationSettingsActivity extends AppCompatActivity implements S
         Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.flNotificationContainer);
         if (currentFragment != null) {
             if (currentFragment instanceof SettingsMenuFragment) {
+                HomeActivity.IS_COMING_FROM_MORE = true;
                 finish();
             } else if (currentFragment instanceof NotificationToggleFragment) {
                 super.onBackPressed();

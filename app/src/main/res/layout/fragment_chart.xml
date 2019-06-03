@@ -2,16 +2,38 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
     android:clickable="true"
     android:focusable="true">
 
-    <com.ey.dgs.views.BarChart
-        android:id="@+id/bar_chart"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="230dp"
-        android:clickable="false"
-        android:focusable="false"
-        android:focusableInTouchMode="false" />
+        android:layout_height="match_parent"
+        android:layout_above="@+id/tvEnergyTip"
+        android:clickable="true"
+        android:focusable="true">
+
+        <com.ey.dgs.views.BarChart
+            android:id="@+id/bar_chart"
+            android:layout_width="match_parent"
+            android:layout_height="230dp"
+            android:clickable="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false" />
+
+    </RelativeLayout>
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/tvEnergyTip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:fontFamily="@font/museosans_500"
+        android:paddingLeft="@dimen/medium_padding"
+        android:paddingRight="@dimen/medium_padding"
+        android:textColor="@color/text_field_hint_color"
+        android:textSize="@dimen/text_size_very_small"
+        android:visibility="invisible" />
 
     <View
         android:id="@+id/overlay"

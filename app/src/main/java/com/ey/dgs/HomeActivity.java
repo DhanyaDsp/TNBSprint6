@@ -38,6 +38,7 @@ public class HomeActivity extends AppCompatActivity implements MyAccountFragment
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     public static boolean isVisible;
     public static int INDEX_DASHBOARD = 3;
+    public static boolean IS_COMING_FROM_MORE;
     private AppCompatTextView tvTitle;
     private Toolbar toolbar;
     DashboardViewModel dashboardViewModel;
@@ -263,6 +264,15 @@ public class HomeActivity extends AppCompatActivity implements MyAccountFragment
             } else if (currentFragment instanceof MyDashboardFragment) {
                 ((MyDashboardFragment) currentFragment).refresh();
             }
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (IS_COMING_FROM_MORE) {
+            navigation.setSelectedItemId(R.id.navigation_dashboard);
+            IS_COMING_FROM_MORE = false;
         }
     }
 }

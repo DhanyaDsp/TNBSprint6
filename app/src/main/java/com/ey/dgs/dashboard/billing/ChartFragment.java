@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.AppCompatTextView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,6 +43,7 @@ public class ChartFragment extends Fragment {
     private AccountSettings accountSettings;
     private EnergyConsumptions energyConsumptions;
     View overlay;
+    AppCompatTextView tvEnergyTip;
 
     public ChartFragment() {
     }
@@ -89,6 +91,7 @@ public class ChartFragment extends Fragment {
 
     private void initViews() {
         barChart = view.findViewById(R.id.bar_chart);
+        tvEnergyTip = view.findViewById(R.id.tvEnergyTip);
     }
 
     private void getData() {
@@ -117,6 +120,12 @@ public class ChartFragment extends Fragment {
                                     if (billingHistory == null) {
                                         billingHistoryViewModel.getBillingHistoryFromServer(user, account);
                                     } else {
+                                        if (account.isThreshold()) {
+                                            tvEnergyTip.setVisibility(View.VISIBLE);
+                                            tvEnergyTip.setText(account.getEnergyTip());
+                                        } else {
+                                            tvEnergyTip.setVisibility(View.INVISIBLE);
+                                        }
                                         Gson gson = new Gson();
                                         BillingDetails[] billingDetails = gson.fromJson(billingHistory.getBillingDetails(), BillingDetails[].class);
                                         setChartData(billingDetails);
@@ -143,8 +152,8 @@ public class ChartFragment extends Fragment {
             chartData.setVal(billingDetail.getBilledValue());
             chartDatum.add(chartData);
         }
-        String startDate = Utils.formatAccountDate(billingDetails[0].getBilledDate());
-        String endDate = Utils.formatAccountDate(billingDetails[billingDetails.length - 1].getBilledDate());
+        String startDate = Utils.formatAccountDate(account.getBillingCycleStartDate());
+        String endDate = Utils.formatAccountDate(account.getBillingCycleEndDate());
 
         ViewGroup parent = ((ViewGroup) barChart.getParent());
         ViewGroup.LayoutParams tmpLayParams = barChart.getLayoutParams();
