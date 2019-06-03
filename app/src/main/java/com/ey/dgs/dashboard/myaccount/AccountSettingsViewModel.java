@@ -106,8 +106,13 @@ public class AccountSettingsViewModel extends ViewModel implements DatabaseCallb
 
     @Override
     public void onUpdate(Object object, int requestCode, int responseCode) {
-        Utils.showToast(context, "Account Details Updated");
-        setAccountDetailsUpdated(true);
+        if (requestCode == EnergyConsumptions.REQUEST_CODE_UPDATE_CONSUMPTION) {
+            EnergyConsumptions energyConsumptions = (EnergyConsumptions) object;
+            Utils.showToast(context, "Account Details Updated");
+            setAccountDetailsUpdated(true);
+        } else if (requestCode == AccountSettings.REQUEST_CODE_UPDATE_ACCOUNT_SETTINGS) {
+            AccountSettings accountSettings = (AccountSettings) object;
+        }
     }
 
     @Override

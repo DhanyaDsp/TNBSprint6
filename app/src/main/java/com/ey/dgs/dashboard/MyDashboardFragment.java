@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.ey.dgs.R;
 import com.ey.dgs.adapters.NotificationSettingsAdapter;
@@ -26,6 +27,7 @@ import com.ey.dgs.databinding.MyDashboardFragmentBinding;
 import com.ey.dgs.model.Account;
 import com.ey.dgs.model.AccountSettings;
 import com.ey.dgs.model.BillingDetails;
+import com.ey.dgs.model.BillingHistory;
 import com.ey.dgs.model.EnergyConsumptions;
 import com.ey.dgs.model.User;
 import com.ey.dgs.model.chart.ChartData;
@@ -61,6 +63,8 @@ public class MyDashboardFragment extends Fragment implements View.OnClickListene
     private AccountSettingsViewModel accountSettingsViewModel;
     private AccountSettings accountSettings;
     private EnergyConsumptions energyConsumptions;
+    public static EnergyConsumptions newEnergyConsumptions;
+    private BillingHistory billingHistory;
 
     public static MyDashboardFragment newInstance(Account account) {
         MyDashboardFragment fragment = new MyDashboardFragment();
@@ -91,6 +95,7 @@ public class MyDashboardFragment extends Fragment implements View.OnClickListene
     private void initView() {
         loader = rootView.findViewById(R.id.loader);
         rlChart = rootView.findViewById(R.id.rlChart);
+        barChart = rootView.findViewById(R.id.accountChart);
         btnManageConsumption = rootView.findViewById(R.id.btnManageConsumption);
         btnManageConsumption.setOnClickListener(this);
         llManageBtns = rootView.findViewById(R.id.llManageBtns);
@@ -106,31 +111,55 @@ public class MyDashboardFragment extends Fragment implements View.OnClickListene
     }
 
     private void setChartData(BillingDetails[] billingDetails) {
-        barChart = rootView.findViewById(R.id.accountChart);
         ArrayList<ChartData> chartDatum = new ArrayList<>();
         ChartData chartData;
 
-        for (int i = 0; i < billingDetails.length; i++) {
-            BillingDetails billingDetail = billingDetails[i];
-            chartData = new ChartData();
-            chartData.setTag(Utils.formatAccountDate(billingDetail.getBilledDate()));
-            chartData.setVal(billingDetail.getBilledValue());
-            chartDatum.add(chartData);
-        }
         String startDate = Utils.formatAccountDate(billingDetails[0].getBilledDate());
         String endDate = Utils.formatAccountDate(billingDetails[billingDetails.length - 1].getBilledDate());
-        if (selectedAccount.isThreshold()) {
-            barChart.setData(chartDatum)
-                    .setTitle(startDate + " - " + endDate)
-                    .setBarUnit("RM")
-                    .setThreshold(true, Float.parseFloat(energyConsumptions.getUserThreshold()))
-                    .setSelectionRequired(true);
+        if (!IS_THRESHOLD_SET) {
+            for (int i = 0; i < billingDetails.length; i++) {
+                BillingDetails billingDetail = billingDetails[i];
+                chartData = new ChartData();
+                chartData.setTag(Utils.formatAccountDate(billingDetail.getBilledDate()));
+                chartData.setVal(billingDetail.getBilledValue());
+                chartDatum.add(chartData);
+            }
+            if (selectedAccount.isThreshold()) {
+                barChart.setData(chartDatum)
+                        .setTitle(startDate + " - " + endDate)
+                        .setBarUnit("RM")
+                        .setThreshold(true, Float.parseFloat(energyConsumptions.getUserThreshold()))
+                        .setSelectionRequired(true);
+            } else {
+                barChart.setData(chartDatum)
+                        .setTitle(startDate + " - " + endDate)
+                        .setBarUnit("RM")
+                        .setSelectionRequired(false);
+            }
         } else {
-            barChart.setData(chartDatum)
-                    .setTitle(startDate + " - " + endDate)
-                    .setBarUnit("RM")
-                    .setBarUnit("RM")
-                    .setSelectionRequired(false);
+            for (int i = 0; i < billingDetails.length; i++) {
+                BillingDetails billingDetail = billingDetails[i];
+                chartData = new ChartData();
+                chartData.setTag(Utils.formatAccountDate(billingDetail.getBilledDate()));
+                chartData.setVal(billingDetail.getBilledValue());
+                chartDatum.add(chartData);
+            }
+            barChart = rootView.findViewById(R.id.accountChart);
+            ViewGroup.LayoutParams tmpLayParams = barChart.getLayoutParams();
+            ((ViewGroup) barChart.getParent()).removeView(barChart);
+
+            BarChart tmpBarChart = new BarChart(context);
+            tmpBarChart.setLayoutParams(tmpLayParams);
+            tmpBarChart.setId(R.id.accountChart);
+            ((ViewGroup) rootView.findViewById(R.id.rlChart)).addView(tmpBarChart);
+
+            tmpBarChart.setData(chartDatum)
+                    .setTitle("Title_test").setBarUnit("RM")
+                    .setThreshold(true, Float.parseFloat(energyConsumptions.getUserThreshold()))
+                    //.setThreshold(selectedAccount.isThreshold(), Float.parseFloat(energyConsumptions.getUserThreshold()))
+                    .setSelectionRequired(true); //.updateData(); // .invalidate();
+
+            IS_THRESHOLD_SET = false;
         }
     }
 
@@ -160,8 +189,9 @@ public class MyDashboardFragment extends Fragment implements View.OnClickListene
                                     if (billingHistory == null) {
                                         billingHistoryViewModel.getBillingHistoryFromServer(user, selectedAccount);
                                     } else {
+                                        this.billingHistory = billingHistory;
                                         Gson gson = new Gson();
-                                        BillingDetails[] billingDetails = gson.fromJson(billingHistory.getBillingDetails(), BillingDetails[].class);
+                                        this.billingDetails = gson.fromJson(billingHistory.getBillingDetails(), BillingDetails[].class);
                                         setChartData(billingDetails);
                                     }
                                 });
@@ -172,14 +202,6 @@ public class MyDashboardFragment extends Fragment implements View.OnClickListene
             }
         });
     }
-
-    /*private void getBillingDetailsForAccount(ArrayList<Account> accounts) {
-        if (user != null) {
-            for (Account account : accounts) {
-                dashboardViewModel.getBillingHistoryFromServer(user, account);
-            }
-        }
-    }*/
 
     @Override
     public void onAttach(Activity activity) {
@@ -220,8 +242,13 @@ public class MyDashboardFragment extends Fragment implements View.OnClickListene
     }
 
     private void showQuestionsFragment() {
-        FragmentUtils.newInstance(getFragmentManager()).addFragment(FragmentUtils.INDEX_QUESTIONS_FRAGMENT,
-                selectedAccount, MMCQuestionsFragment.class.getName(), R.id.homeFlContainer);
+        if (billingHistory != null) {
+            billingHistory.setAccount(selectedAccount);
+            FragmentUtils.newInstance(getFragmentManager()).addFragment(FragmentUtils.INDEX_QUESTIONS_FRAGMENT,
+                    billingHistory, MMCQuestionsFragment.class.getName(), R.id.homeFlContainer);
+        } else {
+            Utils.showToast(getActivity(), "Billing History not yet loaded");
+        }
     }
 
     public interface OnFragmentInteractionListener {
@@ -239,26 +266,13 @@ public class MyDashboardFragment extends Fragment implements View.OnClickListene
     @Override
     public void onResume() {
         super.onResume();
+    }
+
+    public void refresh() {
         if (IS_THRESHOLD_SET) {
             selectedAccount.setThreshold(true);
-            //subscribe();
-            //IS_THRESHOLD_SET = false;
-            ArrayList<ChartData> chartDatum = new ArrayList<>();
-            ChartData chartData;
-            for (int i = 0; i < 8; i++) {
-                chartData = new ChartData();
-                chartData.setTag("LB" + (i + 1));
-                chartData.setVal((float) (i + 1) * 3);
-                chartDatum.add(chartData);
-            }
-            barChart = rootView.findViewById(R.id.accountChart);
-            barChart.setData(chartDatum);
-            barChart.setTitle("Title");
-            barChart.setBarUnit("RM");
-            barChart.setThreshold(selectedAccount.isThreshold(), Float.parseFloat(energyConsumptions.getUserThreshold()));
-            barChart.setSelectionRequired(true);
-            barChart.invalidate();
+            //setChartData(billingDetails);
+            accountSettingsViewModel.loadEnergyConsumptionsFromLocalDB(selectedAccount.getAccountNumber());
         }
-
     }
 }

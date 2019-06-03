@@ -29,6 +29,7 @@ import com.ey.dgs.dashboard.myaccount.AccountSettingsViewModel;
 import com.ey.dgs.model.Account;
 import com.ey.dgs.model.AccountSettings;
 import com.ey.dgs.model.AnswerRequest;
+import com.ey.dgs.model.BillingHistory;
 import com.ey.dgs.model.NotificationSettingsRequest;
 import com.ey.dgs.model.Question;
 import com.ey.dgs.model.Setting;
@@ -58,12 +59,13 @@ public class MMCQuestionsFragment extends Fragment {
     private DashboardViewModel dashboardViewModel;
     private String thresholdSuggestions;
     private AccountSettings accountSettings;
+    BillingHistory billingHistory;
 
 
-    public static MMCQuestionsFragment newInstance(Account account) {
+    public static MMCQuestionsFragment newInstance(BillingHistory billingHistory) {
         MMCQuestionsFragment fragment = new MMCQuestionsFragment();
         Bundle args = new Bundle();
-        args.putSerializable("account", (Serializable) account);
+        args.putSerializable("billingHistory", (Serializable) billingHistory);
         fragment.setArguments(args);
         return fragment;
     }
@@ -71,7 +73,8 @@ public class MMCQuestionsFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        account = (Account) getArguments().getSerializable("account");
+        billingHistory = (BillingHistory) getArguments().getSerializable("billingHistory");
+        account = billingHistory.getAccount();
         appPreferences = new AppPreferences(getActivity());
         setHasOptionsMenu(true);
     }
@@ -158,7 +161,6 @@ public class MMCQuestionsFragment extends Fragment {
                         Utils.showToast(getActivity(), "Please fill the answer");
                     }
                     MyDashboardFragment.IS_THRESHOLD_SET = true;
-                    //getFragmentManager().popBackStack();
                 }
             }
         });
@@ -191,6 +193,8 @@ public class MMCQuestionsFragment extends Fragment {
                 } else {
                     this.accountSettings = accountSettings;
                     if (accountSettings.getEnergyConsumptions() != null) {
+                        questionsPagerAdapter.setEnergyConsumptions(accountSettings.getEnergyConsumptions());
+                        questionsPagerAdapter.setBillingHistory(billingHistory);
                         questionsPagerAdapter.setThresholdSuggestions(accountSettings.getEnergyConsumptions().getThresholdSuggestions());
                         mViewModel.loadQuestionsFromServer(account.getAccountNumber(), this.user.getEmail());
                     }

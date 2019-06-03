@@ -3,13 +3,14 @@ package com.ey.dgs.adapters;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.ey.dgs.dashboard.billing.ChartFragment;
 import com.ey.dgs.model.Account;
 
 import java.util.ArrayList;
 
-public class AccountsPagerAdapter extends FragmentPagerAdapter {
+public class AccountsPagerAdapter extends FragmentStatePagerAdapter {
 
     ArrayList<Account> accounts;
 

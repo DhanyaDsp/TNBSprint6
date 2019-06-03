@@ -114,8 +114,6 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
         }
         spAccounts = rootView.findViewById(R.id.spAccounts);
         spAccounts.setOnItemSelectedListener(this);
-        accountSpinnerAdapter = new AccountSpinnerAdapter(getActivity(), this.accounts);
-        spAccounts.setAdapter(accountSpinnerAdapter);
     }
 
     @Override
@@ -131,7 +129,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
         billingHistoryViewModel = ViewModelProviders.of(getActivity()).get(BillingHistoryViewModel.class);
         billingHistoryViewModel.setContext(getActivity());
         showProgress(true);
-        loginViewModel.getUserDetail().observe(getViewLifecycleOwner(), user -> {
+            loginViewModel.getUserDetail().observe(getViewLifecycleOwner(), user -> {
             onUserDetailsLoaded(user);
         });
         dashboardViewModel.getLoaderData().observe(getViewLifecycleOwner(), showProgress -> {
@@ -146,6 +144,8 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                 vpAccounts.setOffscreenPageLimit(accounts.size());
                 accountsPagerAdapter = new AccountsPagerAdapter(getFragmentManager(), this.accounts);
                 vpAccounts.setAdapter(accountsPagerAdapter);
+                accountSpinnerAdapter = new AccountSpinnerAdapter(getActivity(), this.accounts);
+                spAccounts.setAdapter(accountSpinnerAdapter);
                 //accountPagerAdapter = new AccountPagerAdapter(this, getActivity(), this.accounts);
                 //vpAccounts.setAdapter(accountPagerAdapter);
                 for (Account account : this.accounts) {
@@ -182,22 +182,6 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
             }
         });
         /*MOCK RESPONSE*/
-    }
-
-    private void updateOtherAccounts(ArrayList<Account> accounts) {
-        selectedAccount.setPrimaryAccount(true);
-        for (Account account : accounts) {
-            if (!selectedAccount.getAccountNumber().equalsIgnoreCase(account.getAccountNumber())) {
-                if (account.isPrimaryAccount()) {
-                    account.setPrimaryAccount(false);
-                    dashboardViewModel.updateAccount(account);
-                }
-            } else {
-                account.setPrimaryAccount(true);
-                dashboardViewModel.setPrimaryAccount(account);
-                selectedAccount = account;
-            }
-        }
     }
 
     private void getBillingDetailsForAccount(ArrayList<Account> accounts) {

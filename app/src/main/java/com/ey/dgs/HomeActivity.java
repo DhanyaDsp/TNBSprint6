@@ -37,7 +37,7 @@ public class HomeActivity extends AppCompatActivity implements MyAccountFragment
     public static boolean IS_THRESHOLD = false;
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     public static boolean isVisible;
-    private int INDEX_DASHBOARD = 3;
+    public static int INDEX_DASHBOARD = 3;
     private AppCompatTextView tvTitle;
     private Toolbar toolbar;
     DashboardViewModel dashboardViewModel;
@@ -206,7 +206,7 @@ public class HomeActivity extends AppCompatActivity implements MyAccountFragment
                         });
                     }*/
                     return true;
-                case R.id.navigation_bills:
+               /* case R.id.navigation_bills:
                     FragmentUtils.newInstance(getSupportFragmentManager())
                             .addFragment(INDEX_DASHBOARD, null, DashboardFragment.class.getName(), R.id.homeFlContainer);
                     return true;
@@ -218,6 +218,7 @@ public class HomeActivity extends AppCompatActivity implements MyAccountFragment
                     FragmentUtils.newInstance(getSupportFragmentManager())
                             .addFragment(INDEX_DASHBOARD, null, DashboardFragment.class.getName(), R.id.homeFlContainer);
                     return true;
+                    */
                 case R.id.navigation_more:
                     moveToSettingsPage();
                     return true;
@@ -259,9 +260,8 @@ public class HomeActivity extends AppCompatActivity implements MyAccountFragment
         if (currentFragment != null) {
             if (currentFragment instanceof DashboardFragment) {
                 ((DashboardFragment) currentFragment).onResume();
-            }
-            else if (currentFragment instanceof MyDashboardFragment) {
-                ((MyDashboardFragment) currentFragment).onResume();
+            } else if (currentFragment instanceof MyDashboardFragment) {
+                ((MyDashboardFragment) currentFragment).refresh();
             }
         }
     }

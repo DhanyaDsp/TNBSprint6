@@ -11,6 +11,7 @@ import com.ey.dgs.dashboard.MyDashboardFragment;
 import com.ey.dgs.dashboard.myaccount.MyAccountFragment;
 import com.ey.dgs.dashboard.questions.MMCQuestionsFragment;
 import com.ey.dgs.model.Account;
+import com.ey.dgs.model.BillingHistory;
 import com.ey.dgs.model.NotificationSetting;
 import com.ey.dgs.notifications.settings.AccountNotificationSettingsFragment;
 import com.ey.dgs.notifications.settings.NotificationToggleFragment;
@@ -86,7 +87,7 @@ public class FragmentUtils {
                 fragmentTransaction.add(viewId, newFragment, fragmentTag).addToBackStack(fragmentTag).commit();
                 break;
             case 8:
-                newFragment = MMCQuestionsFragment.newInstance((Account) object);
+                newFragment = MMCQuestionsFragment.newInstance((BillingHistory) object);
                 fragmentTransaction.add(viewId, newFragment, fragmentTag).addToBackStack(fragmentTag).commit();
                 break;
             case 9:

@@ -25,8 +25,8 @@ public interface EnergyConsumptionsDao {
     @Insert
     void insert(List<EnergyConsumptions> energyConsumptions);
 
-    @Delete
-    void delete(EnergyConsumptions energyConsumptions);
+    @Query("DELETE FROM EnergyConsumptions WHERE accountNumber=:accountNumber")
+    void delete(String accountNumber);
 
     @Update
     void update(EnergyConsumptions energyConsumptions);

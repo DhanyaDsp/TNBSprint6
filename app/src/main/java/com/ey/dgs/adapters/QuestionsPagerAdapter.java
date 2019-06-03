@@ -6,6 +6,9 @@ import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.AppCompatTextView;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,13 +16,18 @@ import android.widget.LinearLayout;
 
 import com.ey.dgs.R;
 import com.ey.dgs.model.Account;
+import com.ey.dgs.model.BillingDetails;
+import com.ey.dgs.model.BillingHistory;
+import com.ey.dgs.model.EnergyConsumptions;
 import com.ey.dgs.model.Question;
 import com.ey.dgs.model.chart.ChartData;
+import com.ey.dgs.utils.Utils;
 import com.ey.dgs.views.BarChart;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
-public class QuestionsPagerAdapter extends PagerAdapter {
+public class QuestionsPagerAdapter extends PagerAdapter implements TextWatcher {
 
 
     private String thresholdSuggestions;
@@ -27,6 +35,9 @@ public class QuestionsPagerAdapter extends PagerAdapter {
     private Context mContext;
     private ArrayList<Question> questions;
     private View.OnClickListener btnClickListener;
+    private BillingHistory billingHistory;
+    private EnergyConsumptions energyConsumptions;
+    private BarChart bar_chart;
 
     public QuestionsPagerAdapter(Context context, ArrayList<Question> questions) {
         mContext = context;
@@ -43,10 +54,11 @@ public class QuestionsPagerAdapter extends PagerAdapter {
         AppCompatEditText etAnswer = layout.findViewById(R.id.etAnswer);
         AppCompatEditText etMonths = layout.findViewById(R.id.spMonths);
         etAnswer.setText(question.getResponse());
+        etAnswer.addTextChangedListener(this);
         etMonths.setText(question.getResponse());
         LinearLayout llMultiChoice = layout.findViewById(R.id.llMultiChoice);
         AppCompatButton btnNext = layout.findViewById(R.id.btnNext);
-        BarChart bar_chart = layout.findViewById(R.id.bar_chart);
+        bar_chart = layout.findViewById(R.id.bar_chart);
         AppCompatButton btnOne = layout.findViewById(R.id.btnOne);
         AppCompatButton btnTwo = layout.findViewById(R.id.btnTwo);
         AppCompatButton btnThree = layout.findViewById(R.id.btnThree);
@@ -82,17 +94,9 @@ public class QuestionsPagerAdapter extends PagerAdapter {
                 }
             });
         }
-        ArrayList<ChartData> chartDatum = new ArrayList<>();
-        ChartData chartData;
 
-        for (int i = 0; i < 6; i++) {
-            chartData = new ChartData();
-            chartData.setTag("LB" + (i + 1));
-            chartData.setVal(20.0f);
-            chartDatum.add(chartData);
-        }
+        setChartData(bar_chart, billingHistory);
 
-        bar_chart.setData(chartDatum).setTitle(null);
         tvQuestion.setText(questions.get(position).getQuestion());
         if (question.getQuestionId() == 1) {
             etAnswer.setVisibility(View.VISIBLE);
@@ -117,6 +121,56 @@ public class QuestionsPagerAdapter extends PagerAdapter {
         }
         viewGroup.addView(layout);
         return layout;
+    }
+
+    private void setChartData(BarChart bar_chart, BillingHistory billingHistory) {
+        Gson gson = new Gson();
+        BillingDetails[] billingDetails = gson.fromJson(billingHistory.getBillingDetails(), BillingDetails[].class);
+
+        ArrayList<ChartData> chartDatum = new ArrayList<>();
+        ChartData chartData;
+
+        String startDate = Utils.formatAccountDate(billingDetails[0].getBilledDate());
+        String endDate = Utils.formatAccountDate(billingDetails[billingDetails.length - 1].getBilledDate());
+        for (int i = 0; i < billingDetails.length; i++) {
+            BillingDetails billingDetail = billingDetails[i];
+            chartData = new ChartData();
+            chartData.setTag(Utils.formatAccountDate(billingDetail.getBilledDate()));
+            chartData.setVal(billingDetail.getBilledValue());
+            chartDatum.add(chartData);
+        }
+        if (billingHistory.getAccount().isThreshold()) {
+            bar_chart.setData(chartDatum)
+                    .setTitle(startDate + " - " + endDate)
+                    .setBarUnit("RM")
+                    .setThreshold(true, Float.parseFloat(energyConsumptions.getUserThreshold()))
+                    .setSelectionRequired(true);
+        }
+    }
+
+    private void setChartData(BarChart bar_chart, BillingHistory billingHistory, float threshold) {
+        Gson gson = new Gson();
+        BillingDetails[] billingDetails = gson.fromJson(billingHistory.getBillingDetails(), BillingDetails[].class);
+
+        ArrayList<ChartData> chartDatum = new ArrayList<>();
+        ChartData chartData;
+
+        String startDate = Utils.formatAccountDate(billingDetails[0].getBilledDate());
+        String endDate = Utils.formatAccountDate(billingDetails[billingDetails.length - 1].getBilledDate());
+        for (int i = 0; i < billingDetails.length; i++) {
+            BillingDetails billingDetail = billingDetails[i];
+            chartData = new ChartData();
+            chartData.setTag(Utils.formatAccountDate(billingDetail.getBilledDate()));
+            chartData.setVal(billingDetail.getBilledValue());
+            chartDatum.add(chartData);
+        }
+        if (billingHistory.getAccount().isThreshold()) {
+            bar_chart.setData(chartDatum)
+                    .setTitle(startDate + " - " + endDate)
+                    .setBarUnit("RM")
+                    .setThreshold(true, threshold)
+                    .setSelectionRequired(true);
+        }
     }
 
     @Override
@@ -146,5 +200,40 @@ public class QuestionsPagerAdapter extends PagerAdapter {
 
     public String getThresholdSuggestions() {
         return thresholdSuggestions;
+    }
+
+    public void setBillingHistory(BillingHistory billingHistory) {
+        this.billingHistory = billingHistory;
+    }
+
+    public BillingHistory getBillingHistory() {
+        return billingHistory;
+    }
+
+    public void setEnergyConsumptions(EnergyConsumptions energyConsumptions) {
+        this.energyConsumptions = energyConsumptions;
+    }
+
+    public EnergyConsumptions getEnergyConsumptions() {
+        return energyConsumptions;
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+        String strThreshold = s.toString();
+        if (!TextUtils.isEmpty(strThreshold)) {
+            Float threshold = Float.parseFloat(strThreshold);
+            setChartData(bar_chart, billingHistory, threshold);
+        }
     }
 }

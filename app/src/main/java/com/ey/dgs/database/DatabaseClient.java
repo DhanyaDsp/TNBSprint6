@@ -238,7 +238,7 @@ public class DatabaseClient {
         st.execute();
     }
 
-    public void getBillingHistory(String accountNumber,int requestCode, DatabaseCallback databaseCallback) {
+    public void getBillingHistory(String accountNumber, int requestCode, DatabaseCallback databaseCallback) {
         class GetAccountsTask extends AsyncTask<Void, Void, BillingHistory> {
 
             @Override
@@ -447,10 +447,19 @@ public class DatabaseClient {
 
                 DatabaseClient.getInstance(mCtx).getAppDatabase()
                         .getAccountSettingsDao()
+                        .delete(accountSettings.getAccountNumber());
+
+                DatabaseClient.getInstance(mCtx).getAppDatabase()
+                        .getAccountSettingsDao()
                         .insert(accountSettings);
                 EnergyConsumptions energyConsumptions = accountSettings.getEnergyConsumptions();
                 energyConsumptions.setAccountNumber(accountSettings.getAccountNumber());
                 energyConsumptions.setThresholdSuggestions(Arrays.toString((energyConsumptions.getThresholdSuggestion())));
+
+                DatabaseClient.getInstance(mCtx).getAppDatabase()
+                        .getEnergyConsumptionsDao()
+                        .delete(energyConsumptions.getAccountNumber());
+
                 DatabaseClient.getInstance(mCtx).getAppDatabase().getEnergyConsumptionsDao()
                         .insert(energyConsumptions);
 

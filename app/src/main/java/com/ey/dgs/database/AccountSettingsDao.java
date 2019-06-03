@@ -20,8 +20,8 @@ public interface AccountSettingsDao {
     @Insert
     void insert(AccountSettings accountSettings);
 
-    @Delete
-    void delete(AccountSettings accountSettings);
+    @Query("DELETE FROM AccountSettings WHERE accountNumber=:accountNumber")
+    void delete(String accountNumber);
 
     @Update
     void update(AccountSettings accountSettings);

@@ -45,12 +45,19 @@ public class NotificationSettingsAdapter extends RecyclerView.Adapter<RecyclerVi
         this.accountSettings = accountSettings;
     }
 
+    public void setNotificationSettings(ArrayList<NotificationSetting> notificationSettings) {
+        this.notificationSettings.clear();
+        this.notificationSettings.addAll(notificationSettings);
+        notifyDataSetChanged();
+    }
+
     public void setEnergyConsumptions(EnergyConsumptions energyConsumptions) {
         this.energyConsumptions = energyConsumptions;
         if (energyConsumptions.getEnergyConsumptionFlag()) {
             this.notificationSettings.add(4, averageThresholdItem);
             this.notificationSettings.add(5, userThresholdItem);
             isExpanded = true;
+            notifyDataSetChanged();
         }
     }
 

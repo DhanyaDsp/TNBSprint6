@@ -54,6 +54,7 @@ public class AccountNotificationSettingsFragment extends Fragment {
     Activity activity;
     private boolean isProgressing;
     private boolean serverCalled;
+    private ArrayList<NotificationSetting> notificationSettingsCopy;
 
     public AccountNotificationSettingsFragment() {
     }
@@ -95,23 +96,24 @@ public class AccountNotificationSettingsFragment extends Fragment {
             } else {
                 this.accountSettings = accountSettings;
                 accountSettingsViewModel.loadEnergyConsumptionsFromLocalDB(accountSettings.getAccountNumber());
-                accountSettingsViewModel.getEnergyConsumptions().observeForever(energyConsumptions -> {
+                accountSettingsViewModel.getEnergyConsumptions().observe(getViewLifecycleOwner(), energyConsumptions -> {
                     this.energyConsumptions = energyConsumptions;
                     if (energyConsumptions != null) {
                         notificationSettingsAdapter = new NotificationSettingsAdapter(rvNotificationSettings, this, getActivity(), notificationSettings);
+                        notificationSettingsAdapter.setNotificationSettings(notificationSettingsCopy);
                         notificationSettingsAdapter.setAccountSettings(this.accountSettings);
                         notificationSettingsAdapter.setEnergyConsumptions(this.energyConsumptions);
                         rvNotificationSettings.setAdapter(notificationSettingsAdapter);
                         showProgress(false);
                     }
                 });
-                /*if (!serverCalled) {
+                if (!serverCalled) {
                     accountSettingsViewModel.getAccountSettingsFromServer(user.getEmail(), account.getAccountNumber());
                     serverCalled = true;
-                }*/
+                }
             }
         });
-        accountSettingsViewModel.getIsAccountDetailsUpdated().observeForever(isUserUpdated -> {
+        accountSettingsViewModel.getIsAccountDetailsUpdated().observe(getViewLifecycleOwner(), isUserUpdated -> {
             showProgress(false);
             if (isUserUpdated) {
                 notificationSettingsAdapter.setUpdated(true);
@@ -145,9 +147,12 @@ public class AccountNotificationSettingsFragment extends Fragment {
         rvNotificationSettings.setItemAnimator(new DefaultItemAnimator());
         loader = view.findViewById(R.id.loader);
         mViewModel = ViewModelProviders.of(this).get(NotificationSettingsViewModel.class);
-        mViewModel.getNotificationSettings().observeForever(notificationSettings -> {
-            this.notificationSettings.clear();
-            this.notificationSettings.addAll(notificationSettings);
+        mViewModel.getNotificationSettings().observe(getViewLifecycleOwner(), notificationSettings -> {
+            if (notificationSettings != null) {
+                this.notificationSettings.clear();
+                this.notificationSettings.addAll(notificationSettings);
+                this.notificationSettingsCopy = notificationSettings;
+            }
         });
     }
 
