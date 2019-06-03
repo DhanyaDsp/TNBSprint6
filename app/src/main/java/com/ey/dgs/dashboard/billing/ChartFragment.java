@@ -4,6 +4,7 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -77,8 +78,13 @@ public class ChartFragment extends Fragment {
             }
         });
         initViews();
-        getData();
         return view;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        getData();
     }
 
     private void initViews() {
@@ -126,6 +132,7 @@ public class ChartFragment extends Fragment {
     }
 
     private void setChartData(BillingDetails[] billingDetails) {
+        barChart = view.findViewById(R.id.bar_chart);
         ArrayList<ChartData> chartDatum = new ArrayList<>();
         ChartData chartData;
 
@@ -139,11 +146,27 @@ public class ChartFragment extends Fragment {
         String startDate = Utils.formatAccountDate(billingDetails[0].getBilledDate());
         String endDate = Utils.formatAccountDate(billingDetails[billingDetails.length - 1].getBilledDate());
 
-        barChart.setData(chartDatum)
+        ViewGroup parent = ((ViewGroup) barChart.getParent());
+        ViewGroup.LayoutParams tmpLayParams = barChart.getLayoutParams();
+        parent.removeView(barChart);
+
+        BarChart tmpBarChart = new BarChart(getActivity());
+        tmpBarChart.setLayoutParams(tmpLayParams);
+        tmpBarChart.setId(R.id.bar_chart);
+        parent.addView(tmpBarChart);
+
+        tmpBarChart.setData(chartDatum)
                 .setTitle(startDate + " - " + endDate)
                 .setBarUnit("RM")
-                .setThreshold(account.isThreshold(), 220f)
+                .setThreshold(account.isThreshold(), Float.parseFloat(accountSettings.getEnergyConsumptions().getUserThreshold()))
                 .setSelectionRequired(true);
+
+        overlay.bringToFront();
+/*        barChart.setData(chartDatum)
+                .setTitle(startDate + " - " + endDate)
+                .setBarUnit("RM")
+                .setThreshold(account.isThreshold(), Float.parseFloat(accountSettings.getEnergyConsumptions().getUserThreshold()))
+                .setSelectionRequired(true);*/
     }
 
 
