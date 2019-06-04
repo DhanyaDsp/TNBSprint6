@@ -43,4 +43,11 @@
         app:labelVisibilityMode="labeled"
         app:menu="@menu/navigation" />
 
+    <include
+        android:id="@+id/loader"
+        layout="@layout/loader"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+
 </RelativeLayout>
