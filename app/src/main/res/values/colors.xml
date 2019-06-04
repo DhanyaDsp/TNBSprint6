@@ -18,4 +18,7 @@
     <color name="legend_disabled">#4dffffff</color>
     <color name="blue_transparent">#BF2A97FB</color>
     <color name="purple_transparent">#BF7730D3</color>
+    <color name="blue_active_nav">#1C79CA</color>
+    <color name="grey_inactive_nav">#707070</color>
+
 </resources>
