@@ -41,6 +41,8 @@
         app:itemTextAppearanceActive="@style/BottomNavigationView.Active"
         app:itemTextAppearanceInactive="@style/BottomNavigationView"
         app:labelVisibilityMode="labeled"
-        app:menu="@menu/navigation" />
+        app:menu="@menu/navigation"
+        app:itemTextColor="@color/bg_text_selector"
+        app:itemIconTint="@color/bg_text_selector"/>
 
 </RelativeLayout>
