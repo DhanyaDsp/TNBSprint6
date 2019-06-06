@@ -181,6 +181,7 @@ public class AccountNotificationSettingsFragment extends Fragment {
     }
 
     public void updateAccountDetails() {
+        Utils.hideKeyBoard(getActivity());
         if (!isProgressing) {
             AccountSettings accountSettings = notificationSettingsAdapter.getAccountSettings();
             EnergyConsumptions energyConsumptions;

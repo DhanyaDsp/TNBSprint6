@@ -29,14 +29,18 @@
         android:layout_gravity="right"
         android:layout_marginTop="@dimen/medium_padding"
         android:background="@drawable/rounded_white"
+        android:fontFamily="@font/museosans_500"
         android:gravity="right"
         android:inputType="number"
+        android:maxLength="3"
         android:minWidth="100dp"
         android:paddingLeft="@dimen/small_padding"
         android:paddingTop="@dimen/small_padding"
         android:paddingRight="@dimen/medium_padding"
         android:paddingBottom="@dimen/small_padding"
-        android:textColor="@android:color/white" />
+        android:textColor="@android:color/white"
+        android:textCursorDrawable="@drawable/cursorwhite"
+        android:textDirection="ltr" />
 
     <LinearLayout
         android:id="@+id/llDropDown"
@@ -61,8 +65,13 @@
                 android:background="@drawable/rounded_white"
                 android:fontFamily="@font/museosans_500"
                 android:gravity="right"
+                android:inputType="number"
+                android:maxLength="2"
                 android:padding="@dimen/small_padding"
-                android:textColor="@android:color/white" />
+                android:textColor="@android:color/white"
+                android:textCursorDrawable="@drawable/cursorwhite"
+                android:textDirection="ltr"
+                android:textSize="@dimen/text_size_medium" />
 
             <android.support.v7.widget.AppCompatTextView
                 android:layout_width="wrap_content"

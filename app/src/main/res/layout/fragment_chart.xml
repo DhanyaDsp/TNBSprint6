@@ -16,7 +16,7 @@
         <com.ey.dgs.views.BarChart
             android:id="@+id/bar_chart"
             android:layout_width="match_parent"
-            android:layout_height="230dp"
+            android:layout_height="270dp"
             android:clickable="false"
             android:focusable="false"
             android:focusableInTouchMode="false" />

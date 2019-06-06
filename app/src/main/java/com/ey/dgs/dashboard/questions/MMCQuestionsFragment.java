@@ -112,6 +112,7 @@ public class MMCQuestionsFragment extends Fragment {
         btnNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Utils.hideKeyBoard(getActivity());
                 int position = vpQuestions.getCurrentItem();
                 if (position < questions.size() - 1) {
                     View currentQuestionView;
@@ -229,7 +230,6 @@ public class MMCQuestionsFragment extends Fragment {
                 MyDashboardFragment.IS_THRESHOLD_SET = true;
                 account.setThreshold(true);
                 dashboardViewModel.updateAccount(account);
-                Utils.hideKeyBoard(getActivity());
                 getFragmentManager().popBackStack();
             } else {
                 MyDashboardFragment.IS_THRESHOLD_SET = false;

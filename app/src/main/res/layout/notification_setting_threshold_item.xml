@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@android:color/white"
@@ -20,13 +21,16 @@
     <android.support.v7.widget.AppCompatEditText
         android:id="@+id/etThreshold"
         android:layout_width="60dp"
-        android:layout_height="40dp"
+        android:layout_height="@dimen/login_side_padding"
         android:layout_alignParentRight="true"
         android:background="@drawable/bg_rounded_black"
-        android:gravity="right|center_vertical"
+        android:fontFamily="@font/museosans_500"
+        android:gravity="center"
         android:inputType="number"
         android:maxLength="3"
         android:padding="@dimen/small_padding"
-        android:text="45" />
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/text_size_medium"
+        android:theme="@style/BlackCursor" />
 
 </RelativeLayout>

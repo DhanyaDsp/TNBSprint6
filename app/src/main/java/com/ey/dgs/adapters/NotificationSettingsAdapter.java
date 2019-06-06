@@ -9,6 +9,7 @@ import android.support.v7.widget.SwitchCompat;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -207,6 +208,21 @@ public class NotificationSettingsAdapter extends RecyclerView.Adapter<RecyclerVi
             case TYPE_SET_THRESHOLD:
                 ThresholdHolder thresholdHolder = (ThresholdHolder) holder;
                 thresholdHolder.tvName.setText(notificationSetting.getName());
+                thresholdHolder.etThreshold.setOnKeyListener(new View.OnKeyListener() {
+                    public boolean onKey(View v, int keyCode, KeyEvent event) {
+                        if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                            switch (keyCode) {
+                                case KeyEvent.KEYCODE_DPAD_CENTER:
+                                case KeyEvent.KEYCODE_ENTER:
+                                    Utils.hideKeyBoard(context);
+                                    return true;
+                                default:
+                                    break;
+                            }
+                        }
+                        return false;
+                    }
+                });
                 if (position == 4) {
                     thresholdHolder.etThreshold.setFocusable(false);
                     thresholdHolder.etThreshold.setBackground(null);

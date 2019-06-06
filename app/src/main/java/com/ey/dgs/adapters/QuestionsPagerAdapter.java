@@ -1,5 +1,6 @@
 package com.ey.dgs.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.v4.view.PagerAdapter;
 import android.support.v7.widget.AppCompatButton;
@@ -9,6 +10,7 @@ import android.support.v7.widget.AppCompatTextView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +29,7 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
-public class QuestionsPagerAdapter extends PagerAdapter implements TextWatcher {
+public class QuestionsPagerAdapter extends PagerAdapter implements TextWatcher, View.OnKeyListener {
 
 
     private String thresholdSuggestions;
@@ -53,9 +55,11 @@ public class QuestionsPagerAdapter extends PagerAdapter implements TextWatcher {
         LinearLayout llDropDown = layout.findViewById(R.id.llDropDown);
         AppCompatEditText etAnswer = layout.findViewById(R.id.etAnswer);
         AppCompatEditText etMonths = layout.findViewById(R.id.spMonths);
-        etAnswer.setText(question.getResponse());
+        etAnswer.setOnKeyListener(this);
+        etMonths.setOnKeyListener(this);
+        etAnswer.setText(question.getResponse().trim());
         etAnswer.addTextChangedListener(this);
-        etMonths.setText(question.getResponse());
+        etMonths.setText(question.getResponse().trim());
         LinearLayout llMultiChoice = layout.findViewById(R.id.llMultiChoice);
         AppCompatButton btnNext = layout.findViewById(R.id.btnNext);
         bar_chart = layout.findViewById(R.id.bar_chart);
@@ -72,25 +76,25 @@ public class QuestionsPagerAdapter extends PagerAdapter implements TextWatcher {
             btnOne.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    etAnswer.setText(thresholdSuggestionsArray[0]);
+                    etAnswer.setText(thresholdSuggestionsArray[0].trim());
                 }
             });
             btnTwo.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    etAnswer.setText(thresholdSuggestionsArray[1]);
+                    etAnswer.setText(thresholdSuggestionsArray[1].trim());
                 }
             });
             btnThree.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    etAnswer.setText(thresholdSuggestionsArray[2]);
+                    etAnswer.setText(thresholdSuggestionsArray[2].trim());
                 }
             });
             btnFour.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    etAnswer.setText(thresholdSuggestionsArray[3]);
+                    etAnswer.setText(thresholdSuggestionsArray[3].trim());
                 }
             });
         }
@@ -235,5 +239,20 @@ public class QuestionsPagerAdapter extends PagerAdapter implements TextWatcher {
             Float threshold = Float.parseFloat(strThreshold);
             setChartData(bar_chart, billingHistory, threshold);
         }
+    }
+
+    @Override
+    public boolean onKey(View v, int keyCode, KeyEvent event) {
+        if (event.getAction() == KeyEvent.ACTION_DOWN) {
+            switch (keyCode) {
+                case KeyEvent.KEYCODE_DPAD_CENTER:
+                case KeyEvent.KEYCODE_ENTER:
+                    Utils.hideKeyBoard((Activity) mContext);
+                    return true;
+                default:
+                    break;
+            }
+        }
+        return false;
     }
 }

@@ -122,7 +122,7 @@
                 <android.support.v4.view.ViewPager
                     android:id="@+id/vpAccounts"
                     android:layout_width="match_parent"
-                    android:layout_height="250dp" />
+                    android:layout_height="300dp" />
 
                 <LinearLayout
                     android:layout_width="match_parent"

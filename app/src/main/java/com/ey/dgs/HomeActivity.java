@@ -54,6 +54,7 @@ public class HomeActivity extends AppCompatActivity implements MyAccountFragment
     private BottomNavigationView navigation;
     private boolean dashboardShown;
     private boolean notificationRegistered;
+    View loader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,8 +69,8 @@ public class HomeActivity extends AppCompatActivity implements MyAccountFragment
         loginViewModel = ViewModelProviders.of(this).get(LoginViewModel.class);
         loginViewModel.setContext(this);
         getSupportFragmentManager().addOnBackStackChangedListener(this);
-        subscribe();
         initViews();
+        subscribe();
         notificationsSetup();
     }
 
@@ -95,6 +96,7 @@ public class HomeActivity extends AppCompatActivity implements MyAccountFragment
 
 
     private void subscribe() {
+        showProgress(true);
         loginViewModel.getUserDetail(appPreferences.getUser_id());
         loginViewModel.getUserDetail().observe(this, user -> {
             if (user != null) {
@@ -123,6 +125,7 @@ public class HomeActivity extends AppCompatActivity implements MyAccountFragment
                                     }
                                 }
                                 if (!dashboardShown) {
+                                    showProgress(false);
                                     navigation.setSelectedItemId(R.id.navigation_dashboard);
                                     dashboardShown = true;
                                 }
@@ -181,6 +184,7 @@ public class HomeActivity extends AppCompatActivity implements MyAccountFragment
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        loader = findViewById(R.id.loader);
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -273,6 +277,14 @@ public class HomeActivity extends AppCompatActivity implements MyAccountFragment
         if (IS_COMING_FROM_MORE) {
             navigation.setSelectedItemId(R.id.navigation_dashboard);
             IS_COMING_FROM_MORE = false;
+        }
+    }
+
+    public void showProgress(boolean show) {
+        if (show) {
+            loader.setVisibility(View.VISIBLE);
+        } else {
+            loader.setVisibility(View.GONE);
         }
     }
 }
