@@ -276,4 +276,9 @@ public class MyDashboardFragment extends Fragment implements View.OnClickListene
             accountSettingsViewModel.loadEnergyConsumptionsFromLocalDB(selectedAccount.getAccountNumber());
         }
     }
+
+
+    public Account getSelectedAccount() {
+        return selectedAccount;
+    }
 }
