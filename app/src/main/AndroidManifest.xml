@@ -30,7 +30,8 @@
         <activity
             android:name=".notifications.settings.NotificationSettingsActivity"
             android:label="@string/title_activity_notification_settings"
-            android:theme="@style/AppTheme.NoActionBar.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar.NoActionBar"
+            android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity
             android:name=".notifications.NotificationListActivity"
             android:label="@string/title_activity_notification_list"

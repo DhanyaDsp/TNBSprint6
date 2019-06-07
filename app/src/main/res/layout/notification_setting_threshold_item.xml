@@ -12,6 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
         android:layout_toLeftOf="@+id/etThreshold"
         android:fontFamily="@font/museosans_500"
         android:text="@string/notifications"
@@ -20,12 +21,14 @@
 
     <android.support.v7.widget.AppCompatEditText
         android:id="@+id/etThreshold"
-        android:layout_width="60dp"
+        android:layout_width="70dp"
         android:layout_height="@dimen/login_side_padding"
         android:layout_alignParentRight="true"
         android:background="@drawable/bg_rounded_black"
+        android:focusableInTouchMode="true"
         android:fontFamily="@font/museosans_500"
         android:gravity="center"
+        android:imeOptions="actionDone"
         android:inputType="number"
         android:maxLength="3"
         android:padding="@dimen/small_padding"

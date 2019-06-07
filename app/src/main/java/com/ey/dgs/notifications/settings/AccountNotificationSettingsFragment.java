@@ -19,6 +19,8 @@ import com.ey.dgs.R;
 import com.ey.dgs.adapters.NotificationSettingsAdapter;
 import com.ey.dgs.authentication.LoginViewModel;
 import com.ey.dgs.dashboard.DashboardFragment;
+import com.ey.dgs.dashboard.DashboardViewModel;
+import com.ey.dgs.dashboard.MyDashboardFragment;
 import com.ey.dgs.dashboard.myaccount.AccountSettingsViewModel;
 import com.ey.dgs.databinding.FragmentAccountNotificationSettingsBinding;
 import com.ey.dgs.model.Account;
@@ -49,6 +51,7 @@ public class AccountNotificationSettingsFragment extends Fragment {
     AccountSettings accountSettings;
     AccountSettingsViewModel accountSettingsViewModel;
     LoginViewModel loginViewModel;
+    DashboardViewModel dashboardViewModel;
     private EnergyConsumptions energyConsumptions;
     AppPreferences appPreferences;
     Activity activity;
@@ -84,6 +87,8 @@ public class AccountNotificationSettingsFragment extends Fragment {
         accountSettingsViewModel.setContext(getActivity());
         loginViewModel = ViewModelProviders.of(this).get(LoginViewModel.class);
         loginViewModel.setContext(getActivity());
+        dashboardViewModel = ViewModelProviders.of(this).get(DashboardViewModel.class);
+        dashboardViewModel.setContext(getActivity());
         loginViewModel.getUserDetail(appPreferences.getUser_id());
         loginViewModel.getUserDetail().observe(getViewLifecycleOwner(), user -> {
             this.user = user;
@@ -118,8 +123,11 @@ public class AccountNotificationSettingsFragment extends Fragment {
             if (isUserUpdated) {
                 notificationSettingsAdapter.setUpdated(true);
                 if (activity != null) {
+                    account.setThreshold(true);
+                    dashboardViewModel.updateAccount(account);
                     Utils.hideKeyBoard(activity);
                     DashboardFragment.IS_THRESHOLD_SET = true;
+                    MyDashboardFragment.IS_THRESHOLD_SET = true;
                     ((NotificationSettingsActivity) activity).onBackPressed();
                 }
             } else {

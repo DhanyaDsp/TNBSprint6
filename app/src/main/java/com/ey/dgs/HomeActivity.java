@@ -182,7 +182,7 @@ public class HomeActivity extends AppCompatActivity implements MyAccountFragment
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("");
         tvTitle.setText("");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ;
         navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         loader = findViewById(R.id.loader);
@@ -266,8 +266,15 @@ public class HomeActivity extends AppCompatActivity implements MyAccountFragment
         if (currentFragment != null) {
             if (currentFragment instanceof DashboardFragment) {
                 ((DashboardFragment) currentFragment).onResume();
+                getSupportActionBar().setHomeButtonEnabled(false);
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
             } else if (currentFragment instanceof MyDashboardFragment) {
                 ((MyDashboardFragment) currentFragment).refresh();
+                getSupportActionBar().setHomeButtonEnabled(true);
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            } else {
+                getSupportActionBar().setHomeButtonEnabled(true);
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             }
         }
     }
@@ -275,9 +282,17 @@ public class HomeActivity extends AppCompatActivity implements MyAccountFragment
     @Override
     protected void onResume() {
         super.onResume();
+        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.homeFlContainer);
         if (IS_COMING_FROM_MORE) {
+            navigation.setOnNavigationItemSelectedListener(null);
             navigation.setSelectedItemId(R.id.navigation_dashboard);
+            navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
             IS_COMING_FROM_MORE = false;
+        }
+        if (currentFragment != null) {
+            if (currentFragment instanceof MyDashboardFragment) {
+                ((MyDashboardFragment)currentFragment).refresh();
+            }
         }
     }
 

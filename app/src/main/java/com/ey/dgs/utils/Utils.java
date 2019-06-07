@@ -101,6 +101,10 @@ public class Utils {
         return new SimpleDateFormat("dd MMM yyyy").format(new Date());
     }
 
+    public static String formatNotificationDate(Date date) {
+        return new SimpleDateFormat("dd MMM yyyy").format(date);
+    }
+
     public static String formatAccountDetailDate(String serverDate) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         Date sourceDate = null;

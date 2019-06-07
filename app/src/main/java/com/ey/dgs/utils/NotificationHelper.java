@@ -40,9 +40,9 @@ public class NotificationHelper {
 
         mBuilder = new NotificationCompat.Builder(mContext);
         mBuilder.setSmallIcon(R.mipmap.ic_launcher);
-        mBuilder.setContentTitle("MyTNB App")
+        mBuilder.setContentTitle(title)
                 .setContentText(message)
-                .setAutoCancel(false)
+                .setAutoCancel(true)
                 .setSound(Settings.System.DEFAULT_NOTIFICATION_URI)
                 .setContentIntent(resultPendingIntent);
 

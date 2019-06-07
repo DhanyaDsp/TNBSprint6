@@ -25,7 +25,7 @@ import com.ey.dgs.utils.Utils;
 import java.util.ArrayList;
 
 
-public class NotificationSettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class NotificationSettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements View.OnFocusChangeListener {
 
 
     final int TYPE_SETTINGS = 0;
@@ -277,6 +277,12 @@ public class NotificationSettingsAdapter extends RecyclerView.Adapter<RecyclerVi
     @Override
     public int getItemCount() {
         return this.notificationSettings.size();
+    }
+
+
+    @Override
+    public void onFocusChange(View v, boolean hasFocus) {
+
     }
 
 

@@ -20,6 +20,7 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -45,21 +46,22 @@ public class FireBaseMessagingService extends FirebaseMessagingService {
             if (keys.toArray().length >= 2) {
                 showNotification(dataObj.get(keys.toArray()[0]), dataObj.get(keys.toArray()[1]), dataObj);
             } else {
-                showNotification("", dataObj.get(keys.toArray()[0]), dataObj);
+                showNotification("MyTNB App", dataObj.get(keys.toArray()[0]), dataObj);
             }
         }
     }
 
     //This method is only generating push notification
-    private void showNotification(String messageTitle, String messageBody, Map<String, String> dataObj) {
+    private void showNotification(String title, String messageBody, Map<String, String> dataObj) {
 
         Gson gson = new Gson();
         Notification notification = gson.fromJson(messageBody, Notification.class);
+        notification.setDate(Utils.formatNotificationDate(new Date()));
         DatabaseClient.getInstance(getApplication()).addNotification(Notification.REQUEST_CODE_ADD_NOTIFICATIONS, notification, null);
 
         appPreferences = new AppPreferences(getApplicationContext());
         if (appPreferences.isLoginned()) {
-            new NotificationHelper(getApplicationContext()).createNotification("", notification, notification.getMessage());
+            new NotificationHelper(getApplicationContext()).createNotification(title, notification, notification.getMessage());
         }
     }
 }
