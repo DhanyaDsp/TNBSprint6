@@ -59,7 +59,9 @@ public class SettingsMenuAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 @Override
                 public void onClick(View v) {
                     if (fragment instanceof SettingsMenuFragment) {
-                        ((SettingsMenuFragment) fragment).moveToNotificationTogglePage(settingMenuItems.get(getAdapterPosition()));
+                        if (getAdapterPosition() == 1) {
+                            ((SettingsMenuFragment) fragment).moveToNotificationTogglePage(settingMenuItems.get(getAdapterPosition()));
+                        }
                     }
                 }
             });
