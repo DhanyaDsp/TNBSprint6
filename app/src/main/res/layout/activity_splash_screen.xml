@@ -39,6 +39,7 @@
         android:background="@drawable/bg_login_btn"
         android:paddingLeft="@dimen/login_side_padding"
         android:paddingRight="@dimen/login_side_padding"
+        android:onClick="moveToNext"
         android:textAllCaps="false"
         android:text="@string/next"
         android:textColor="@android:color/white"

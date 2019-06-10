@@ -141,6 +141,7 @@ public class LoginFragment extends Fragment implements APICallback {
     private void moveToSplashScreen() {
         getActivity().finish();
         Intent intent = new Intent(getActivity(), SplashScreenActivity.class);
+        intent.putExtra("UserName", user.getEmail());
         getActivity().startActivity(intent);
     }
 
@@ -165,7 +166,6 @@ public class LoginFragment extends Fragment implements APICallback {
         if (loginResponse.isSuccess()) {
             if (appPreferences.isLoginned()) {
                 loginViewModel.update(user);
-                //moveToHomePage();
             } else {
                 if (user.isRememberMe()) {
                     user.setUserId(1);
@@ -173,10 +173,9 @@ public class LoginFragment extends Fragment implements APICallback {
                     appPreferences.setLoginned(true);
                     appPreferences.setUser_id(user.getUserId());
                 }
-                //moveToHomePage();
             }
             appPreferences.setAuthToken(loginResponse.getToken());
-            moveToHomePage();
+            moveToSplashScreen();
         }
     }
 
