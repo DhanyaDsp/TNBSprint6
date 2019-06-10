@@ -19,7 +19,9 @@ import com.ey.dgs.api_response.LoginResponse;
 import com.ey.dgs.dashboard.DashboardViewModel;
 import com.ey.dgs.dashboard.questions.QuestionActivity;
 import com.ey.dgs.databinding.LoginFragmentBinding;
+import com.ey.dgs.model.SplashItem;
 import com.ey.dgs.model.User;
+import com.ey.dgs.splashscreen.SplashScreenActivity;
 import com.ey.dgs.utils.AppPreferences;
 import com.ey.dgs.utils.Utils;
 import com.ey.dgs.webservice.APICallback;
@@ -105,7 +107,7 @@ public class LoginFragment extends Fragment implements APICallback {
     @Override
     public void onPause() {
         super.onPause();
-        //loginViewModel.getUserDetail().removeObserver(getUserReceiver);
+        //loginViewModel.getOfferItems().removeObserver(getUserReceiver);
     }
 
     public void login(View view) {
@@ -133,6 +135,12 @@ public class LoginFragment extends Fragment implements APICallback {
         getActivity().finish();
         Intent intent = new Intent(getActivity(), HomeActivity.class);
         intent.putExtra("UserName", user.getEmail());
+        getActivity().startActivity(intent);
+    }
+
+    private void moveToSplashScreen() {
+        getActivity().finish();
+        Intent intent = new Intent(getActivity(), SplashScreenActivity.class);
         getActivity().startActivity(intent);
     }
 

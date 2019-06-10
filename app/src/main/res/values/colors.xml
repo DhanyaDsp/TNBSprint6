@@ -21,4 +21,8 @@
     <color name="blue_active_nav">#1C79CA</color>
     <color name="grey_inactive_nav">#707070</color>
 
+    <color name="black_overlay">#66000000</color>
+    <color name="light_white_30">#4DFFFFFF</color>
+    <color name="light_white_40">#66FFFFFF</color>
+
 </resources>

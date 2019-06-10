@@ -15,4 +15,5 @@
     <dimen name="very_large_padding">40dp</dimen>
     <dimen name="text_size_very_small">12sp</dimen>
     <dimen name="notification_item_icon_size">40dp</dimen>
+    <dimen name="splash_icon_size">100dp</dimen>
 </resources>

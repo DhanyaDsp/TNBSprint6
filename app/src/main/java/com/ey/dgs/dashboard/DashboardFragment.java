@@ -26,9 +26,9 @@ import android.widget.AdapterView;
 import com.ey.dgs.HomeActivity;
 import com.ey.dgs.R;
 import com.ey.dgs.adapters.AccountAdapter;
-import com.ey.dgs.adapters.AccountPagerAdapter;
 import com.ey.dgs.adapters.AccountSpinnerAdapter;
 import com.ey.dgs.adapters.AccountsPagerAdapter;
+import com.ey.dgs.adapters.OffersAdapter;
 import com.ey.dgs.authentication.LoginViewModel;
 import com.ey.dgs.dashboard.billing.BillingHistoryViewModel;
 import com.ey.dgs.dashboard.myaccount.MyAccountFragment;
@@ -36,6 +36,7 @@ import com.ey.dgs.databinding.DashboardFragmentBinding;
 import com.ey.dgs.model.Account;
 import com.ey.dgs.model.User;
 import com.ey.dgs.notifications.settings.NotificationSettingsActivity;
+import com.ey.dgs.offers.OffersViewModel;
 import com.ey.dgs.utils.AppPreferences;
 import com.ey.dgs.utils.DialogHelper;
 import com.ey.dgs.utils.FragmentUtils;
@@ -50,12 +51,13 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
     private static final int REQUEST_CODE_SET_THRESHOLD = 101;
     public static boolean IS_THRESHOLD_SET = false;
     private View rootView;
-    private RecyclerView rvLeaves;
+    private RecyclerView rvAccounts, rvOffers;
     private LinearLayoutManager rvLayoutManager;
     ArrayList<Account> accounts = new ArrayList<>();
     private DividerItemDecoration itemDecorator;
     private Context context;
     private DashboardViewModel dashboardViewModel;
+    private OffersViewModel offersViewModel;
     private BillingHistoryViewModel billingHistoryViewModel;
     private OnFragmentInteractionListener mListener;
     AppCompatTextView tvSubscribe;
@@ -74,7 +76,8 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
     AppCompatSpinner spAccounts;
     AccountSpinnerAdapter accountSpinnerAdapter;
     AccountsPagerAdapter accountsPagerAdapter;
-
+    AccountAdapter accountAdapter;
+    OffersAdapter offersAdapter;
 
     public static DashboardFragment newInstance() {
         return new DashboardFragment();
@@ -100,20 +103,23 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
         subscribePopup = rootView.findViewById(R.id.subscribePopup);
         vpAccounts = rootView.findViewById(R.id.vpAccounts);
         vpAccounts.addOnPageChangeListener(this);
-        rvLeaves = rootView.findViewById(R.id.rvAccounts);
-        rvLeaves.setHasFixedSize(true);
+        rvAccounts = rootView.findViewById(R.id.rvAccounts);
+        rvAccounts.setHasFixedSize(true);
         rvLayoutManager = new LinearLayoutManager(getActivity());
-        rvLeaves.setLayoutManager(rvLayoutManager);
+        rvAccounts.setLayoutManager(rvLayoutManager);
         itemDecorator = new DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
         tvSubscribe = rootView.findViewById(R.id.tvSubscribe);
         tvSubscribe.setOnClickListener(this);
-        rvLeaves.addItemDecoration(itemDecorator);
-        rvLeaves.setItemAnimator(new DefaultItemAnimator());
+        rvAccounts.addItemDecoration(itemDecorator);
+        rvAccounts.setItemAnimator(new DefaultItemAnimator());
         if (mListener != null) {
             mListener.onFragmentInteraction("");
         }
         spAccounts = rootView.findViewById(R.id.spAccounts);
         spAccounts.setOnItemSelectedListener(this);
+        rvOffers = rootView.findViewById(R.id.rvOffers);
+        rvOffers.setHasFixedSize(true);
+        rvOffers.setLayoutManager((new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, true)));
     }
 
     @Override
@@ -128,8 +134,10 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
         dashboardViewModel.setContext(getActivity());
         billingHistoryViewModel = ViewModelProviders.of(getActivity()).get(BillingHistoryViewModel.class);
         billingHistoryViewModel.setContext(getActivity());
+        offersViewModel = ViewModelProviders.of(getActivity()).get(OffersViewModel.class);
+        offersViewModel.setContext(getActivity());
         showProgress(true);
-            loginViewModel.getUserDetail().observe(getViewLifecycleOwner(), user -> {
+        loginViewModel.getUserDetail().observe(getViewLifecycleOwner(), user -> {
             onUserDetailsLoaded(user);
         });
         dashboardViewModel.getLoaderData().observe(getViewLifecycleOwner(), showProgress -> {
@@ -140,12 +148,17 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
             showProgress(false);
             if (accounts.size() > 0) {
                 this.accounts.clear();
+                Account addAccount = new Account();
+                addAccount.setAccount(true);
+                accounts.add(addAccount);
                 this.accounts.addAll(accounts);
                 vpAccounts.setOffscreenPageLimit(accounts.size());
                 accountsPagerAdapter = new AccountsPagerAdapter(getFragmentManager(), this.accounts);
                 vpAccounts.setAdapter(accountsPagerAdapter);
+                accountAdapter = new AccountAdapter(this, getActivity(), this.accounts);
+                rvAccounts.setAdapter(accountAdapter);
                 accountSpinnerAdapter = new AccountSpinnerAdapter(getActivity(), this.accounts);
-                spAccounts.setAdapter(accountSpinnerAdapter);
+                //spAccounts.setAdapter(accountSpinnerAdapter);
                 //accountPagerAdapter = new AccountPagerAdapter(this, getActivity(), this.accounts);
                 //vpAccounts.setAdapter(accountPagerAdapter);
                 for (Account account : this.accounts) {
@@ -182,6 +195,11 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
             }
         });
         /*MOCK RESPONSE*/
+
+        offersViewModel.getOfferItems().observe(getViewLifecycleOwner(), offers -> {
+            offersAdapter = new OffersAdapter(getActivity(), this, offers);
+            rvOffers.setAdapter(offersAdapter);
+        });
     }
 
     private void getBillingDetailsForAccount(ArrayList<Account> accounts) {
