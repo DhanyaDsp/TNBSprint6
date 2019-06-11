@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static com.ey.dgs.model.Notification.REQUEST_CODE_DELETE_NOTIFICATIONS;
 import static com.ey.dgs.model.Notification.REQUEST_CODE_GET_ALL_NOTIFICATIONS;
 
 public class NotificationViewModel extends ViewModel implements DatabaseCallback {
@@ -43,6 +44,10 @@ public class NotificationViewModel extends ViewModel implements DatabaseCallback
 
     private void setNotifications(ArrayList<Notification> notifications) {
         this.notifications.postValue(notifications);
+    }
+
+    public void deleteNotificationsFromLocalDB() {
+        DatabaseClient.getInstance(context).deleteNotifications(REQUEST_CODE_DELETE_NOTIFICATIONS, this);
     }
 
     public void addDummyNotifications(int accountId, int userId) {

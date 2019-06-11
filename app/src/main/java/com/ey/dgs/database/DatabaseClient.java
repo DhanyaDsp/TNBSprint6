@@ -384,6 +384,28 @@ public class DatabaseClient {
         st.execute();
     }
 
+    public void deleteNotifications(int requestCode, DatabaseCallback databaseCallback) {
+        class GetNotificationsTask extends AsyncTask<Void, Void, List<Notification>> {
+
+            @Override
+            protected List<Notification> doInBackground(Void... voids) {
+
+                DatabaseClient.getInstance(mCtx).getAppDatabase()
+                        .notificationDao().deleteAll();
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(List<Notification> notifications) {
+                super.onPostExecute(notifications);
+                databaseCallback.onReceived(notifications, requestCode, 0);
+            }
+        }
+
+        GetNotificationsTask st = new GetNotificationsTask();
+        st.execute();
+    }
+
     public void getAccountSettings(int requestCode, String accountNumber, DatabaseCallback databaseCallback) {
         class GetAccountSettingsTask extends AsyncTask<Void, Void, AccountSettings> {
 

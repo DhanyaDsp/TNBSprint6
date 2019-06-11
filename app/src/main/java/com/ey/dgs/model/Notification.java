@@ -11,6 +11,7 @@ public class Notification implements Serializable {
 
     public static int REQUEST_CODE_ADD_NOTIFICATIONS = 5;
     public static int REQUEST_CODE_GET_ALL_NOTIFICATIONS = 6;
+    public static int REQUEST_CODE_DELETE_NOTIFICATIONS = 7;
 
     public static String MMC = "MMC";
     public static String ADVANCED = "AMMC";

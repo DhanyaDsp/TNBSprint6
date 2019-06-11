@@ -29,6 +29,8 @@
     <string name="pay">Pay</string>
     <string name="add_threshold">Add Threshold</string>
     <string name="notification">notification</string>
+    <string name="notification_settings">Notification Settings</string>
+    <string name="delete">Delete All</string>
     <string name="all_accounts">All Accounts</string>
     <string name="subscription_popup_msg">Subscribe to receive alerts on your consumption usage and service availablility</string>
     <string name="title_activity_notification_list">NotificationListActivity</string>

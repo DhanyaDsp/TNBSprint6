@@ -20,5 +20,6 @@
     <color name="purple_transparent">#BF7730D3</color>
     <color name="blue_active_nav">#1C79CA</color>
     <color name="grey_inactive_nav">#707070</color>
+    <color name="red">#CE2020</color>
 
 </resources>

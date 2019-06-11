@@ -29,4 +29,7 @@ public interface NotificationDao {
     @Update
     void update(Notification notification);
 
+    @Query("DELETE FROM Notification")
+    void deleteAll();
+
 }
