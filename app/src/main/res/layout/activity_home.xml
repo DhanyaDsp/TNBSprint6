@@ -37,13 +37,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="?android:attr/windowBackground"
+        android:background="@color/black"
         app:itemTextAppearanceActive="@style/BottomNavigationView.Active"
         app:itemTextAppearanceInactive="@style/BottomNavigationView"
         app:labelVisibilityMode="labeled"
         app:menu="@menu/navigation"
-        app:itemTextColor="@color/bg_text_selector"
-        app:itemIconTint="@color/bg_text_selector"/>
+        app:itemTextColor="@android:color/white"
+        app:itemIconTint="@android:color/white"/>
 
     <include
         android:id="@+id/loader"

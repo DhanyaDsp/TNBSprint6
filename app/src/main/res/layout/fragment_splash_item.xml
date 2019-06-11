@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="splashItem"
+            type="com.ey.dgs.model.SplashItem" />
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="@dimen/large_padding"
+        tools:context=".splashscreen.SplashItemFragment">
+
+        <android.support.v7.widget.AppCompatTextView
+            android:layout_width="@dimen/splash_icon_size"
+            android:layout_height="@dimen/splash_icon_size"
+            android:layout_marginTop="@dimen/large_padding" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/large_padding"
+            android:fontFamily="@font/museosans_500"
+            android:text="@={splashItem.title}"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_size_medium" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/large_padding"
+            android:fontFamily="@font/museosans_500"
+            android:gravity="center"
+            android:text="@={splashItem.message}"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_size_medium1" />
+
+    </LinearLayout>
+
+</layout>

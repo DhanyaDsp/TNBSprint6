@@ -62,4 +62,9 @@
         <item>11</item>
         <item>12</item>
     </string-array>
+
+    <string name="title_activity_splash_screen">SplashScreenActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="manage_accounts">Manage Accounts</string>
 </resources>
