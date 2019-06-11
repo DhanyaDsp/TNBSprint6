@@ -385,7 +385,7 @@ public class DatabaseClient {
     }
 
     public void deleteAllNotifications(int requestCode, DatabaseCallback databaseCallback) {
-        class GetNotificationsTask extends AsyncTask<Void, Void, List<Notification>> {
+         class DeleteAllNotificationsTask extends AsyncTask<Void, Void, List<Notification>> {
 
             @Override
             protected List<Notification> doInBackground(Void... voids) {
@@ -402,12 +402,12 @@ public class DatabaseClient {
             }
         }
 
-        GetNotificationsTask st = new GetNotificationsTask();
+        DeleteAllNotificationsTask st = new DeleteAllNotificationsTask();
         st.execute();
     }
 
     public void deleteNotification(int requestCode, Notification notification, DatabaseCallback databaseCallback) {
-        class GetNotificationsTask extends AsyncTask<Void, Void, List<Notification>> {
+        class DeleteNotificationsTask extends AsyncTask<Void, Void, List<Notification>> {
 
             @Override
             protected List<Notification> doInBackground(Void... voids) {
@@ -424,7 +424,7 @@ public class DatabaseClient {
             }
         }
 
-        GetNotificationsTask st = new GetNotificationsTask();
+        DeleteNotificationsTask st = new DeleteNotificationsTask();
         st.execute();
     }
 
