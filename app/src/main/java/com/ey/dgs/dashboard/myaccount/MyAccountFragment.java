@@ -117,4 +117,7 @@ public class MyAccountFragment extends Fragment {
         }
     }
 
+    public Account getAccount() {
+        return account;
+    }
 }

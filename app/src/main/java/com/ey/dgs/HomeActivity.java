@@ -164,8 +164,8 @@ public class HomeActivity extends AppCompatActivity implements MyAccountFragment
 
         Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.homeFlContainer);
         Intent intent = new Intent(this, NotificationListActivity.class);
-        if (currentFragment instanceof MyDashboardFragment) {
-            selectedAccount = ((MyDashboardFragment) currentFragment).getSelectedAccount();
+        if (currentFragment instanceof MyAccountFragment) {
+            selectedAccount = ((MyAccountFragment) currentFragment).getAccount();
             if (selectedAccount != null) {
                 intent.putExtra("allNotifications", false);
                 intent.putExtra("accountNumber", selectedAccount.getAccountNumber());

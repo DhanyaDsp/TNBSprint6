@@ -39,6 +39,8 @@ public class User implements Serializable {
 
     private boolean isPrimaryAccountSet;
 
+    private boolean isSplashScreenSeen;
+
     @Ignore
     private Account[] accountDetails;
 
@@ -116,5 +118,11 @@ public class User implements Serializable {
         isPrimaryAccountSet = primaryAccountSet;
     }
 
+    public boolean isSplashScreenSeen() {
+        return isSplashScreenSeen;
+    }
 
+    public void setSplashScreenSeen(boolean splashScreenSeen) {
+        isSplashScreenSeen = splashScreenSeen;
+    }
 }
