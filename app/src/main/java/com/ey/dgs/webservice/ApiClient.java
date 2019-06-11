@@ -142,7 +142,7 @@ public class ApiClient {
             public void onFailure(Call<UserDetailResponse> call, Throwable t) {
                 UserDetailResponse userDetailResponse = new UserDetailResponse();
                 userDetailResponse.setMessage("Please try again!");
-                callback.onFailure(REQUEST_CODE_GET_USER, userDetailResponse, 0);
+                callback.onFailure(REQUEST_CODE_GET_USER, userDetailResponse.getMessage(), 0);
             }
         });
     }
