@@ -7,15 +7,14 @@ import android.content.Context;
 
 import com.ey.dgs.database.DatabaseCallback;
 import com.ey.dgs.database.DatabaseClient;
-import com.ey.dgs.model.Account;
 import com.ey.dgs.model.Notification;
 import com.ey.dgs.utils.Utils;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import static com.ey.dgs.model.Notification.REQUEST_CODE_DELETE_NOTIFICATIONS;
+import static com.ey.dgs.model.Notification.REQUEST_CODE_DELETE_ONE_NOTIFICATION;
 import static com.ey.dgs.model.Notification.REQUEST_CODE_GET_ALL_NOTIFICATIONS;
 
 public class NotificationViewModel extends ViewModel implements DatabaseCallback {
@@ -47,7 +46,11 @@ public class NotificationViewModel extends ViewModel implements DatabaseCallback
     }
 
     public void deleteNotificationsFromLocalDB() {
-        DatabaseClient.getInstance(context).deleteNotifications(REQUEST_CODE_DELETE_NOTIFICATIONS, this);
+        DatabaseClient.getInstance(context).deleteAllNotifications(REQUEST_CODE_DELETE_NOTIFICATIONS, this);
+    }
+
+    public void deleteNotification(Notification notification) {
+        DatabaseClient.getInstance(context).deleteNotification(REQUEST_CODE_DELETE_ONE_NOTIFICATION, notification, this);
     }
 
     public void addDummyNotifications(int accountId, int userId) {

@@ -1,20 +1,20 @@
 package com.ey.dgs.notifications;
 
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Canvas;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
+import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.AppCompatDialog;
-import android.support.v7.widget.AppCompatButton;
-import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.ey.dgs.R;
 import com.ey.dgs.adapters.NotificationListAdapter;
 import com.ey.dgs.model.Notification;
+import com.ey.dgs.notifications.settings.NotificationSettingsActivity;
 import com.ey.dgs.notifications.settings.SettingsMenuFragment;
 import com.ey.dgs.utils.AppPreferences;
 import com.ey.dgs.utils.DialogHelper;
@@ -39,6 +40,7 @@ public class NotificationListActivity extends AppCompatActivity implements Setti
     AppPreferences appPreferences;
     boolean allNotifications;
     String accountNumber;
+    private Drawable icon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +78,10 @@ public class NotificationListActivity extends AppCompatActivity implements Setti
             case R.id.action_delete:
                 deleteAll();
                 break;
+            case R.id.action_notification_settings:
+                Intent intent = new Intent(NotificationListActivity.this, NotificationSettingsActivity.class);
+                startActivity(intent);
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -90,6 +96,57 @@ public class NotificationListActivity extends AppCompatActivity implements Setti
             Collections.reverse(this.notifications);
             notificationListAdapter.notifyDataSetChanged();
         });
+
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder,
+                                  RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                notificationViewModel.deleteNotification(notificationListAdapter.
+                        getNotificationAt(viewHolder.getAdapterPosition()));
+                notifications.remove(viewHolder.getAdapterPosition());
+                notificationListAdapter.notifyItemRemoved(viewHolder.getLayoutPosition());
+            }
+
+            @Override
+            public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView,
+                                    @NonNull RecyclerView.ViewHolder viewHolder,
+                                    float dX, float dY, int actionState, boolean isCurrentlyActive) {
+                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+                icon = ContextCompat.getDrawable(getApplicationContext(),
+                        R.drawable.delete);
+                drawOnSwipe(c, viewHolder, dX);
+
+            }
+        }).attachToRecyclerView(rvNotifications);
+    }
+
+    private void drawOnSwipe(Canvas c, RecyclerView.ViewHolder viewHolder, float dX) {
+
+        ColorDrawable background = new ColorDrawable(getResources().getColor(R.color.yellow1));
+        View itemView = viewHolder.itemView;
+        int backgroundCornerOffset = 20;
+        int iconMargin = (itemView.getHeight() - icon.getIntrinsicHeight()) / 2;
+        int iconTop = itemView.getTop() + (itemView.getHeight() - icon.getIntrinsicHeight()) / 2;
+        int iconBottom = iconTop + icon.getIntrinsicHeight();
+
+        if (dX < 0) { // Swiping to the left
+            int iconLeft = itemView.getRight() - iconMargin - icon.getIntrinsicWidth();
+            int iconRight = itemView.getRight() - iconMargin;
+            icon.setBounds(iconLeft, iconTop, iconRight, iconBottom);
+
+            background.setBounds(itemView.getRight() + ((int) dX) - backgroundCornerOffset,
+                    itemView.getTop(), itemView.getRight(), itemView.getBottom());
+        } else { // view is unSwiped
+            background.setBounds(0, 0, 0, 0);
+        }
+
+        background.draw(c);
+        icon.draw(c);
     }
 
     private void initViews() {
@@ -119,17 +176,15 @@ public class NotificationListActivity extends AppCompatActivity implements Setti
             public void onClick(View v) {
                 DialogHelper.hidePopup();
             }
-        }, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DialogHelper.hidePopup();
-                if (!notifications.isEmpty()) {
-                    notificationViewModel.deleteNotificationsFromLocalDB();
-                    notificationListAdapter.notifyDataSetChanged();
-                    Toast.makeText(getApplicationContext(), "Deleted", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getApplicationContext(), "No notifications to delete", Toast.LENGTH_SHORT).show();
-                }
+        }, v -> {
+            DialogHelper.hidePopup();
+            if (!notifications.isEmpty()) {
+                notificationViewModel.deleteNotificationsFromLocalDB();
+                notifications.clear();
+                notificationListAdapter.notifyDataSetChanged();
+            } else {
+                Toast.makeText(getApplicationContext(), "No notifications to delete", Toast.LENGTH_SHORT).
+                        show();
             }
         });
     }

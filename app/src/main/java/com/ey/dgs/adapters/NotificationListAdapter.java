@@ -53,6 +53,9 @@ public class NotificationListAdapter extends RecyclerView.Adapter<RecyclerView.V
         return this.notifications.size();
     }
 
+    public Notification getNotificationAt(int position) {
+        return notifications.get(position);
+    }
 
     public class NotificationHolder extends RecyclerView.ViewHolder {
 
