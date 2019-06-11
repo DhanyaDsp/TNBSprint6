@@ -4,35 +4,31 @@ import android.app.Activity;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.AppCompatTextView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.ey.dgs.R;
-import com.ey.dgs.dashboard.DashboardFragment;
+import com.ey.dgs.adapters.MyAccountTabsAdapter;
 import com.ey.dgs.databinding.FragmentMyAccountBinding;
 import com.ey.dgs.model.Account;
-import com.ey.dgs.model.NotificationSetting;
 import com.ey.dgs.model.User;
-import com.ey.dgs.model.chart.ChartData;
-import com.ey.dgs.notifications.NotificationListActivity;
 import com.ey.dgs.notifications.settings.NotificationSettingsActivity;
-import com.ey.dgs.utils.Utils;
 import com.ey.dgs.views.BarChart;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 
 public class MyAccountFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
-    private FragmentMyAccountBinding myAccountBinding;
     private Account account;
-    AppCompatTextView tvDueDate;
-    BarChart barChart;
-    View view;
+    private View view;
+    private MyAccountTabsAdapter accountTabsAdapter;
+    private ViewPager vpAccountTabs;
 
     public MyAccountFragment() {
     }
@@ -57,7 +53,7 @@ public class MyAccountFragment extends Fragment {
         if (mListener != null) {
             mListener.onFragmentInteraction("");
         }
-        myAccountBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_my_account, container, false);
+        FragmentMyAccountBinding myAccountBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_my_account, container, false);
         myAccountBinding.setFragment(this);
         myAccountBinding.setAccount(account);
         view = myAccountBinding.getRoot();
@@ -66,21 +62,16 @@ public class MyAccountFragment extends Fragment {
     }
 
     private void initViews() {
-        tvDueDate = view.findViewById(R.id.tvDueDate);
-        barChart = view.findViewById(R.id.bar_chart);
+        setupViewPager();
+        addCustomTabs();
+    }
 
-        ArrayList<ChartData> chartDatum = new ArrayList<>();
-        ChartData chartData; // = new ChartData();
-
-        for(int i=0; i<6; i++){
-            chartData = new ChartData();
-            chartData.setTag("LB" + (i+1));
-            chartData.setVal(20.0f);
-            chartDatum.add(chartData);
-        }
-
-        barChart.setData(chartDatum).setTitle("Chart_Title");
-        tvDueDate.setText(Utils.formatAccountDetailDate(account.getLastBilledDate()));
+    private void setupViewPager() {
+        vpAccountTabs = view.findViewById(R.id.vpAccountTabs);
+        accountTabsAdapter = new MyAccountTabsAdapter(getChildFragmentManager(), getActivity());
+        accountTabsAdapter.addFrag(ConsumptionFragment.newInstance(account), "Consumptions");
+        accountTabsAdapter.addFrag(EnergyInsightFragment.newInstance(), "Energy Sights");
+        vpAccountTabs.setAdapter(accountTabsAdapter);
     }
 
     @Override
@@ -119,5 +110,15 @@ public class MyAccountFragment extends Fragment {
 
     public Account getAccount() {
         return account;
+    }
+
+    private void addCustomTabs() {
+        TabLayout tabLayout = view.findViewById(R.id.htab_tabs);
+        tabLayout.setupWithViewPager(vpAccountTabs);
+        for (int i = 0; i < tabLayout.getTabCount(); i++) {
+            TabLayout.Tab tab = tabLayout.getTabAt(i);
+            tab.setCustomView(accountTabsAdapter.getTabView(i));
+        }
+
     }
 }

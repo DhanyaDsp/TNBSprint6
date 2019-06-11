@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
@@ -14,150 +15,34 @@
             type="com.ey.dgs.dashboard.myaccount.MyAccountFragment" />
     </data>
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/bg_login"
         android:clickable="true"
         android:focusableInTouchMode="true"
+        android:orientation="vertical"
         tools:context=".dashboard.myaccount.MyAccountFragment">
 
-        <!--<android.support.v7.widget.AppCompatImageView
+        <android.support.design.widget.TabLayout
+            android:id="@+id/htab_tabs"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/btnAddThreshold"
-            android:layout_marginBottom="@dimen/large_padding"
-            android:adjustViewBounds="true"
-            android:src="@drawable/chart" />-->
+            android:layout_height="?attr/actionBarSize"
+            android:layout_gravity="bottom"
+            android:background="@android:color/transparent"
+            app:tabIndicatorColor="@color/yellow1"
+            app:tabIndicatorHeight="2dp"
+            app:tabMode="fixed"
+            app:tabSelectedTextColor="@android:color/white"
+            app:tabTextAppearance="@style/tab_text"
+            app:tabTextColor="@color/light_white_50" />
 
-        <com.ey.dgs.views.BarChart
-            android:id="@+id/bar_chart"
+        <android.support.v4.view.ViewPager
+            android:id="@+id/vpAccountTabs"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/btnAddThreshold"
-            android:layout_marginBottom="@dimen/large_padding"
-            android:adjustViewBounds="true"/>
+            android:layout_height="wrap_content" />
 
-        <android.support.v7.widget.AppCompatButton
-            android:id="@+id/btnAddThreshold"
-            android:layout_width="250dp"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/llAmount"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="@dimen/login_side_padding"
-            android:background="@drawable/bg_add_account"
-            android:fontFamily="@font/museosans_500"
-            android:onClick="@{(v)-> fragment.addThreshold(v)}"
-            android:text="@string/add_threshold"
-            android:textAllCaps="false"
-            android:textColor="@android:color/white"
-            android:textSize="@dimen/text_size_medium1" />
 
-        <LinearLayout
-            android:id="@+id/llAmount"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:background="@android:color/white"
-            android:orientation="vertical"
-            android:padding="@dimen/medium_padding">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:gravity="center_vertical">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:orientation="vertical">
-
-                    <android.support.v7.widget.AppCompatTextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/museosans_500"
-                        android:text="@string/amount_due"
-                        android:textColor="@android:color/black"
-                        android:textSize="@dimen/text_size_medium" />
-
-                    <android.support.v7.widget.AppCompatTextView
-                        android:id="@+id/tvDueDate"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/small_padding"
-                        android:fontFamily="@font/museosans_500"
-                        android:textColor="@color/black_60"
-                        android:textSize="@dimen/text_size_small" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:orientation="horizontal">
-
-                    <android.support.v7.widget.AppCompatTextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/museosans_500"
-                        android:text="RM"
-                        android:textColor="@color/black_60" />
-
-                    <android.support.v7.widget.AppCompatTextView
-                        android:id="@+id/tvDueAmount"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/small_padding"
-                        android:fontFamily="@font/museosans_500"
-                        android:text="@{account.lastBilledAmount}"
-                        android:textColor="@android:color/black"
-                        android:textSize="@dimen/text_size_large" />
-
-                </LinearLayout>
-
-            </RelativeLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/small_padding"
-                android:orientation="horizontal"
-                android:weightSum="2">
-
-                <android.support.v7.widget.AppCompatButton
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="@dimen/small_padding"
-                    android:layout_weight="1"
-                    android:background="@drawable/rounded_green_border"
-                    android:fontFamily="@font/museosans_500"
-                    android:text="@string/current_bill"
-                    android:textAllCaps="false"
-                    android:textColor="@color/light_green"
-                    android:textSize="@dimen/text_size_medium" />
-
-                <android.support.v7.widget.AppCompatButton
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/small_padding"
-                    android:layout_weight="1"
-                    android:background="@drawable/bg_login_btn"
-                    android:fontFamily="@font/museosans_500"
-                    android:text="@string/pay"
-                    android:textAllCaps="false"
-                    android:textColor="@android:color/white"
-                    android:textSize="@dimen/text_size_medium">
-
-                </android.support.v7.widget.AppCompatButton>
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-    </RelativeLayout>
+    </LinearLayout>
 
 </layout>

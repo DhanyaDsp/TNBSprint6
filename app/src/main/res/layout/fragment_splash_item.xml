@@ -12,47 +12,53 @@
 
     </data>
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center_horizontal"
-        android:orientation="vertical"
-        android:paddingTop="@dimen/large_padding"
-        android:paddingBottom="@dimen/large_padding"
-        tools:context=".splashscreen.SplashItemFragment">
+        android:layout_height="wrap_content">
 
-        <android.support.v7.widget.AppCompatImageView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/large_padding"
-            android:adjustViewBounds="true"
-            android:scaleType="center"
-            android:src="@{splashItem.image}" />
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:paddingTop="@dimen/large_padding"
+            android:paddingBottom="@dimen/large_padding"
+            tools:context=".splashscreen.SplashItemFragment">
 
-        <android.support.v7.widget.AppCompatTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/very_large_padding"
-            android:layout_marginTop="@dimen/large_padding"
-            android:layout_marginRight="@dimen/very_large_padding"
-            android:fontFamily="@font/museosans_500"
-            android:text="@={splashItem.title}"
-            android:textColor="@android:color/white"
-            android:textSize="@dimen/text_size_medium" />
+            <android.support.v7.widget.AppCompatImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/large_padding"
+                android:adjustViewBounds="true"
+                android:scaleType="fitXY"
+                android:src="@{splashItem.image}" />
 
-        <android.support.v7.widget.AppCompatTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/large_padding"
-            android:layout_marginTop="@dimen/very_large_padding"
-            android:layout_marginRight="@dimen/very_large_padding"
-            android:fontFamily="@font/museosans_500"
-            android:gravity="center"
-            android:lineSpacingExtra="@dimen/small_padding"
-            android:text="@={splashItem.message}"
-            android:textColor="@android:color/white"
-            android:textSize="@dimen/text_size_medium1" />
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/very_large_padding"
+                android:layout_marginTop="@dimen/large_padding"
+                android:layout_marginRight="@dimen/very_large_padding"
+                android:fontFamily="@font/museosans_500"
+                android:text="@={splashItem.title}"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/text_size_medium1" />
 
-    </LinearLayout>
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/large_padding"
+                android:layout_marginTop="@dimen/large_padding"
+                android:layout_marginRight="@dimen/large_padding"
+                android:fontFamily="@font/museosans_500"
+                android:gravity="center"
+                android:lineSpacingExtra="@dimen/small_padding"
+                android:text="@={splashItem.message}"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/text_size_medium1" />
+
+        </LinearLayout>
+
+    </ScrollView>
 
 </layout>
