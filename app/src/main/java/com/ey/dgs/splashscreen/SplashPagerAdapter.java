@@ -28,10 +28,4 @@ public class SplashPagerAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         return SplashItemFragment.newInstance(splashItems.get(position));
     }
-
-    @Override
-    public CharSequence getPageTitle(int position) {
-        return "Page " + position;
-    }
-
 }

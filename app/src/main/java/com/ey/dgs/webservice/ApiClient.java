@@ -14,6 +14,7 @@ import com.ey.dgs.model.BillingPeriodReqest;
 import com.ey.dgs.model.NotificationSettingsRequest;
 import com.ey.dgs.model.SetPrimaryAccountRequest;
 import com.ey.dgs.model.User;
+import com.ey.dgs.utils.HttpClientService;
 import com.ey.dgs.utils.MockResponse;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -43,6 +44,7 @@ public class ApiClient {
     public static Retrofit getClient() {
         return new Retrofit.Builder()
                 .baseUrl(BASE_URL)
+                .client(HttpClientService.getUnsafeOkHttpClient())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -50,14 +52,14 @@ public class ApiClient {
 
     public static Retrofit getUserDetailsClient() {
         return retrofit = new Retrofit.Builder()
-                .baseUrl(LOGIN_BASE_URL)
+                .baseUrl(LOGIN_BASE_URL).client(HttpClientService.getUnsafeOkHttpClient())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
     }
 
     public static Retrofit getBillingHistoryClient() {
         return retrofit = new Retrofit.Builder()
-                .baseUrl(BILLING_BASE_URL)
+                .baseUrl(BILLING_BASE_URL).client(HttpClientService.getUnsafeOkHttpClient())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
     }
@@ -69,6 +71,7 @@ public class ApiClient {
 
         return new Retrofit.Builder()
                 .baseUrl(LOGIN_BASE_URL)
+                .client(HttpClientService.getUnsafeOkHttpClient())
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
     }
@@ -122,6 +125,7 @@ public class ApiClient {
                         userDetailResponse.getUser().setPrimaryAccountSet(user.isPrimaryAccountSet());
                         userDetailResponse.getUser().setRememberMe(user.isRememberMe());
                         userDetailResponse.getUser().setUserId(user.getUserId());
+                        userDetailResponse.getUser().setSplashScreenSeen(user.isSplashScreenSeen());
                         callback.onSuccess(REQUEST_CODE_GET_USER, userDetailResponse, response.code());
                     } else {
                         userDetailResponse.setMessage("Please try again!");

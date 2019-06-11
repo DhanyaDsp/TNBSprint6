@@ -1,8 +1,10 @@
 package com.ey.dgs.splashscreen;
 
+import android.databinding.BindingAdapter;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.AppCompatImageView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,4 +47,8 @@ public class SplashItemFragment extends Fragment {
         return splashItemBinding.getRoot();
     }
 
+    @BindingAdapter({"android:src"})
+    public static void setImageViewResource(AppCompatImageView imageView, int resource) {
+        imageView.setImageResource(resource);
+    }
 }

@@ -214,11 +214,11 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
         if (user != null) {
             this.user = user;
             loginFragmentBinding.setUser(this.user);
-            if (user.isPrimaryAccountSet()) {
+            /*if (user.isPrimaryAccountSet()) {
                 btnSetPrimaryAccount.setVisibility(View.GONE);
             } else {
                 btnSetPrimaryAccount.setVisibility(View.VISIBLE);
-            }
+            }*/
         }
     }
 
