@@ -49,7 +49,6 @@ public class HomeActivity extends AppCompatActivity implements MyAccountFragment
     String userName;
     private String TAG = "HomeActivity";
     private boolean isUserDetailsServiceCalled;
-    public static boolean isQuestionsShown;
     private boolean isServerAccountUpdated;
     private BottomNavigationView navigation;
     private boolean dashboardShown;

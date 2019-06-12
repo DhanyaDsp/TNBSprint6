@@ -1,6 +1,7 @@
 package com.ey.dgs.dashboard.myaccount;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,6 +14,8 @@ import android.widget.LinearLayout;
 import com.ey.dgs.R;
 import com.ey.dgs.authentication.LoginViewModel;
 import com.ey.dgs.dashboard.billing.BillingHistoryViewModel;
+import com.ey.dgs.dashboard.questions.MMCQuestionsFragment;
+import com.ey.dgs.dashboard.questions.QuestionActivity;
 import com.ey.dgs.databinding.FragmentConsumptionBinding;
 import com.ey.dgs.databinding.FragmentMyAccountBinding;
 import com.ey.dgs.model.Account;
@@ -20,10 +23,12 @@ import com.ey.dgs.model.BillingDetails;
 import com.ey.dgs.model.BillingHistory;
 import com.ey.dgs.model.User;
 import com.ey.dgs.model.chart.ChartData;
+import com.ey.dgs.utils.FragmentUtils;
 import com.ey.dgs.utils.Utils;
 import com.ey.dgs.views.BarChart;
 import com.google.gson.Gson;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 public class ConsumptionFragment extends Fragment implements View.OnClickListener {
@@ -38,7 +43,7 @@ public class ConsumptionFragment extends Fragment implements View.OnClickListene
     private BillingDetails[] billingDetails;
     User user;
     LinearLayout llTabs;
-    AppCompatButton btnDaily, btnMonthly, btnYearly;
+    AppCompatButton btnDaily, btnMonthly, btnYearly, btnManageConsumption;
 
     public ConsumptionFragment() {
     }
@@ -120,6 +125,8 @@ public class ConsumptionFragment extends Fragment implements View.OnClickListene
         btnDaily = view.findViewById(R.id.btnDaily);
         btnMonthly = view.findViewById(R.id.btnMonthly);
         btnYearly = view.findViewById(R.id.btnYearly);
+        btnManageConsumption = view.findViewById(R.id.btnManageConsumption);
+        btnManageConsumption.setOnClickListener(this);
         btnDaily.setOnClickListener(this);
         btnMonthly.setOnClickListener(this);
         btnYearly.setOnClickListener(this);
@@ -147,9 +154,21 @@ public class ConsumptionFragment extends Fragment implements View.OnClickListene
                 btnMonthly.setSelected(false);
                 btnYearly.setSelected(true);
                 break;
+            case R.id.btnManageConsumption:
+                showQuestionsFragment();
+                break;
 
             default:
                 break;
+        }
+    }
+
+    private void showQuestionsFragment() {
+        if (billingHistory != null) {
+            billingHistory.setAccount(account);
+            Intent intent = new Intent(getActivity(), QuestionActivity.class);
+            intent.putExtra("billingHistory",  billingHistory);
+            getActivity().startActivity(intent);
         }
     }
 }

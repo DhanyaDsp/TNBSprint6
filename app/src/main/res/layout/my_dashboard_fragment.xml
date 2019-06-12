@@ -65,7 +65,7 @@
                     android:background="@drawable/rounded_white"
                     android:paddingLeft="@dimen/medium_padding"
                     android:paddingRight="@dimen/medium_padding"
-                    android:text="@string/manage_consumptions"
+                    android:text="@string/manage_consumption"
                     android:textAllCaps="false"
                     android:textColor="@android:color/white"
                     android:textSize="@dimen/text_size_medium1"

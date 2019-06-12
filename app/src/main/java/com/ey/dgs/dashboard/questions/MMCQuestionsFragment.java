@@ -1,65 +1,45 @@
 package com.ey.dgs.dashboard.questions;
 
-import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
-import android.support.v7.widget.AppCompatButton;
-import android.support.v7.widget.AppCompatEditText;
-import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.AppCompatTextView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
-import com.ey.dgs.HomeActivity;
 import com.ey.dgs.R;
-import com.ey.dgs.adapters.QuestionsPagerAdapter;
-import com.ey.dgs.authentication.LoginViewModel;
-import com.ey.dgs.dashboard.DashboardFragment;
-import com.ey.dgs.dashboard.DashboardViewModel;
-import com.ey.dgs.dashboard.MyDashboardFragment;
-import com.ey.dgs.dashboard.myaccount.AccountSettingsViewModel;
 import com.ey.dgs.model.Account;
-import com.ey.dgs.model.AccountSettings;
-import com.ey.dgs.model.AnswerRequest;
+import com.ey.dgs.model.BillingDetails;
 import com.ey.dgs.model.BillingHistory;
-import com.ey.dgs.model.NotificationSettingsRequest;
-import com.ey.dgs.model.Question;
-import com.ey.dgs.model.Setting;
-import com.ey.dgs.model.User;
-import com.ey.dgs.notifications.settings.NotificationSettingsActivity;
+import com.ey.dgs.model.chart.ChartData;
 import com.ey.dgs.utils.AppPreferences;
 import com.ey.dgs.utils.Utils;
+import com.ey.dgs.views.BarChart;
+import com.google.gson.Gson;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class MMCQuestionsFragment extends Fragment {
+public class MMCQuestionsFragment extends Fragment implements View.OnClickListener{
 
-    private MmcQuestionsViewModel mViewModel;
-    ViewPager vpQuestions;
     private View rootView;
-    QuestionsPagerAdapter questionsPagerAdapter;
-    ArrayList<Question> questions = new ArrayList<>();
+    private int displayCount;
+    private LinearLayout layoutQuestion1;
+    private RelativeLayout layoutQuestion2;
+    private BarChart barChart;
     Account account;
-    AppCompatButton btnNext;
     View loader;
-    AppCompatTextView tvAccountName;
-    LoginViewModel loginViewModel;
+    AppCompatTextView tvAccountName, tvPeopleQuestion;
     AppPreferences appPreferences;
-    private User user;
-    private AccountSettingsViewModel accountSettingsViewModel;
-    private DashboardViewModel dashboardViewModel;
-    private String thresholdSuggestions;
-    private AccountSettings accountSettings;
     BillingHistory billingHistory;
+    Button decrease, increase, numberDisplay, btnNext;
 
 
     public static MMCQuestionsFragment newInstance(BillingHistory billingHistory) {
@@ -91,80 +71,30 @@ public class MMCQuestionsFragment extends Fragment {
         rootView = inflater.inflate(R.layout.mmcquestions_fragment, container, false);
         initViews();
         setData();
+        subscribe();
         return rootView;
     }
 
     private void setData() {
         tvAccountName.setText(account.getNickName());
+        tvPeopleQuestion.setText(rootView.getContext().getString(R.string.people_question, account.getNickName()));
+
     }
 
     private void initViews() {
-        vpQuestions = rootView.findViewById(R.id.vpQuestions);
-        vpQuestions.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return true;
-            }
-        });
         loader = rootView.findViewById(R.id.loader);
         tvAccountName = rootView.findViewById(R.id.tvAccountName);
+        tvPeopleQuestion = rootView.findViewById(R.id.peopleQuestion);
+        decrease = rootView.findViewById(R.id.decrease);
+        increase = rootView.findViewById(R.id.increase);
+        numberDisplay = rootView.findViewById(R.id.number_display);
         btnNext = rootView.findViewById(R.id.btnNext);
-        btnNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Utils.hideKeyBoard(getActivity());
-                int position = vpQuestions.getCurrentItem();
-                if (position < questions.size() - 1) {
-                    View currentQuestionView;
-                    if (questions.get(position).getQuestionId() == 1) {
-                        currentQuestionView = vpQuestions.getChildAt(0);
-                    } else {
-                        currentQuestionView = vpQuestions.getChildAt(1);
-                    }
-                    AppCompatEditText etAnswer = currentQuestionView.findViewById(R.id.etAnswer);
-                    AppCompatEditText spMonths = currentQuestionView.findViewById(R.id.spMonths);
-                    String answer = "10";
-                    if (questions.get(position).getQuestionId() == 3) {
-                        answer = spMonths.getText().toString().trim();
-                    } else {
-                        answer = etAnswer.getText().toString().trim();
-                    }
-                    AnswerRequest answerRequest = new AnswerRequest();
-                    answerRequest.setAccountNumber(account.getAccountNumber());
-                    answerRequest.setUserName(account.getAccountNumber());
-                    answerRequest.setUserName(user.getEmail());
-                    answerRequest.setResponse(answer);
-                    answerRequest.setQuestionId(questions.get(position).getQuestionId());
-                    if (!TextUtils.isEmpty(answer)) {
-                        mViewModel.answerQuestion(answerRequest);
-                    } else {
-                        Utils.showToast(getActivity(), "Please fill the answer");
-                    }
-                } else {
-                    View currentQuestionView = vpQuestions.getChildAt(1);
-                    AppCompatEditText etAnswer = currentQuestionView.findViewById(R.id.etAnswer);
-                    AppCompatSpinner spMonths = currentQuestionView.findViewById(R.id.spMonths);
-                    String threshold = etAnswer.getText().toString().trim();
-                    if (!TextUtils.isEmpty(threshold)) {
-                        accountSettings.getEnergyConsumptions().setUserThreshold(threshold);
-                        NotificationSettingsRequest notificationSettingsRequest = new NotificationSettingsRequest();
-                        notificationSettingsRequest.setUserName(user.getEmail());
-                        notificationSettingsRequest.setAccountNumber(accountSettings.getAccountNumber());
-                        Setting setting = new Setting();
-                        setting.setEnergyConsumptions(accountSettings.getEnergyConsumptions());
-                        setting.setPushNotificationFlag(accountSettings.isPushNotificationFlag());
-                        setting.setServiceAvailabilityFlag(accountSettings.isServiceAvailabilityFlag());
-                        setting.setSmsNotificationFlag(accountSettings.isSmsNotificationFlag());
-                        notificationSettingsRequest.setSetting(setting);
-                        showProgress(true);
-                        accountSettingsViewModel.updateAccountSettingsInServer(notificationSettingsRequest);
-                    } else {
-                        Utils.showToast(getActivity(), "Please fill the answer");
-                    }
-                    MyDashboardFragment.IS_THRESHOLD_SET = true;
-                }
-            }
-        });
+        decrease.setOnClickListener(this);
+        increase.setOnClickListener(this);
+        btnNext.setOnClickListener(this);
+        layoutQuestion1 = rootView.findViewById(R.id.layout_question1);
+        layoutQuestion2 = rootView.findViewById(R.id.layout_question2);
+        barChart = rootView.findViewById(R.id.bar_chart_questions);
     }
 
     @Override
@@ -174,74 +104,8 @@ public class MMCQuestionsFragment extends Fragment {
     }
 
     private void subscribe() {
-        questionsPagerAdapter = new QuestionsPagerAdapter(getActivity(), questions);
-        vpQuestions.setAdapter(questionsPagerAdapter);
-        accountSettingsViewModel = ViewModelProviders.of(this).get(AccountSettingsViewModel.class);
-        accountSettingsViewModel.setContext(getActivity());
-        dashboardViewModel = ViewModelProviders.of(this).get(DashboardViewModel.class);
-        dashboardViewModel.setContext(getActivity());
-        mViewModel = ViewModelProviders.of(this).get(MmcQuestionsViewModel.class);
-        mViewModel.setContext(getActivity());
-        loginViewModel = ViewModelProviders.of(this).get(LoginViewModel.class);
-        loginViewModel.setContext(getActivity());
-        loginViewModel.getUserDetail(appPreferences.getUser_id());
-        loginViewModel.getUserDetail().observe(getViewLifecycleOwner(), user -> {
-            this.user = user;
-            accountSettingsViewModel.loadAccountSettingsFromLocalDB(account.getAccountNumber());
-            accountSettingsViewModel.getAccountSettingsData().observe(this, accountSettings -> {
-                if (accountSettings == null) {
-                    accountSettingsViewModel.getAccountSettingsFromServer(user.getEmail(), account.getAccountNumber());
-                } else {
-                    this.accountSettings = accountSettings;
-                    if (accountSettings.getEnergyConsumptions() != null) {
-                        questionsPagerAdapter.setEnergyConsumptions(accountSettings.getEnergyConsumptions());
-                        questionsPagerAdapter.setBillingHistory(billingHistory);
-                        questionsPagerAdapter.setThresholdSuggestions(accountSettings.getEnergyConsumptions().getThresholdSuggestions());
-                        mViewModel.loadQuestionsFromServer(account.getAccountNumber(), this.user.getEmail());
-                    }
-                }
-            });
-
-        });
-        mViewModel.getLoaderData().observe(getViewLifecycleOwner(), loading -> {
-            showProgress(loading);
-        });
-        mViewModel.getQuestionsAnswered().observe(getViewLifecycleOwner(), index -> {
-            vpQuestions.setCurrentItem(vpQuestions.getCurrentItem() + 1);
-        });
-        mViewModel.getQuestionsData().observeForever(questions -> {
-            if (questions != null && questions.size() > 0) {
-                Question thresholdQuestion = new Question();
-                thresholdQuestion.setQuestionId(4);
-                thresholdQuestion.setQuestion("Notify me when my consumption reaches (RM)");
-                thresholdQuestion.setResponse(accountSettings.getEnergyConsumptions().getUserThreshold());
-                questions.add(thresholdQuestion);
-                this.questions.clear();
-                this.questions.addAll(questions);
-                questionsPagerAdapter.notifyDataSetChanged();
-                btnNext.setVisibility(View.VISIBLE);
-            }
-        });
-
-        accountSettingsViewModel.getIsAccountDetailsUpdated().observe(getViewLifecycleOwner(), isUserUpdated -> {
-            showProgress(false);
-            if (isUserUpdated) {
-                DashboardFragment.IS_THRESHOLD_SET = true;
-                MyDashboardFragment.IS_THRESHOLD_SET = true;
-                account.setThreshold(true);
-                dashboardViewModel.updateAccount(account);
-                getFragmentManager().popBackStack();
-            } else {
-                MyDashboardFragment.IS_THRESHOLD_SET = false;
-                DashboardFragment.IS_THRESHOLD_SET = false;
-            }
-        });
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        HomeActivity.isQuestionsShown = false;
+        /*manageConsumptionAdapter = new ManageConsumptionAdapter(getActivity());
+        vpQuestions.setAdapter(manageConsumptionAdapter);*/
     }
 
     public void showProgress(boolean isProgress) {
@@ -250,5 +114,70 @@ public class MMCQuestionsFragment extends Fragment {
         } else {
             loader.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.decrease:
+                decreaseInteger();
+                break;
+            case R.id.increase:
+                increaseInteger();
+                break;
+            case R.id.btnNext:
+                setViewForQuestion2();
+                break;
+            default:
+                break;
+
+        }
+    }
+
+    private void setViewForQuestion2() {
+        layoutQuestion1.setVisibility(View.GONE);
+        layoutQuestion2.setVisibility(View.VISIBLE);
+        setChartData(barChart, billingHistory);
+    }
+
+    private void setChartData(BarChart barChart, BillingHistory billingHistory) {
+        Gson gson = new Gson();
+        BillingDetails[] billingDetails = gson.fromJson(billingHistory.getBillingDetails(), BillingDetails[].class);
+
+        ArrayList<ChartData> chartDatum = new ArrayList<>();
+        ChartData chartData;
+
+        String startDate = Utils.formatAccountDate(billingHistory.getAccount().getBillingCycleStartDate());
+        String endDate = Utils.formatAccountDate(billingHistory.getAccount().getBillingCycleEndDate());
+        for (int i = 0; i < billingDetails.length; i++) {
+            BillingDetails billingDetail = billingDetails[i];
+            chartData = new ChartData();
+            chartData.setTag(Utils.formatAccountDate(billingDetail.getBilledDate()));
+            chartData.setVal(billingDetail.getBilledValue());
+            chartDatum.add(chartData);
+        }
+        if (billingHistory.getAccount().isThreshold()) {
+            barChart.setData(chartDatum)
+                    .setTitle(startDate + " - " + endDate)
+                    .setBarUnit("RM")
+                    .setSelectionRequired(true);
+        }
+    }
+
+    public void increaseInteger() {
+        if(displayCount < 10) {
+            displayCount = displayCount + 1;
+            display(displayCount);
+        }
+    }
+
+    public void decreaseInteger() {
+        if(displayCount > 1) {
+            displayCount = displayCount - 1;
+            display(displayCount);
+        }
+    }
+    private void display(int number) {
+        numberDisplay.setText("" + number);
     }
 }

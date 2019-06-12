@@ -41,7 +41,10 @@
     <string name="here_is_a_tip">Here\'s a tip!</string>
     <string name="set_primary_account">Set Primary Account</string>
     <string name="go_to_account">Go to Account</string>
-    <string name="manage_consumptions">Manage Consumptions</string>
+    <string name="manage_consumption">Manage Consumption</string>
+    <string name="manage_consumption_message">Set a consumption threshold and start monitoring your accounts</string>
+    <string name="people_question">How many people are staying in %1$s?</string>
+    <string name="question2">Notify me when my consumption reaches (RM)</string>
     <string name="next">Next</string>
     <string name="not_sure">I\'m not sure</string>
     <string name="pay_bills">Pay Bills</string>

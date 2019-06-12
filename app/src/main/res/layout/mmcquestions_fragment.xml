@@ -7,59 +7,150 @@
     android:background="@drawable/bg_login"
     tools:context=".dashboard.questions.MMCQuestionsFragment">
 
-    <ScrollView
+    <LinearLayout
+        android:id="@+id/layout_question1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/btnNext"
-        android:layout_alignParentTop="true"
-        android:layout_marginBottom="@dimen/medium_padding"
-        android:nestedScrollingEnabled="true">
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/fab_margin"
+            android:fontFamily="@font/museosans_500"
+            android:text="@string/manage_consumption"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_medium" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/small_padding"
+            android:layout_marginRight="@dimen/dimen50"
+            android:layout_marginLeft="@dimen/dimen50"
+            android:fontFamily="@font/museosans_500"
+            android:text="@string/manage_consumption_message"
+            android:textColor="@color/light_white_40"
+            android:textSize="@dimen/text_size_very_small"
+            android:textAlignment="center" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/tvAccountName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin10"
+            android:fontFamily="@font/museosans_500"
+            android:text="Account Name"
+            android:textColor="@color/yellow1"
+            android:textSize="@dimen/text_size_small" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/peopleQuestion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen70"
+            android:layout_marginLeft="@dimen/dimen40"
+            android:layout_marginRight="@dimen/dimen50"
+            android:text="@string/people_question"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_size_medium" />
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:orientation="vertical"
-            android:padding="@dimen/medium_padding">
+            android:layout_marginTop="56dp"
+            android:layout_marginRight="@dimen/dimen35"
+            android:orientation="horizontal"
+            android:layout_below="@+id/peopleQuestion"
+            android:layout_gravity="right">
 
-            <android.support.v7.widget.AppCompatImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/logo" />
+            <Button
+                android:id="@+id/decrease"
+                android:layout_width="@dimen/dimen35"
+                android:layout_height="@dimen/dimen40"
+                android:textSize="@dimen/text_size_small"
+                android:text="-"
+                style="@style/NumberView"
+                android:background="@drawable/bg_minus"/>
 
-            <android.support.v7.widget.AppCompatTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/small_padding"
-                android:fontFamily="@font/museosans_500"
-                android:text="@string/manage_consumptions"
-                android:textColor="@color/yellow1"
-                android:textSize="@dimen/text_size_large" />
+            <Button
+                android:id="@+id/number_display"
+                android:layout_width="@dimen/dimen35"
+                android:layout_height="@dimen/dimen40"
+                android:background="@drawable/bg_number_textview"
+                style="@style/NumberView"
+                android:text="1"
+                android:textSize="@dimen/text_size_small"
+                android:clickable="false" />
 
-            <android.support.v7.widget.AppCompatTextView
-                android:id="@+id/tvAccountName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/small_padding"
-                android:fontFamily="@font/museosans_500"
-                android:text="Account Name"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/text_size_medium" />
-
-            <android.support.v4.view.ViewPager
-                android:id="@+id/vpQuestions"
-                android:layout_width="match_parent"
-                android:layout_height="400dp"
-                android:layout_marginTop="@dimen/medium_padding" />
-
-
+            <Button
+                android:id="@+id/increase"
+                android:layout_width="@dimen/dimen35"
+                android:layout_height="@dimen/dimen40"
+                android:textSize="@dimen/text_size_small"
+                android:text="+"
+                style="@style/NumberView"
+                android:background="@drawable/bg_plus"/>
         </LinearLayout>
 
-    </ScrollView>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_question2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="visible">
+
+        <com.ey.dgs.views.BarChart
+            android:id="@+id/bar_chart_questions"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_marginRight="@dimen/margin24"
+            android:layout_marginLeft="@dimen/margin24"/>
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/tvQuestion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/bar_chart_questions"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="@dimen/large_padding"
+            android:layout_marginRight="@dimen/margin10"
+            android:text="@string/question2"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_size_medium" />
+
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/etAnswer"
+            android:layout_width="@dimen/splash_icon_size"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_below="@+id/bar_chart_questions"
+            android:layout_toRightOf="@+id/tvQuestion"
+            android:layout_marginTop="@dimen/medium_padding"
+            android:layout_marginLeft="@dimen/margin13"
+            android:layout_marginRight="@dimen/margin24"
+            android:background="@drawable/rounded_white"
+            android:fontFamily="@font/museosans_500"
+            android:gravity="right"
+            android:inputType="number"
+            android:maxLength="3"
+            android:minWidth="100dp"
+            android:paddingLeft="@dimen/small_padding"
+            android:paddingTop="@dimen/small_padding"
+            android:paddingRight="@dimen/medium_padding"
+            android:paddingBottom="@dimen/small_padding"
+            android:textColor="@android:color/white"
+            android:textCursorDrawable="@drawable/cursorwhite"
+            android:textDirection="ltr" />
+
+    </RelativeLayout>
 
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/btnNext"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/dimen138"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
@@ -73,8 +164,7 @@
         android:text="@string/next"
         android:textAllCaps="false"
         android:textColor="@android:color/white"
-        android:textSize="@dimen/text_size_medium"
-        android:visibility="invisible" />
+        android:textSize="@dimen/text_size_medium" />
 
     <include
         android:id="@+id/loader"

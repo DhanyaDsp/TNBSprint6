@@ -22,7 +22,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/btnAddThreshold"
+            android:layout_above="@+id/btnManageConsumption"
             android:layout_marginBottom="@dimen/large_padding"
             android:orientation="vertical">
 
@@ -84,7 +84,7 @@
         </LinearLayout>
 
         <android.support.v7.widget.AppCompatButton
-            android:id="@+id/btnAddThreshold"
+            android:id="@+id/btnManageConsumption"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:layout_above="@+id/llAmount"
@@ -93,7 +93,7 @@
             android:layout_marginBottom="@dimen/large_padding"
             android:background="@drawable/bg_add_account"
             android:fontFamily="@font/museosans_500"
-            android:text="@string/manage_consumptions"
+            android:text="@string/manage_consumption"
             android:textAllCaps="false"
             android:textColor="@android:color/white"
             android:textSize="@dimen/text_size_medium1" />
