@@ -30,7 +30,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/large_padding"
                 android:adjustViewBounds="true"
-                android:scaleType="center"
+                android:scaleType="fitXY"
                 android:src="@{splashItem.image}" />
 
             <android.support.v7.widget.AppCompatTextView

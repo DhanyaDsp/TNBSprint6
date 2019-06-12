@@ -5,6 +5,7 @@
     <color name="colorAccent">@android:color/white</color>
     <color name="yellow1">#FECC39</color>
     <color name="purple">#7730D3</color>
+    <color name="purple_50">#807730D3</color>
     <color name="blue">#2A97FB</color>
     <color name="light_green">#20BD4C</color>
     <color name="light_green_8">#1A20BD4C</color>

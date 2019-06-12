@@ -14,191 +14,225 @@
             type="com.ey.dgs.dashboard.myaccount.ConsumptionFragment" />
     </data>
 
-    <ScrollView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/large_padding"
-            android:orientation="vertical">
+            android:layout_height="match_parent">
 
             <LinearLayout
-                android:id="@+id/llTabs"
                 android:layout_width="match_parent"
-                android:layout_height="35dp"
-                android:layout_marginLeft="@dimen/very_large_padding"
-                android:layout_marginTop="@dimen/large_padding"
-                android:layout_marginRight="@dimen/very_large_padding"
-                android:background="@drawable/rounded_chart_tab"
-                android:orientation="horizontal"
-                android:weightSum="3">
-
-                <android.support.v7.widget.AppCompatButton
-                    android:id="@+id/btnDaily"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/bg_chart_tab"
-                    android:fontFamily="@font/museosans_500"
-                    android:text="@string/daily"
-                    android:textAllCaps="false"
-                    android:textColor="@color/purple"
-                    android:textSize="@dimen/text_size_small" />
-
-                <android.support.v7.widget.AppCompatButton
-                    android:id="@+id/btnMonthly"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/bg_chart_tab"
-                    android:fontFamily="@font/museosans_500"
-                    android:text="@string/weekly"
-                    android:textAllCaps="false"
-                    android:textColor="@color/purple"
-                    android:textSize="@dimen/text_size_small" />
-
-                <android.support.v7.widget.AppCompatButton
-                    android:id="@+id/btnYearly"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/bg_chart_tab"
-                    android:fontFamily="@font/museosans_500"
-                    android:text="@string/monthly"
-                    android:textAllCaps="false"
-                    android:textColor="@color/purple"
-                    android:textSize="@dimen/text_size_small" />
-
-            </LinearLayout>
-
-            <com.ey.dgs.views.BarChart
-                android:id="@+id/bar_chart"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/account_chart_height"
-                android:adjustViewBounds="true"
-                android:minHeight="200dp" />
-
-            <android.support.v7.widget.AppCompatButton
-                android:id="@+id/btnAddThreshold"
-                android:layout_width="250dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="@dimen/large_padding"
-                android:background="@drawable/bg_add_account"
-                android:fontFamily="@font/museosans_500"
-                android:text="@string/manage_consumptions"
-                android:textAllCaps="false"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/text_size_medium1" />
+                android:orientation="vertical">
 
-            <LinearLayout
-                android:id="@+id/llAmount"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@android:color/white"
-                android:orientation="vertical"
-                android:padding="@dimen/medium_padding">
-
-                <RelativeLayout
+                <LinearLayout
+                    android:id="@+id/llTabs"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical">
+                    android:layout_height="35dp"
+                    android:layout_marginLeft="@dimen/very_large_padding"
+                    android:layout_marginTop="@dimen/large_padding"
+                    android:layout_marginRight="@dimen/very_large_padding"
+                    android:background="@drawable/rounded_chart_tab"
+                    android:orientation="horizontal"
+                    android:weightSum="3">
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
+                    <android.support.v7.widget.AppCompatButton
+                        android:id="@+id/btnDaily"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
-                        android:orientation="vertical">
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_chart_tab"
+                        android:fontFamily="@font/museosans_500"
+                        android:text="@string/daily"
+                        android:textAllCaps="false"
+                        android:textColor="@color/purple"
+                        android:textSize="@dimen/text_size_small" />
 
-                        <android.support.v7.widget.AppCompatTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/museosans_500"
-                            android:text="@string/amount_due"
-                            android:textColor="@android:color/black"
-                            android:textSize="@dimen/text_size_medium" />
-
-                        <android.support.v7.widget.AppCompatTextView
-                            android:id="@+id/tvDueDate"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/small_padding"
-                            android:fontFamily="@font/museosans_500"
-                            android:textColor="@color/black_60"
-                            android:textSize="@dimen/text_size_small" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
+                    <android.support.v7.widget.AppCompatButton
+                        android:id="@+id/btnMonthly"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:orientation="horizontal">
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_chart_tab"
+                        android:fontFamily="@font/museosans_500"
+                        android:text="@string/weekly"
+                        android:textAllCaps="false"
+                        android:textColor="@color/purple"
+                        android:textSize="@dimen/text_size_small" />
 
-                        <android.support.v7.widget.AppCompatTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/museosans_500"
-                            android:text="RM"
-                            android:textColor="@color/black_60" />
+                    <android.support.v7.widget.AppCompatButton
+                        android:id="@+id/btnYearly"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_chart_tab"
+                        android:fontFamily="@font/museosans_500"
+                        android:text="@string/monthly"
+                        android:textAllCaps="false"
+                        android:textColor="@color/purple"
+                        android:textSize="@dimen/text_size_small" />
 
-                        <android.support.v7.widget.AppCompatTextView
-                            android:id="@+id/tvDueAmount"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/small_padding"
-                            android:fontFamily="@font/museosans_500"
-                            android:text="@{account.lastBilledAmount}"
-                            android:textColor="@android:color/black"
-                            android:textSize="@dimen/text_size_large" />
+                </LinearLayout>
 
-                    </LinearLayout>
-
-                </RelativeLayout>
+                <com.ey.dgs.views.BarChart
+                    android:id="@+id/bar_chart"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/account_chart_height"
+                    android:adjustViewBounds="true"
+                    android:minHeight="200dp" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
+                    android:id="@+id/llDays"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/small_padding"
-                    android:orientation="horizontal"
-                    android:weightSum="2">
+                    android:orientation="vertical">
 
-                    <android.support.v7.widget.AppCompatButton
-                        android:layout_width="0dp"
+                    <View
+                        android:id="@+id/anchor"
+                        android:layout_width="20dp"
+                        android:layout_height="10dp"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@drawable/days_pointer" />
+
+                    <Gallery
+                        android:id="@+id/glDays"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginRight="@dimen/small_padding"
-                        android:layout_weight="1"
-                        android:background="@drawable/rounded_green_border"
-                        android:fontFamily="@font/museosans_500"
-                        android:text="@string/current_bill"
-                        android:textAllCaps="false"
-                        android:textColor="@color/light_green"
-                        android:textSize="@dimen/text_size_medium" />
+                        android:background="@color/light_white_50" />
 
-                    <android.support.v7.widget.AppCompatButton
-                        android:layout_width="0dp"
+                </LinearLayout>
+
+
+                <android.support.v7.widget.AppCompatButton
+                    android:id="@+id/btnAddThreshold"
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/large_padding"
+                    android:layout_marginBottom="@dimen/large_padding"
+                    android:background="@drawable/bg_add_account"
+                    android:fontFamily="@font/museosans_500"
+                    android:text="@string/manage_consumptions"
+                    android:textAllCaps="false"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/text_size_medium1" />
+
+                <LinearLayout
+                    android:id="@+id/llAmount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/white"
+                    android:orientation="vertical"
+                    android:padding="@dimen/medium_padding">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/small_padding"
-                        android:layout_weight="1"
-                        android:background="@drawable/bg_login_btn"
-                        android:fontFamily="@font/museosans_500"
-                        android:text="@string/pay"
-                        android:textAllCaps="false"
-                        android:textColor="@android:color/white"
-                        android:textSize="@dimen/text_size_medium">
+                        android:gravity="center_vertical">
 
-                    </android.support.v7.widget.AppCompatButton>
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:orientation="vertical">
+
+                            <android.support.v7.widget.AppCompatTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/museosans_500"
+                                android:text="@string/amount_due"
+                                android:textColor="@android:color/black"
+                                android:textSize="@dimen/text_size_medium" />
+
+                            <android.support.v7.widget.AppCompatTextView
+                                android:id="@+id/tvDueDate"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/small_padding"
+                                android:fontFamily="@font/museosans_500"
+                                android:textColor="@color/black_60"
+                                android:textSize="@dimen/text_size_small" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:orientation="horizontal">
+
+                            <android.support.v7.widget.AppCompatTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/museosans_500"
+                                android:text="RM"
+                                android:textColor="@color/black_60" />
+
+                            <android.support.v7.widget.AppCompatTextView
+                                android:id="@+id/tvDueAmount"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/small_padding"
+                                android:fontFamily="@font/museosans_500"
+                                android:text="@{account.lastBilledAmount}"
+                                android:textColor="@android:color/black"
+                                android:textSize="@dimen/text_size_large" />
+
+                        </LinearLayout>
+
+                    </RelativeLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/small_padding"
+                        android:orientation="horizontal"
+                        android:weightSum="2">
+
+                        <android.support.v7.widget.AppCompatButton
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="@dimen/small_padding"
+                            android:layout_weight="1"
+                            android:background="@drawable/rounded_green_border"
+                            android:fontFamily="@font/museosans_500"
+                            android:text="@string/current_bill"
+                            android:textAllCaps="false"
+                            android:textColor="@color/light_green"
+                            android:textSize="@dimen/text_size_medium" />
+
+                        <android.support.v7.widget.AppCompatButton
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/small_padding"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_login_btn"
+                            android:fontFamily="@font/museosans_500"
+                            android:text="@string/pay"
+                            android:textAllCaps="false"
+                            android:textColor="@android:color/white"
+                            android:textSize="@dimen/text_size_medium">
+
+                        </android.support.v7.widget.AppCompatButton>
+
+                    </LinearLayout>
 
                 </LinearLayout>
 
             </LinearLayout>
 
-        </LinearLayout>
+        </ScrollView>
 
-    </ScrollView>
+        <include
+            android:id="@+id/loader"
+            layout="@layout/loader"
+            android:visibility="gone" />
+
+    </RelativeLayout>
 
 
 </layout>

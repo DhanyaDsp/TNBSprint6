@@ -12,6 +12,9 @@ public class BillingHistory implements Serializable {
 
     public static final int REQUEST_CODE_ADD_BILLING_HISTORY = 18;
     public static final int REQUEST_CODE_GET_BILLING_HISTORY = 19;
+    public static final String DAILY = "daily";
+    public static final String MONTHLY = "monthly";
+    public static final String WEEKLY = "weekly";
     @PrimaryKey(autoGenerate = true)
     @NonNull
     private int id;
