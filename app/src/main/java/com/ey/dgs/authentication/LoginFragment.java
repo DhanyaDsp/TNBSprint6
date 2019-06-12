@@ -146,20 +146,6 @@ public class LoginFragment extends Fragment implements APICallback {
         getActivity().startActivity(intent);
     }
 
-    private void moveToMyDashboardPage() {
-        dashboardViewModel.getPrimaryAccountFromLocalDB();
-        dashboardViewModel.getPrimaryAccount().observe(getViewLifecycleOwner(), account -> {
-            if (account != null) {
-                getActivity().finish();
-                Intent intent = new Intent(getActivity(), QuestionActivity.class);
-                intent.putExtra("account", (Serializable) account);
-                getActivity().startActivity(intent);
-            } else {
-                Utils.showToast(getActivity(), "Primary Account not found");
-            }
-        });
-    }
-
     @Override
     public void onSuccess(int requestCode, Object obj, int code) {
         onProgress(requestCode, false);

@@ -51,7 +51,7 @@ public class MyAccountFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         if (mListener != null) {
-            mListener.onFragmentInteraction("");
+            mListener.onFragmentInteraction(account.getNickName());
         }
         FragmentMyAccountBinding myAccountBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_my_account, container, false);
         myAccountBinding.setFragment(this);
@@ -70,7 +70,7 @@ public class MyAccountFragment extends Fragment {
         vpAccountTabs = view.findViewById(R.id.vpAccountTabs);
         accountTabsAdapter = new MyAccountTabsAdapter(getChildFragmentManager(), getActivity());
         accountTabsAdapter.addFrag(ConsumptionFragment.newInstance(account), "Consumptions");
-        accountTabsAdapter.addFrag(EnergyInsightFragment.newInstance(), "Energy Sights");
+        accountTabsAdapter.addFrag(EnergyInsightFragment.newInstance(), "Energy Insights");
         vpAccountTabs.setAdapter(accountTabsAdapter);
     }
 

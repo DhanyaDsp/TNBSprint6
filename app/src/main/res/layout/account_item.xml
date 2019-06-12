@@ -2,7 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@android:color/transparent"
     android:orientation="vertical"
     android:paddingLeft="@dimen/medium_padding"
     android:paddingTop="@dimen/medium_padding"
@@ -36,7 +35,6 @@
 
     </LinearLayout>
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -51,7 +49,7 @@
             android:fontFamily="@font/museosans_500"
             android:text="22074934323"
             android:textColor="@color/text_field_hint_color"
-            android:textSize="@dimen/text_size_medium1" />
+            android:textSize="@dimen/text_size_small" />
 
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/tvDate"
@@ -66,5 +64,19 @@
 
     </LinearLayout>
 
+
+    <android.support.v7.widget.AppCompatTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/small_padding"
+        android:background="@drawable/rounded_yellow_solid"
+        android:fontFamily="@font/museosans_500"
+        android:paddingLeft="@dimen/medium_padding"
+        android:paddingRight="@dimen/medium_padding"
+        android:paddingTop="5dp"
+        android:visibility="gone"
+        android:paddingBottom="5dp"
+        android:text="Consumption reached"
+        android:textSize="@dimen/text_size_10" />
 
 </LinearLayout>

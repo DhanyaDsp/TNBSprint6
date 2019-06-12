@@ -174,13 +174,31 @@
                         android:layout_height="3dp"
                         android:background="@android:color/white" />
 
-                    <android.support.v7.widget.AppCompatTextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:padding="@dimen/small_padding"
-                        android:text="@string/lifestyle_offers"
-                        android:textColor="@android:color/white"
-                        android:textSize="@dimen/text_size_medium" />
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <android.support.v7.widget.AppCompatTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:padding="@dimen/small_padding"
+                            android:text="@string/lifestyle_offers"
+                            android:textColor="@android:color/white"
+                            android:textSize="@dimen/text_size_medium" />
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:layout_width="30dp"
+                            android:adjustViewBounds="true"
+                            android:layout_centerVertical="true"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="@dimen/medium_padding"
+                            android:layout_alignParentRight="true"
+                            android:src="@drawable/nav_more"/>
+
+                    </RelativeLayout>
+
+
 
                 </LinearLayout>
 

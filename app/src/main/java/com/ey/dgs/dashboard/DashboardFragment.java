@@ -181,20 +181,6 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                 }*/
             }
         });
-        /*MOCK RESPONSE UNCOMMENT THIS*/
-        dashboardViewModel.isPrimaryAccountSet().observe(getViewLifecycleOwner(), isPrimaryAccountSet -> {
-            if (isPrimaryAccountSet) {
-                //updateOtherAccounts(accounts);
-                if (user != null) {
-                    user.setPrimaryAccountSet(true);
-                    loginViewModel.update(user);
-                    //onUserDetailsLoaded(user);
-                    showProgress(false);
-                    showPrimaryAccountPopup();
-                }
-            }
-        });
-        /*MOCK RESPONSE*/
 
         offersViewModel.getOfferItems().observe(getViewLifecycleOwner(), offers -> {
             offersAdapter = new OffersAdapter(getActivity(), this, offers);

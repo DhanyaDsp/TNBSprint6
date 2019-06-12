@@ -14,6 +14,7 @@
     <dimen name="large_padding">30dp</dimen>
     <dimen name="very_large_padding">40dp</dimen>
     <dimen name="text_size_very_small">12sp</dimen>
+    <dimen name="text_size_10">10sp</dimen>
     <dimen name="notification_item_icon_size">40dp</dimen>
 
     <!-- Margins-->
@@ -23,5 +24,6 @@
     <dimen name="margin24">24dp</dimen>
     <dimen name="margin25">25dp</dimen>
     <dimen name="splash_icon_size">100dp</dimen>
+    <dimen name="account_chart_height">300dp</dimen>
 
 </resources>

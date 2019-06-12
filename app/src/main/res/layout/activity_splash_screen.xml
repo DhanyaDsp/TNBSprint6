@@ -24,8 +24,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/tlDots"
-        android:layout_below="@+id/tvTitle"
-        android:layout_marginTop="@dimen/large_padding" />
+        android:layout_below="@+id/tvTitle" />
 
     <android.support.design.widget.TabLayout
         android:id="@+id/tlDots"
