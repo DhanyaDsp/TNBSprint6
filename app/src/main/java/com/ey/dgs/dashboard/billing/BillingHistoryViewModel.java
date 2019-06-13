@@ -26,6 +26,7 @@ import java.util.List;
 public class BillingHistoryViewModel extends ViewModel implements DatabaseCallback, APICallback {
 
     private MutableLiveData<ArrayList<BillingHistory>> billingHistories = new MutableLiveData<>();
+    private MutableLiveData<ArrayList<String>> daysList = new MutableLiveData<>();
     private MutableLiveData<BillingHistory> billingHistory = new MutableLiveData<>();
     private Context context;
     private AppPreferences appPreferences;
@@ -42,6 +43,14 @@ public class BillingHistoryViewModel extends ViewModel implements DatabaseCallba
         this.billingHistory.postValue(billingHistory);
     }
 
+    private void setDays(ArrayList<String> days) {
+        this.daysList.postValue(days);
+    }
+
+    public MutableLiveData<ArrayList<String>> getDays() {
+        return daysList;
+    }
+
     private void setBillingHistories(ArrayList<BillingHistory> billingHistories) {
         this.billingHistories.postValue(billingHistories);
     }
@@ -49,6 +58,11 @@ public class BillingHistoryViewModel extends ViewModel implements DatabaseCallba
     public void setContext(Context context) {
         this.context = context;
         appPreferences = new AppPreferences(context);
+        ArrayList<String> days = new ArrayList<>();
+        for (int i = 0; i < 30; i++) {
+            days.add("Apr " + i);
+        }
+        this.daysList.postValue(days);
     }
 
     public Context getContext() {
