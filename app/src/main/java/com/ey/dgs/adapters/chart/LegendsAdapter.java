@@ -67,7 +67,7 @@ public class LegendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         LegendHolder legendHolder = (LegendHolder) holder;
-        legendHolder.x_txt_label.setLayoutParams(new LinearLayout.LayoutParams(parentLayoutWidth/chartDatum.size(), LinearLayout.LayoutParams.MATCH_PARENT));
+        //legendHolder.x_txt_label.setLayoutParams(new LinearLayout.LayoutParams(parentLayoutWidth/chartDatum.size(), LinearLayout.LayoutParams.MATCH_PARENT));
 
         legendHolder.x_txt_label.setText(chartDatum.get(position).getTag());
 
