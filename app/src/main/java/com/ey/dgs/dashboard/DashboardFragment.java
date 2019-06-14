@@ -62,6 +62,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
     private OffersViewModel offersViewModel;
     private BillingHistoryViewModel billingHistoryViewModel;
     private OnFragmentInteractionListener mListener;
+    AppCompatTextView tvSubscribe;
     AppPreferences appPreferences;
     private LoginViewModel loginViewModel;
     private User user;
@@ -69,6 +70,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
     private DashboardFragmentBinding loginFragmentBinding;
     AppCompatImageView ivBanner;
     View loader;
+    //private AccountPagerAdapter accountPagerAdapter;
     private boolean billingDetailsServiceCalled;
     AccountAdapter accountAdapter;
     OffersAdapter offersAdapter;
@@ -97,6 +99,8 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
         rvLayoutManager = new LinearLayoutManager(getActivity());
         rvAccounts.setLayoutManager(rvLayoutManager);
         itemDecorator = new DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
+        tvSubscribe = rootView.findViewById(R.id.tvSubscribe);
+        tvSubscribe.setOnClickListener(this);
         rvAccounts.addItemDecoration(itemDecorator);
         rvAccounts.setItemAnimator(new DefaultItemAnimator());
         if (mListener != null) {
