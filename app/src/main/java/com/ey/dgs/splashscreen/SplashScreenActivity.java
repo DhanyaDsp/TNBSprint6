@@ -13,6 +13,8 @@ import com.ey.dgs.R;
 import com.ey.dgs.authentication.LoginViewModel;
 import com.ey.dgs.model.SplashItem;
 import com.ey.dgs.model.User;
+import com.ey.dgs.model.UserSettings;
+import com.ey.dgs.usersettings.UserSettingsViewModel;
 
 import java.util.ArrayList;
 
@@ -25,18 +27,22 @@ public class SplashScreenActivity extends AppCompatActivity {
     ArrayList<SplashItem> splashItems = new ArrayList<>();
     private TabLayout tlDots;
     User user;
-    LoginViewModel loginViewModel;
+    UserSettingsViewModel userSettingsViewModel;
+    private UserSettings userSettings;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
-        user= (User) getIntent().getSerializableExtra("user");
+        user = (User) getIntent().getSerializableExtra("user");
+        userSettings = (UserSettings) getIntent().getSerializableExtra("userSettings");
         initViews();
         subscribe();
     }
 
     private void subscribe() {
-        loginViewModel=ViewModelProviders.of(this).get(LoginViewModel.class);
+        userSettingsViewModel = ViewModelProviders.of(this).get(UserSettingsViewModel.class);
+        userSettingsViewModel.setContext(this);
         splashScreenViewModel = ViewModelProviders.of(this).get(SplashScreenViewModel.class);
         splashScreenViewModel.setContext(this);
         splashScreenViewModel.getSplashItems().observe(this, splashItems -> {
@@ -54,8 +60,8 @@ public class SplashScreenActivity extends AppCompatActivity {
 
     public void moveToNext(View view) {
         if (vpSplashItems.getCurrentItem() >= splashItems.size() - 1) {
-            user.setSplashScreenSeen(true);
-            loginViewModel.update(user);
+            userSettings.setShowSplashScreen(false);
+            userSettingsViewModel.updateUserSettings(userSettings);
             moveToHomePage();
         } else {
             vpSplashItems.setCurrentItem(vpSplashItems.getCurrentItem() + 1);

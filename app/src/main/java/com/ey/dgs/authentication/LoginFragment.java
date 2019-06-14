@@ -16,12 +16,15 @@ import android.view.ViewGroup;
 import com.ey.dgs.HomeActivity;
 import com.ey.dgs.R;
 import com.ey.dgs.api_response.LoginResponse;
+import com.ey.dgs.api_response.UserSettingsResponse;
 import com.ey.dgs.dashboard.DashboardViewModel;
 import com.ey.dgs.dashboard.questions.QuestionActivity;
 import com.ey.dgs.databinding.LoginFragmentBinding;
 import com.ey.dgs.model.SplashItem;
 import com.ey.dgs.model.User;
+import com.ey.dgs.model.UserSettings;
 import com.ey.dgs.splashscreen.SplashScreenActivity;
+import com.ey.dgs.usersettings.UserSettingsViewModel;
 import com.ey.dgs.utils.AppPreferences;
 import com.ey.dgs.utils.Utils;
 import com.ey.dgs.webservice.APICallback;
@@ -33,7 +36,7 @@ import java.util.ArrayList;
 public class LoginFragment extends Fragment implements APICallback {
 
     private LoginViewModel loginViewModel;
-    private DashboardViewModel dashboardViewModel;
+    private UserSettingsViewModel userSettingsViewModel;
     LoginFragmentBinding loginFragmentBinding;
     User user = new User();
     ArrayList<User> users = new ArrayList<>();
@@ -42,6 +45,7 @@ public class LoginFragment extends Fragment implements APICallback {
     View loader;
     private boolean isLoginClicked;
     private Observer<User> getUserReceiver;
+    private UserSettings userSettings;
 
     public static LoginFragment newInstance() {
         return new LoginFragment();
@@ -66,9 +70,8 @@ public class LoginFragment extends Fragment implements APICallback {
     private void initSetup() {
         loginViewModel = ViewModelProviders.of(this).get(LoginViewModel.class);
         loginViewModel.setContext(getActivity());
-
-        dashboardViewModel = ViewModelProviders.of(this).get(DashboardViewModel.class);
-        dashboardViewModel.setContext(getActivity());
+        userSettingsViewModel = ViewModelProviders.of(this).get(UserSettingsViewModel.class);
+        userSettingsViewModel.setContext(getActivity());
         appPreferences = new AppPreferences(getActivity());
     }
 
@@ -81,7 +84,14 @@ public class LoginFragment extends Fragment implements APICallback {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
+        userSettingsViewModel.getUserSettings().observe(getViewLifecycleOwner(), userSettings -> {
+            if (userSettings != null) {
+                this.userSettings = userSettings;
+                onUserSettingsLoaded();
+            } else {
+                userSettingsViewModel.getUserSettingsFromServer(appPreferences.getAuthToken(), user);
+            }
+        });
     }
 
     private void subscribe() {
@@ -95,7 +105,7 @@ public class LoginFragment extends Fragment implements APICallback {
                 loginFragmentBinding.setUser(user);
             }
         };
-        loginViewModel.getUserDetail().observeForever(getUserReceiver);
+        loginViewModel.getUserDetail().observe(getViewLifecycleOwner(), getUserReceiver);
     }
 
     @Override
@@ -143,6 +153,7 @@ public class LoginFragment extends Fragment implements APICallback {
         Intent intent = new Intent(getActivity(), SplashScreenActivity.class);
         intent.putExtra("UserName", user.getEmail());
         intent.putExtra("user", (Serializable) user);
+        intent.putExtra("userSettings", (Serializable) userSettings);
         getActivity().startActivity(intent);
     }
 
@@ -162,11 +173,15 @@ public class LoginFragment extends Fragment implements APICallback {
                 }
             }
             appPreferences.setAuthToken(loginResponse.getToken());
-            if (user.isSplashScreenSeen()) {
-                moveToHomePage();
-            } else {
-                moveToSplashScreen();
-            }
+            userSettingsViewModel.getUserSettingsFromLocalDB(user.getUserId());
+        }
+    }
+
+    private void onUserSettingsLoaded() {
+        if (userSettings.isShowSplashScreen()) {
+            moveToSplashScreen();
+        } else {
+            moveToHomePage();
         }
     }
 

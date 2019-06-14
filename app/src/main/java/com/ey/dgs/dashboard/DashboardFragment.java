@@ -28,8 +28,6 @@ import android.widget.AdapterView;
 import com.ey.dgs.HomeActivity;
 import com.ey.dgs.R;
 import com.ey.dgs.adapters.AccountAdapter;
-import com.ey.dgs.adapters.AccountSpinnerAdapter;
-import com.ey.dgs.adapters.AccountsPagerAdapter;
 import com.ey.dgs.adapters.OffersAdapter;
 import com.ey.dgs.authentication.LoginViewModel;
 import com.ey.dgs.dashboard.billing.BillingHistoryViewModel;
@@ -68,18 +66,12 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
     AppPreferences appPreferences;
     private LoginViewModel loginViewModel;
     private User user;
-    View subscribePopup;
-    AppCompatButton btnSetPrimaryAccount;
     Account selectedAccount;
-    ViewPager vpAccounts;
     private DashboardFragmentBinding loginFragmentBinding;
     AppCompatImageView ivBanner;
     View loader;
     //private AccountPagerAdapter accountPagerAdapter;
     private boolean billingDetailsServiceCalled;
-    AppCompatSpinner spAccounts;
-    AccountSpinnerAdapter accountSpinnerAdapter;
-    AccountsPagerAdapter accountsPagerAdapter;
     AccountAdapter accountAdapter;
     OffersAdapter offersAdapter;
 
@@ -102,11 +94,6 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
     private void initView() {
         loader = rootView.findViewById(R.id.loader);
         ivBanner = rootView.findViewById(R.id.ivBanner);
-        btnSetPrimaryAccount = rootView.findViewById(R.id.btnSetPrimaryAccount);
-        btnSetPrimaryAccount.setOnClickListener(this);
-        subscribePopup = rootView.findViewById(R.id.subscribePopup);
-        vpAccounts = rootView.findViewById(R.id.vpAccounts);
-        vpAccounts.addOnPageChangeListener(this);
         rvAccounts = rootView.findViewById(R.id.rvAccounts);
         rvAccounts.setHasFixedSize(true);
         rvLayoutManager = new LinearLayoutManager(getActivity());
@@ -119,8 +106,6 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
         if (mListener != null) {
             mListener.onFragmentInteraction("");
         }
-        spAccounts = rootView.findViewById(R.id.spAccounts);
-        spAccounts.setOnItemSelectedListener(this);
         rvOffers = rootView.findViewById(R.id.rvOffers);
         rvOffers.setHasFixedSize(true);
         rvOffers.setLayoutManager((new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, true)));
@@ -156,23 +141,13 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                 addAccount.setAccount(true);
                 accounts.add(addAccount);
                 this.accounts.addAll(accounts);
-                //vpAccounts.setOffscreenPageLimit(accounts.size());
-                accountsPagerAdapter = new AccountsPagerAdapter(getFragmentManager(), this.accounts);
-                vpAccounts.setAdapter(accountsPagerAdapter);
                 accountAdapter = new AccountAdapter(this, getActivity(), this.accounts);
                 rvAccounts.setAdapter(accountAdapter);
-                accountSpinnerAdapter = new AccountSpinnerAdapter(getActivity(), this.accounts);
-                //spAccounts.setAdapter(accountSpinnerAdapter);
-                //accountPagerAdapter = new AccountPagerAdapter(this, getActivity(), this.accounts);
-                //vpAccounts.setAdapter(accountPagerAdapter);
                 for (Account account : this.accounts) {
                     if (account.isPrimaryAccount()) {
                         this.selectedAccount = account;
-                        vpAccounts.setCurrentItem(accounts.indexOf(account));
-                        spAccounts.setSelection(accounts.indexOf(account));
                     }
                 }
-                accountSpinnerAdapter.notifyDataSetChanged();
                 if (selectedAccount == null) {
                     selectedAccount = accounts.get(0);
                 }
@@ -240,10 +215,10 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
     }
 
     public void openManageAccountsFragment(int index) {
-        if (index == INDEX_MANAGE_ACCOUNTS) {
+        /*if (index == INDEX_MANAGE_ACCOUNTS) {
             FragmentUtils.newInstance(((HomeActivity) getActivity()).getSupportFragmentManager())
                     .addFragment(index,null, ManageAccountsFragment.class.getName(), R.id.homeFlContainer);
-        }
+        }*/
     }
 
     @Override
@@ -312,9 +287,6 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
     public void onPageSelected(int i) {
         selectedAccount = accounts.get(i);
         loginFragmentBinding.setSelectedAccount(selectedAccount);
-        spAccounts.setOnItemSelectedListener(null);
-        spAccounts.setSelection(i);
-        spAccounts.setOnItemSelectedListener(this);
     }
 
     @Override
@@ -325,9 +297,6 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         selectedAccount = accounts.get(position);
-        vpAccounts.addOnPageChangeListener(null);
-        vpAccounts.setCurrentItem(position);
-        vpAccounts.addOnPageChangeListener(this);
     }
 
     @Override

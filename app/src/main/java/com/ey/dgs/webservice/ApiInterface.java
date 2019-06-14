@@ -8,6 +8,7 @@ import com.ey.dgs.api_response.LoginRequest;
 import com.ey.dgs.api_response.LoginResponse;
 import com.ey.dgs.api_response.PrimaryAccountResponse;
 import com.ey.dgs.api_response.UserDetailResponse;
+import com.ey.dgs.api_response.UserSettingsResponse;
 import com.ey.dgs.model.AccountSettings;
 import com.ey.dgs.model.AnswerRequest;
 import com.ey.dgs.model.BillingPeriodReqest;
@@ -45,6 +46,9 @@ public interface ApiInterface {
 
     @GET("UserDetails")
     Call<UserDetailResponse> getUserDetails(@Header("Authorization") String token, @Query("UserName") String UserName);
+
+    @GET("UserSettings")
+    Call<UserSettingsResponse> getUserSettings(@Header("Authorization") String token, @Query("UserName") String UserName);
 
     @GET("AccountDetails")
     Call<AccountSettingsResponse> getAccountSettings(@Header("Authorization") String token, @Query("AccountNumber") String AccountNumber, @Query("UserName") String userName);

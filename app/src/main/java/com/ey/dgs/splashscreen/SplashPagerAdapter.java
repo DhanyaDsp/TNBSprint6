@@ -3,8 +3,6 @@ package com.ey.dgs.splashscreen;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-
-import com.ey.dgs.dashboard.billing.ChartFragment;
 import com.ey.dgs.model.Account;
 import com.ey.dgs.model.SplashItem;
 
