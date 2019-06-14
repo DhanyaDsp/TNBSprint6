@@ -40,7 +40,7 @@ public class QuestionActivity extends AppCompatActivity implements MyDashboardFr
         billingHistory = (BillingHistory) getIntent().getSerializableExtra("billingHistory");
         account = billingHistory.getAccount();
         appPreferences = new AppPreferences(this);
-        showQuestionsFragment();
+        //showQuestionsFragment();
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {

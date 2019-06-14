@@ -18,13 +18,15 @@ public class DialogHelper {
 
     }
 
-    public static void showPrimaryAccountDialog(Account selectedAccount, Context context, View.OnClickListener listener) {
+    public static void showSuccessDialog(Account selectedAccount, Context context, View.OnClickListener listener) {
         if (context != null) {
             dialog = new AppCompatDialog(context);
             dialog.setContentView(R.layout.primary_account_popup);
             AppCompatTextView tvAccountName = dialog.getWindow().findViewById(R.id.tvAccountName);
             AppCompatButton btnGoToAccount = dialog.getWindow().findViewById(R.id.btnGoToAccount);
+            AppCompatTextView tvMessage = dialog.getWindow().findViewById(R.id.successMessage);
             btnGoToAccount.setOnClickListener(listener);
+            tvMessage.setText(dialog.getContext().getString(R.string.success_manage_consumption, selectedAccount.getNickName()));
             tvAccountName.setText(selectedAccount.getNickName());
             dialog.setCancelable(false);
             dialog.show();

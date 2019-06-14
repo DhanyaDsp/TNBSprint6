@@ -12,20 +12,22 @@
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_gravity="right"
-        android:src="@drawable/close" />
+        android:src="@drawable/close"
+        android:visibility="gone"/>
 
     <android.support.v7.widget.AppCompatImageView
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginTop="@dimen/medium_padding"
-        android:src="@drawable/checked" />
+        android:src="@drawable/success" />
 
     <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/successMessage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/medium_padding"
         android:gravity="center"
-        android:text="You have successfully set up your primary account"
+        android:text="@string/success_manage_consumption"
         android:textColor="@color/black_60"
         android:textSize="@dimen/text_size_medium1" />
 

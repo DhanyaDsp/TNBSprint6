@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="70dp"
+    android:orientation="horizontal">
+
+    <android.support.v7.widget.AppCompatCheckBox
+        android:id="@+id/checkbox_accounts"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:buttonTint="@android:color/transparent"
+        android:background="@drawable/bg_checkbox_accounts"
+        android:layout_margin="@dimen/margin25"/>
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/tvNickname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/checkbox_accounts"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_small"
+        android:fontFamily="@font/museosans_500"/>
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/tvAccountNo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/checkbox_accounts"
+        android:layout_below="@+id/tvNickname"
+        android:layout_marginTop="@dimen/dimen4"
+        android:layout_marginBottom="@dimen/dimen50"
+        android:textColor="@color/light_white_40"
+        android:textSize="@dimen/text_size_very_small"
+        android:fontFamily="@font/museosans_500"/>
+
+</RelativeLayout>

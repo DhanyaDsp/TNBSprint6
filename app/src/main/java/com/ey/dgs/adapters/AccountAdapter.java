@@ -2,6 +2,7 @@ package com.ey.dgs.adapters;
 
 import android.app.Activity;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,6 +15,8 @@ import com.ey.dgs.model.Account;
 import com.ey.dgs.utils.Utils;
 
 import java.util.ArrayList;
+
+import static com.ey.dgs.utils.FragmentUtils.INDEX_MANAGE_ACCOUNTS;
 
 
 public class AccountAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -105,8 +108,16 @@ public class AccountAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     public class AddAccountHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
+        AppCompatButton btnManageAccounts;
         private AddAccountHolder(View itemView) {
             super(itemView);
+            btnManageAccounts = itemView.findViewById(R.id.btnManageAccounts);
+            btnManageAccounts.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ((DashboardFragment) fragment).openManageAccountsFragment(INDEX_MANAGE_ACCOUNTS);
+                }
+            });
         }
 
         @Override

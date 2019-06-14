@@ -4,7 +4,10 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatTextView;
+import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,6 +23,7 @@ import com.ey.dgs.model.BillingDetails;
 import com.ey.dgs.model.BillingHistory;
 import com.ey.dgs.model.chart.ChartData;
 import com.ey.dgs.utils.AppPreferences;
+import com.ey.dgs.utils.DialogHelper;
 import com.ey.dgs.utils.Utils;
 import com.ey.dgs.views.BarChart;
 import com.google.gson.Gson;
@@ -27,13 +31,15 @@ import com.google.gson.Gson;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class MMCQuestionsFragment extends Fragment implements View.OnClickListener{
+public class MMCQuestionsFragment extends Fragment implements View.OnClickListener, View.OnKeyListener{
 
     private View rootView;
     private int displayCount;
     private LinearLayout layoutQuestion1;
     private RelativeLayout layoutQuestion2;
     private BarChart barChart;
+    private boolean onQuestion2 = false;
+    private AppCompatEditText thresholdAnswer;
     Account account;
     View loader;
     AppCompatTextView tvAccountName, tvPeopleQuestion;
@@ -78,7 +84,6 @@ public class MMCQuestionsFragment extends Fragment implements View.OnClickListen
     private void setData() {
         tvAccountName.setText(account.getNickName());
         tvPeopleQuestion.setText(rootView.getContext().getString(R.string.people_question, account.getNickName()));
-
     }
 
     private void initViews() {
@@ -95,6 +100,7 @@ public class MMCQuestionsFragment extends Fragment implements View.OnClickListen
         layoutQuestion1 = rootView.findViewById(R.id.layout_question1);
         layoutQuestion2 = rootView.findViewById(R.id.layout_question2);
         barChart = rootView.findViewById(R.id.bar_chart_questions);
+        thresholdAnswer = rootView.findViewById((R.id.etAnswer));
     }
 
     @Override
@@ -135,9 +141,64 @@ public class MMCQuestionsFragment extends Fragment implements View.OnClickListen
     }
 
     private void setViewForQuestion2() {
-        layoutQuestion1.setVisibility(View.GONE);
-        layoutQuestion2.setVisibility(View.VISIBLE);
-        setChartData(barChart, billingHistory);
+        if(!onQuestion2) {
+            layoutQuestion1.setVisibility(View.GONE);
+            onQuestion2 = true;
+            layoutQuestion2.setVisibility(View.VISIBLE);
+            setChartData(barChart, billingHistory);
+        } else {
+            showSuccessPopup();
+        }
+    }
+
+    private void showSuccessPopup() {
+        DialogHelper.showSuccessDialog(account, getActivity(), new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogHelper.hidePopup();
+                getFragmentManager().popBackStack();
+            }
+        });
+    }
+
+    public void increaseInteger() {
+        if(displayCount < 10) {
+            displayCount = displayCount + 1;
+            display(displayCount);
+        }
+    }
+
+    public void decreaseInteger() {
+        if(displayCount > 1) {
+            displayCount = displayCount - 1;
+            display(displayCount);
+        }
+    }
+
+    private void display(int number) {
+        numberDisplay.setText("" + number);
+    }
+
+    @Override
+    public boolean onKey(View v, int keyCode, KeyEvent event) {
+        if (event.getAction() == KeyEvent.ACTION_DOWN) {
+            switch (keyCode) {
+                case KeyEvent.KEYCODE_DPAD_CENTER:
+                case KeyEvent.KEYCODE_ENTER:
+                    Utils.hideKeyBoard(getActivity());
+                    String strThreshold = thresholdAnswer.getText().toString();
+                    if (!TextUtils.isEmpty(strThreshold) || Integer.valueOf(strThreshold) > 0) {
+                        Float threshold = Float.parseFloat(strThreshold);
+                        setChartData(barChart, billingHistory, threshold);
+                    } else {
+                        Utils.showToast(getActivity(), "Please enter value");
+                    }
+                    return true;
+                default:
+                    break;
+            }
+        }
+        return false;
     }
 
     private void setChartData(BarChart barChart, BillingHistory billingHistory) {
@@ -156,28 +217,34 @@ public class MMCQuestionsFragment extends Fragment implements View.OnClickListen
             chartData.setVal(billingDetail.getBilledValue());
             chartDatum.add(chartData);
         }
+        barChart.setData(chartDatum)
+                .setTitle(null)
+                .setBarUnit("RM")
+                .setSelectionRequired(true);
+    }
+
+    private void setChartData(BarChart bar_chart, BillingHistory billingHistory, float threshold) {
+        Gson gson = new Gson();
+        BillingDetails[] billingDetails = gson.fromJson(billingHistory.getBillingDetails(), BillingDetails[].class);
+
+        ArrayList<ChartData> chartDatum = new ArrayList<>();
+        ChartData chartData;
+
+        String startDate = Utils.formatAccountDate(billingHistory.getAccount().getBillingCycleStartDate());
+        String endDate = Utils.formatAccountDate(billingHistory.getAccount().getBillingCycleEndDate());
+        for (int i = 0; i < billingDetails.length; i++) {
+            BillingDetails billingDetail = billingDetails[i];
+            chartData = new ChartData();
+            chartData.setTag(Utils.formatAccountDate(billingDetail.getBilledDate()));
+            chartData.setVal(billingDetail.getBilledValue());
+            chartDatum.add(chartData);
+        }
         if (billingHistory.getAccount().isThreshold()) {
-            barChart.setData(chartDatum)
+            bar_chart.setData(chartDatum)
                     .setTitle(startDate + " - " + endDate)
                     .setBarUnit("RM")
+                    .setThreshold(true, threshold)
                     .setSelectionRequired(true);
         }
-    }
-
-    public void increaseInteger() {
-        if(displayCount < 10) {
-            displayCount = displayCount + 1;
-            display(displayCount);
-        }
-    }
-
-    public void decreaseInteger() {
-        if(displayCount > 1) {
-            displayCount = displayCount - 1;
-            display(displayCount);
-        }
-    }
-    private void display(int number) {
-        numberDisplay.setText("" + number);
     }
 }

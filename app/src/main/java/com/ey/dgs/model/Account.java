@@ -33,6 +33,8 @@ public class Account implements Serializable {
     private boolean isPrimaryAccount;
     private boolean isThreshold;
     @Ignore
+    private boolean isSelected = false;
+    @Ignore
     BillingDetails[] billingDetails;
 
     public int getAccountId() {
@@ -163,5 +165,13 @@ public class Account implements Serializable {
 
     public void setThreshold(boolean threshold) {
         isThreshold = threshold;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
+    }
+
+    public boolean isSelected() {
+        return isSelected;
     }
 }

@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatImageView;
@@ -18,6 +19,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +33,7 @@ import com.ey.dgs.adapters.AccountsPagerAdapter;
 import com.ey.dgs.adapters.OffersAdapter;
 import com.ey.dgs.authentication.LoginViewModel;
 import com.ey.dgs.dashboard.billing.BillingHistoryViewModel;
+import com.ey.dgs.dashboard.manageAccounts.ManageAccountsFragment;
 import com.ey.dgs.dashboard.myaccount.MyAccountFragment;
 import com.ey.dgs.databinding.DashboardFragmentBinding;
 import com.ey.dgs.model.Account;
@@ -44,6 +47,7 @@ import com.ey.dgs.utils.FragmentUtils;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import static com.ey.dgs.utils.FragmentUtils.INDEX_MANAGE_ACCOUNTS;
 import static com.ey.dgs.utils.FragmentUtils.INDEX_MY_ACCOUNT;
 
 public class DashboardFragment extends Fragment implements View.OnClickListener, ViewPager.OnPageChangeListener, AdapterView.OnItemSelectedListener {
@@ -235,6 +239,13 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
         }
     }
 
+    public void openManageAccountsFragment(int index) {
+        /*if (index == INDEX_MANAGE_ACCOUNTS) {
+            FragmentUtils.newInstance(((HomeActivity) getActivity()).getSupportFragmentManager())
+                    .addFragment(index,null, ManageAccountsFragment.class.getName(), R.id.homeFlContainer);
+        }*/
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -263,7 +274,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
     }
 
     private void showPrimaryAccountPopup() {
-        DialogHelper.showPrimaryAccountDialog(selectedAccount, getActivity(), new View.OnClickListener() {
+        DialogHelper.showSuccessDialog(selectedAccount, getActivity(), new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 DialogHelper.hidePopup();

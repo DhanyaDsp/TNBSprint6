@@ -7,43 +7,51 @@
     android:background="@drawable/bg_login"
     tools:context=".dashboard.questions.MMCQuestionsFragment">
 
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/manage_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/fab_margin"
+        android:layout_centerHorizontal="true"
+        android:fontFamily="@font/museosans_500"
+        android:text="@string/manage_consumption"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_medium" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/manage_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/small_padding"
+        android:layout_marginRight="@dimen/dimen50"
+        android:layout_marginLeft="@dimen/dimen50"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/manage_title"
+        android:fontFamily="@font/museosans_500"
+        android:text="@string/manage_consumption_message"
+        android:textColor="@color/light_white_40"
+        android:textSize="@dimen/text_size_very_small"
+        android:textAlignment="center" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/tvAccountName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin10"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/manage_message"
+        android:fontFamily="@font/museosans_500"
+        android:text="Account Name"
+        android:textColor="@color/yellow1"
+        android:textSize="@dimen/text_size_small" />
+
     <LinearLayout
         android:id="@+id/layout_question1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:orientation="vertical">
-
-        <android.support.v7.widget.AppCompatTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/fab_margin"
-            android:fontFamily="@font/museosans_500"
-            android:text="@string/manage_consumption"
-            android:textColor="@color/white"
-            android:textSize="@dimen/text_size_medium" />
-
-        <android.support.v7.widget.AppCompatTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/small_padding"
-            android:layout_marginRight="@dimen/dimen50"
-            android:layout_marginLeft="@dimen/dimen50"
-            android:fontFamily="@font/museosans_500"
-            android:text="@string/manage_consumption_message"
-            android:textColor="@color/light_white_40"
-            android:textSize="@dimen/text_size_very_small"
-            android:textAlignment="center" />
-
-        <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/tvAccountName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin10"
-            android:fontFamily="@font/museosans_500"
-            android:text="Account Name"
-            android:textColor="@color/yellow1"
-            android:textSize="@dimen/text_size_small" />
+        android:orientation="vertical"
+        android:layout_below="@+id/tvAccountName">
 
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/peopleQuestion"
@@ -101,12 +109,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:visibility="visible">
+        android:visibility="gone"
+        android:layout_below="@+id/layout_question1">
 
         <com.ey.dgs.views.BarChart
             android:id="@+id/bar_chart_questions"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_height="300dp"
             android:layout_marginRight="@dimen/margin24"
             android:layout_marginLeft="@dimen/margin24"/>
 
@@ -118,6 +127,7 @@
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="@dimen/large_padding"
             android:layout_marginRight="@dimen/margin10"
+            android:layout_toLeftOf="@+id/etAnswer"
             android:text="@string/question2"
             android:textColor="@android:color/white"
             android:textSize="@dimen/text_size_medium" />
@@ -128,10 +138,11 @@
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:layout_below="@+id/bar_chart_questions"
-            android:layout_toRightOf="@+id/tvQuestion"
-            android:layout_marginTop="@dimen/medium_padding"
+            android:layout_alignParentRight="true"
             android:layout_marginLeft="@dimen/margin13"
             android:layout_marginRight="@dimen/margin24"
+            android:paddingTop="@dimen/small_padding"
+            android:paddingBottom="@dimen/small_padding"
             android:background="@drawable/rounded_white"
             android:fontFamily="@font/museosans_500"
             android:gravity="right"
@@ -139,9 +150,7 @@
             android:maxLength="3"
             android:minWidth="100dp"
             android:paddingLeft="@dimen/small_padding"
-            android:paddingTop="@dimen/small_padding"
             android:paddingRight="@dimen/medium_padding"
-            android:paddingBottom="@dimen/small_padding"
             android:textColor="@android:color/white"
             android:textCursorDrawable="@drawable/cursorwhite"
             android:textDirection="ltr" />

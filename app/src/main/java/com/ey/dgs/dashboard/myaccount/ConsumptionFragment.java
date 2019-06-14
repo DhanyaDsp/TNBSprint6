@@ -13,10 +13,12 @@ import android.widget.AdapterView;
 import android.widget.Gallery;
 import android.widget.LinearLayout;
 
+import com.ey.dgs.HomeActivity;
 import com.ey.dgs.R;
 import com.ey.dgs.adapters.DaysAdapter;
 import com.ey.dgs.authentication.LoginViewModel;
 import com.ey.dgs.dashboard.billing.BillingHistoryViewModel;
+import com.ey.dgs.dashboard.questions.MMCQuestionsFragment;
 import com.ey.dgs.dashboard.questions.QuestionActivity;
 import com.ey.dgs.databinding.FragmentConsumptionBinding;
 import com.ey.dgs.model.Account;
@@ -24,6 +26,7 @@ import com.ey.dgs.model.BillingDetails;
 import com.ey.dgs.model.BillingHistory;
 import com.ey.dgs.model.User;
 import com.ey.dgs.model.chart.ChartData;
+import com.ey.dgs.utils.FragmentUtils;
 import com.ey.dgs.utils.Utils;
 import com.ey.dgs.views.BarChart;
 import com.google.gson.Gson;
@@ -32,6 +35,7 @@ import java.util.ArrayList;
 
 import static com.ey.dgs.model.BillingHistory.DAILY;
 import static com.ey.dgs.model.BillingHistory.WEEKLY;
+import static com.ey.dgs.utils.FragmentUtils.INDEX_QUESTIONS_FRAGMENT;
 
 public class ConsumptionFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
@@ -211,9 +215,12 @@ public class ConsumptionFragment extends Fragment implements View.OnClickListene
     private void showQuestionsFragment() {
         if (billingHistory != null) {
             billingHistory.setAccount(account);
-            Intent intent = new Intent(getActivity(), QuestionActivity.class);
+            /*Intent intent = new Intent(getActivity(), QuestionActivity.class);
             intent.putExtra("billingHistory",  billingHistory);
-            getActivity().startActivity(intent);
+            getActivity().startActivity(intent);*/
+            FragmentUtils.newInstance((getActivity()).getSupportFragmentManager())
+                    .addFragment(INDEX_QUESTIONS_FRAGMENT, billingHistory, MMCQuestionsFragment.class.getName(),
+                            R.id.homeFlContainer);
         }
     }
 }

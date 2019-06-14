@@ -7,16 +7,17 @@
     android:padding="@dimen/medium_padding">
 
     <android.support.v7.widget.AppCompatButton
-        android:id="@+id/btnManageAccounts"
+        android:id="@+id/btnManageConsumption"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/large_padding"
-        android:background="@drawable/bg_add_account"
-        android:fontFamily="@font/museosans_500"
-        android:padding="@dimen/medium_padding"
-        android:text="@string/manage_accounts"
+        android:layout_marginTop="@dimen/dimen50"
+        android:layout_marginLeft="@dimen/large_padding"
+        android:layout_marginRight="@dimen/large_padding"
+        android:text="@string/manage_consumption"
         android:textAllCaps="false"
         android:textColor="@android:color/white"
-        android:textSize="@dimen/text_size_medium" />
+        android:textSize="@dimen/text_size_medium"
+        android:background="@drawable/bg_login_btn"
+        android:fontFamily="@font/museosans_500"/>
 
 </LinearLayout>
