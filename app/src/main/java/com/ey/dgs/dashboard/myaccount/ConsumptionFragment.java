@@ -126,10 +126,36 @@ public class ConsumptionFragment extends Fragment implements View.OnClickListene
             chartData.setTag(Utils.formatAccountDate(billingDetail.getBilledDate()));
             chartData.setVal(billingDetail.getBilledValue());
             chartDatum.add(chartData);
+
+            chartData = new ChartData();
+            chartData.setTag(Utils.formatAccountDate(billingDetail.getBilledDate()));
+            chartData.setVal(billingDetail.getBilledValue());
+            chartDatum.add(chartData);
+
+            chartData = new ChartData();
+            chartData.setTag(Utils.formatAccountDate(billingDetail.getBilledDate()));
+            chartData.setVal(billingDetail.getBilledValue());
+            chartDatum.add(chartData);
+
+            chartData = new ChartData();
+            chartData.setTag(Utils.formatAccountDate(billingDetail.getBilledDate()));
+            chartData.setVal(billingDetail.getBilledValue());
+            chartDatum.add(chartData);
+
+            chartData = new ChartData();
+            chartData.setTag(Utils.formatAccountDate(billingDetail.getBilledDate()));
+            chartData.setVal(billingDetail.getBilledValue());
+            chartDatum.add(chartData);
+
+            chartData = new ChartData();
+            chartData.setTag(Utils.formatAccountDate(billingDetail.getBilledDate()));
+            chartData.setVal(billingDetail.getBilledValue());
+            chartDatum.add(chartData);
         }
         barChart.setData(chartDatum)
                 .setTitle(null)
                 .setBarUnit("RM")
+                .setThreshold(true,60f)
                 .setSelectionRequired(true);
     }
 

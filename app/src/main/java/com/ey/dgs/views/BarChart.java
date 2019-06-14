@@ -7,6 +7,7 @@ import com.ey.dgs.model.chart.ChartData;
 
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -101,6 +102,7 @@ public class BarChart extends LinearLayout {
     }
 
     LegendsAdapter xAxisAdapter;
+
     public void fillChartBarData(int parentLayoutWidth, int parentLayoutHeight) {
         RecyclerView barsRecylerView = view.findViewById(R.id.bars);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
@@ -116,7 +118,15 @@ public class BarChart extends LinearLayout {
         xAxisRecylerView.setAdapter(xAxisAdapter);
         xAxisAdapter.notifyDataSetChanged();
 
-        if(isThresholdRequired) {
+        barsRecylerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                xAxisRecylerView.scrollBy(dx, dy);
+            }
+        });
+
+        if (isThresholdRequired) {
             thresholdHolder.setVisibility(View.VISIBLE);
             thresholdText.setText(unit + " " + this.thresholdValue);
             thresholdHolder.getViewTreeObserver().addOnGlobalLayoutListener(new ThresholdViewListenerClass());
@@ -125,14 +135,13 @@ public class BarChart extends LinearLayout {
             oa.setDuration(800);
             oa.start();*/
 
-        }
-        else {
+        } else {
             thresholdHolder.setVisibility(View.GONE);
         }
     }
 
     public void animateThresholdItem() {
-        float yVal = getThresholdY(this.thresholdValue) - (thresholdHolder.getHeight() * 1.25f);
+        float yVal = getThresholdY(this.thresholdValue) - (thresholdHolder.getHeight() * 1f) + 20f;
         final ObjectAnimator oa = ObjectAnimator.ofFloat(this.thresholdHolder, "y", yVal);
         oa.setDuration(1000);
         oa.start();
@@ -144,28 +153,29 @@ public class BarChart extends LinearLayout {
 
     public float getLargestValWithBuffer() {
         float largestVal = 0f;
-        for(ChartData chartData: chartDatum) {
-            if(largestVal <= chartData.getVal()) {
+        for (ChartData chartData : chartDatum) {
+            if (largestVal <= chartData.getVal()) {
                 largestVal = chartData.getVal();
             }
         }
         largestVal += largestVal * 0.1f;
-        return largestVal;
+        return largestVal + 20f;
     }
 
     private float getThresholdY(float thresholdValue) {
         float maxValueInHolder = getLargestValWithBuffer();
-        return ((maxValueInHolder - thresholdValue)*layoutHeight/maxValueInHolder);
+        return ((maxValueInHolder - thresholdValue) * layoutHeight / maxValueInHolder);
     }
 
     int layoutWidth = 0;
     int layoutHeight = 0;
+
     public void setHighLightedValue(String highLightedValue, int position) {
         this.highLightedValue.setVisibility(View.VISIBLE);
         this.highLightedValue.setText(unit + " " + highLightedValue);
-        float xVal = layoutWidth*position/chartDatum.size();
+        float xVal = layoutWidth * position / chartDatum.size();
         //this.highLightedValue.setX(xVal);
-        this.highLightedValue.setWidth(layoutWidth/chartDatum.size());
+        this.highLightedValue.setWidth(layoutWidth / chartDatum.size());
         this.highLightedValue.setGravity(Gravity.CENTER);
 
         final ObjectAnimator oa = ObjectAnimator.ofFloat(this.highLightedValue, "x", xVal);
@@ -178,11 +188,12 @@ public class BarChart extends LinearLayout {
     }
 
     boolean widthCreated = false;
+
     class BarsViewListenerClass implements ViewTreeObserver.OnGlobalLayoutListener {
         @Override
         public void onGlobalLayout() {
             View vw = findViewById(R.id.bars_container);
-            if(!widthCreated) {
+            if (!widthCreated) {
                 layoutWidth = vw.getWidth();
                 layoutHeight = vw.getHeight();
                 fillChartBarData(layoutWidth, layoutHeight);
@@ -192,12 +203,13 @@ public class BarChart extends LinearLayout {
     }
 
     boolean heightCreated = false;
+
     class ThresholdViewListenerClass implements ViewTreeObserver.OnGlobalLayoutListener {
         @Override
         public void onGlobalLayout() {
             View vw = findViewById(R.id.thresholdHolder);
 
-            if(!heightCreated) {
+            if (!heightCreated) {
                 animateThresholdItem();
                /* layoutWidth = vw.getWidth();
                 layoutHeight = vw.getHeight();

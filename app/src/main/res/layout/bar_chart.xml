@@ -1,120 +1,124 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
     <LinearLayout
-        android:orientation="vertical" android:layout_width="match_parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_margin="5dp"
-        android:weightSum="10"
-        android:layout_height="match_parent">
+        android:orientation="vertical"
+        android:weightSum="10">
 
         <RelativeLayout
-            android:orientation="vertical"
-            android:layout_weight="2.5"
             android:layout_width="match_parent"
-            android:layout_height="0dp">
+            android:layout_height="0dp"
+            android:layout_weight="0.5"
+            android:orientation="vertical">
+
             <android.support.v7.widget.AppCompatTextView
-                android:fontFamily="@font/museosans_500"
-                android:text="Title"
-                android:textColor="#FECC39"
-                android:layout_centerHorizontal="true"
-                android:layout_alignParentTop="true"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="5dp"
                 android:id="@+id/titleText"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="5dp"
+                android:fontFamily="@font/museosans_500"
+                android:text="Title"
+                android:textColor="#FECC39" />
 
             <LinearLayout
-                android:layout_alignParentBottom="true"
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
                 android:layout_marginBottom="5dp"
-                android:layout_height="wrap_content">
+                android:orientation="horizontal">
 
                 <android.support.v7.widget.AppCompatTextView
-                    android:fontFamily="@font/museosans_500"
-                    android:text=""
-                    android:visibility="gone"
-                    android:textSize="10dp"
-                    android:textColor="@android:color/white"
                     android:id="@+id/highLightedValue"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/museosans_500"
+                    android:text=""
+                    android:textColor="@android:color/white"
+                    android:textSize="10dp"
+                    android:visibility="gone" />
 
             </LinearLayout>
         </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/bars_container"
-            android:layout_weight="5"
-            android:orientation="horizontal" android:layout_width="match_parent"
-            android:layout_height="0dp">
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="7"
+            android:orientation="horizontal">
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/bars"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layoutAnimation="@anim/bar_animation_layout"
-                android:orientation="horizontal"
-                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-            </android.support.v7.widget.RecyclerView>
+                android:orientation="horizontal" />
 
             <LinearLayout
-                android:layout_alignParentTop="true"
-                android:orientation="vertical"
                 android:id="@+id/thresholdHolder"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:orientation="vertical">
 
                 <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/thresholdText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
                     android:fontFamily="@font/museosans_500"
                     android:text=""
                     android:textColor="#FECC39"
-                    android:textSize="10dp"
-                    android:layout_marginBottom="5dp"
-                    android:id="@+id/thresholdText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:textSize="10dp" />
 
                 <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="5dp"
                     android:layout_marginBottom="2dp"
                     android:background="@drawable/bg_dotted"
-                    android:layerType="software"
-                    android:layout_width="match_parent"
-                    android:layout_height="5dp" />
+                    android:layerType="software" />
 
             </LinearLayout>
 
         </RelativeLayout>
 
         <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
             android:layout_weight="2.5"
-            android:paddingTop="10dp"
-            android:orientation="vertical" android:layout_width="match_parent"
-            android:layout_height="0dp">
+            android:orientation="vertical"
+            android:paddingTop="10dp">
 
             <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
                 android:layout_marginTop="3dp"
                 android:layout_marginBottom="3dp"
-                android:layout_width="match_parent"
-                android:background="#4dffffff"
-                android:layout_height="1dp" />
+                android:background="#4dffffff" />
 
-    <!--        <LinearLayout
-                android:layout_marginBottom="5dp"
-                android:id="@+id/xmarks"
-                android:orientation="horizontal" android:layout_width="match_parent"
-                android:layout_height="match_parent">
-            </LinearLayout>-->
+            <!--        <LinearLayout
+                        android:layout_marginBottom="5dp"
+                        android:id="@+id/xmarks"
+                        android:orientation="horizontal" android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+                    </LinearLayout>-->
 
             <android.support.v7.widget.RecyclerView
-                android:layout_marginBottom="5dp"
                 android:id="@+id/xmarks"
-                android:orientation="horizontal"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:orientation="horizontal">
 
             </android.support.v7.widget.RecyclerView>
 
@@ -124,28 +128,28 @@
     </LinearLayout>
 
 
-   <!-- <LinearLayout
-        android:layout_alignParentTop="true"
-        android:orientation="vertical"
-        android:layout_margin="5dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+    <!-- <LinearLayout
+         android:layout_alignParentTop="true"
+         android:orientation="vertical"
+         android:layout_margin="5dp"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content">
 
-        <ImageView
-            android:layout_marginBottom="2dp"
-            android:background="@drawable/bg_dotted"
-            android:layerType="software"
-            android:layout_width="match_parent" android:layout_height="1dp" />
+         <ImageView
+             android:layout_marginBottom="2dp"
+             android:background="@drawable/bg_dotted"
+             android:layerType="software"
+             android:layout_width="match_parent" android:layout_height="1dp" />
 
-        <android.support.v7.widget.AppCompatTextView
-            android:fontFamily="@font/museosans_500"
-            android:text="Threshold data"
-            android:textColor="#FECC39"
-            android:layout_marginBottom="5dp"
-            android:id="@+id/thresholdText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+         <android.support.v7.widget.AppCompatTextView
+             android:fontFamily="@font/museosans_500"
+             android:text="Threshold data"
+             android:textColor="#FECC39"
+             android:layout_marginBottom="5dp"
+             android:id="@+id/thresholdText"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content" />
 
-    </LinearLayout>-->
+     </LinearLayout>-->
 
 </RelativeLayout>

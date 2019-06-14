@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.AppCompatTextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:fontFamily="@font/museosans_500"
     android:id="@+id/x_txt_label"
-    android:text=""
-    android:textSize="10dp"
-    android:layout_weight="1"
-    android:textColor="@color/legend_disabled"
-    android:gravity="center"
+    android:layout_width="50dp"
+    android:layout_height="wrap_content"
     android:layout_marginBottom="5dp"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content" />
+    android:layout_weight="1"
+    android:fontFamily="@font/museosans_500"
+    android:gravity="center"
+    android:text=""
+    android:textColor="@color/legend_disabled"
+    android:textSize="10dp" />
