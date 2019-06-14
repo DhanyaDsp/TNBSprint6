@@ -7,6 +7,20 @@
     android:background="@drawable/bg_login"
     tools:context=".dashboard.questions.MMCQuestionsFragment">
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/btnNext"
+        android:layout_alignParentTop="true"
+        android:nestedScrollingEnabled="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/manage_title"
         android:layout_width="wrap_content"
@@ -156,6 +170,9 @@
             android:textDirection="ltr" />
 
     </RelativeLayout>
+    </LinearLayout>
+
+    </ScrollView>
 
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/btnNext"

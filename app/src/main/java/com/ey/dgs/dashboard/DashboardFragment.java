@@ -156,7 +156,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                 addAccount.setAccount(true);
                 accounts.add(addAccount);
                 this.accounts.addAll(accounts);
-                vpAccounts.setOffscreenPageLimit(accounts.size());
+                //vpAccounts.setOffscreenPageLimit(accounts.size());
                 accountsPagerAdapter = new AccountsPagerAdapter(getFragmentManager(), this.accounts);
                 vpAccounts.setAdapter(accountsPagerAdapter);
                 accountAdapter = new AccountAdapter(this, getActivity(), this.accounts);
@@ -240,10 +240,10 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
     }
 
     public void openManageAccountsFragment(int index) {
-        /*if (index == INDEX_MANAGE_ACCOUNTS) {
+        if (index == INDEX_MANAGE_ACCOUNTS) {
             FragmentUtils.newInstance(((HomeActivity) getActivity()).getSupportFragmentManager())
                     .addFragment(index,null, ManageAccountsFragment.class.getName(), R.id.homeFlContainer);
-        }*/
+        }
     }
 
     @Override
