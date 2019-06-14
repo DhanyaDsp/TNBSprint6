@@ -215,10 +215,10 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
     }
 
     public void openManageAccountsFragment(int index) {
-        /*if (index == INDEX_MANAGE_ACCOUNTS) {
+        if (index == INDEX_MANAGE_ACCOUNTS) {
             FragmentUtils.newInstance(((HomeActivity) getActivity()).getSupportFragmentManager())
                     .addFragment(index,null, ManageAccountsFragment.class.getName(), R.id.homeFlContainer);
-        }*/
+        }
     }
 
     @Override
