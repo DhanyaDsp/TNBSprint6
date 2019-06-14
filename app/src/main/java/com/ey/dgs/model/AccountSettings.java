@@ -4,15 +4,18 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
+
+import java.io.Serializable;
 
 @Entity
-public class AccountSettings {
+public class AccountSettings implements Serializable {
 
     public static final int REQUEST_CODE_ADD_ACCOUNT_SETTINGS = 6;
     public static final int REQUEST_CODE_GET_ACCOUNT_SETTINGS = 11;
     public static final int REQUEST_CODE_UPDATE_ACCOUNT_SETTINGS = 12;
 
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     @NonNull
     private int accountId;
     private String accountNumber;
@@ -29,7 +32,7 @@ public class AccountSettings {
     }
 
     public void setAccountId(int accountId) {
-        this.accountId = accountId;
+            this.accountId = accountId;
     }
 
     public String getAccountNumber() {

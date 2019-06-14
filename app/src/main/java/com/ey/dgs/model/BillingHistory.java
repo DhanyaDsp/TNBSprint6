@@ -4,6 +4,7 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import java.io.Serializable;
 
@@ -15,7 +16,7 @@ public class BillingHistory implements Serializable {
     public static final String DAILY = "daily";
     public static final String MONTHLY = "monthly";
     public static final String WEEKLY = "weekly";
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     @NonNull
     private int id;
 
