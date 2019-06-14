@@ -4,23 +4,21 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
-import com.ey.dgs.R;
 import com.ey.dgs.authentication.LoginFragment;
 import com.ey.dgs.dashboard.DashboardFragment;
 import com.ey.dgs.dashboard.MyDashboardFragment;
+import com.ey.dgs.dashboard.manageAccounts.MMCManageAccountsFragment;
 import com.ey.dgs.dashboard.manageAccounts.ManageAccountsFragment;
 import com.ey.dgs.dashboard.myaccount.MyAccountFragment;
 import com.ey.dgs.dashboard.questions.MMCQuestionsFragment;
 import com.ey.dgs.model.Account;
 import com.ey.dgs.model.BillingHistory;
-import com.ey.dgs.model.NotificationSetting;
 import com.ey.dgs.notifications.settings.AccountNotificationSettingsFragment;
 import com.ey.dgs.notifications.settings.NotificationToggleFragment;
 import com.ey.dgs.notifications.settings.SettingsMenuFragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Objects;
 
 public class FragmentUtils {
 
@@ -35,6 +33,7 @@ public class FragmentUtils {
     public static int INDEX_QUESTIONS_FRAGMENT = 8;
     public static int INDEX_MY_DASHBOARD_FRAGMENT = 9;
     public static int INDEX_MANAGE_ACCOUNTS = 10;
+    public static int INDEX_MANAGE_ACCOUNTS_QUESTIONS = 11;
 
     public static FragmentUtils newInstance(FragmentManager fragmentManager) {
         fragmentUtils = new FragmentUtils(fragmentManager);
@@ -105,5 +104,15 @@ public class FragmentUtils {
             default:
                 break;
         }
+    }
+
+    public void addFragment(int index, ArrayList<String> nicknames, ArrayList<String> accountNumber, String fragmentTag, int viewId) {
+        if (index == INDEX_MANAGE_ACCOUNTS_QUESTIONS) {
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            Fragment newFragment = null;
+            newFragment = MMCManageAccountsFragment.newInstance(nicknames, accountNumber);
+            fragmentTransaction.replace(viewId, newFragment, fragmentTag).addToBackStack(fragmentTag).commit();
+        }
+
     }
 }

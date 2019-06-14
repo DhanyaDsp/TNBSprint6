@@ -47,6 +47,8 @@
     <string name="question2">Notify me when my consumption reaches (RM)</string>
     <string name="success_manage_consumption">You have successfully set up your consumption threshold for %1$s.</string>
     <string name="manage_accounts_message">Select accounts to manage consumption and receive consumption threshold notifications.</string>
+    <string name="manage_accounts_questions">Tell us more about your favourite accounts and gain consumption insights.</string>
+    <string name="people_question_accounts">How many people are staying in the property?</string>
     <string name="next">Next</string>
     <string name="not_sure">I\'m not sure</string>
     <string name="pay_bills">Pay Bills</string>

@@ -14,13 +14,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.ey.dgs.HomeActivity;
 import com.ey.dgs.R;
 import com.ey.dgs.adapters.ManageAccountsAdapter;
 import com.ey.dgs.dashboard.DashboardViewModel;
 import com.ey.dgs.model.Account;
 import com.ey.dgs.utils.AppPreferences;
+import com.ey.dgs.utils.FragmentUtils;
 
 import java.util.ArrayList;
+
+import static com.ey.dgs.utils.FragmentUtils.INDEX_MANAGE_ACCOUNTS_QUESTIONS;
 
 public class ManageAccountsFragment extends Fragment implements View.OnClickListener{
 
@@ -87,5 +91,12 @@ public class ManageAccountsFragment extends Fragment implements View.OnClickList
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         this.context = activity;
+    }
+
+    public void openManageAccountsFragment(int index, ArrayList<String> nicknames, ArrayList<String> accountNumber) {
+        if (index == INDEX_MANAGE_ACCOUNTS_QUESTIONS) {
+            FragmentUtils.newInstance(((HomeActivity) getActivity()).getSupportFragmentManager())
+                    .addFragment(index, nicknames, accountNumber, MMCManageAccountsFragment.class.getName(), R.id.homeFlContainer);
+        }
     }
 }

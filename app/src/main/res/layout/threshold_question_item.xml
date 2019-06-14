@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="70dp"
+    android:layout_marginRight="@dimen/dimen35"
+    android:layout_marginLeft="@dimen/dimen35"
+    android:orientation="horizontal">
+
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/tvNickname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_small"
+        android:fontFamily="@font/museosans_500"/>
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/tvAccountNo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvNickname"
+        android:layout_marginTop="@dimen/dimen4"
+        android:layout_marginBottom="@dimen/dimen50"
+        android:textColor="@color/light_white_40"
+        android:textSize="@dimen/text_size_very_small"
+        android:fontFamily="@font/museosans_500"/>
+
+    <android.support.v7.widget.AppCompatEditText
+        android:id="@+id/etAnswer"
+        android:layout_width="@dimen/splash_icon_size"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="12dp"
+        android:layout_marginLeft="@dimen/margin13"
+        android:paddingTop="@dimen/small_padding"
+        android:paddingBottom="@dimen/small_padding"
+        android:paddingLeft="@dimen/small_padding"
+        android:paddingRight="@dimen/medium_padding"
+        android:background="@drawable/rounded_white"
+        android:fontFamily="@font/museosans_500"
+        android:gravity="right"
+        android:inputType="number"
+        android:maxLength="3"
+        android:minWidth="100dp"
+        android:textColor="@android:color/white"
+        android:textCursorDrawable="@drawable/cursorwhite"
+        android:textDirection="ltr" />
+
+</RelativeLayout>

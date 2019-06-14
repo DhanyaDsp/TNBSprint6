@@ -7,20 +7,17 @@ import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 
 import com.ey.dgs.R;
-import com.ey.dgs.dashboard.DashboardFragment;
+import com.ey.dgs.dashboard.manageAccounts.ManageAccountsFragment;
 import com.ey.dgs.model.Account;
-import com.ey.dgs.utils.Utils;
+import com.ey.dgs.utils.FragmentUtils;
 
 import java.util.ArrayList;
-
-import static com.ey.dgs.utils.FragmentUtils.INDEX_MANAGE_ACCOUNTS;
 
 public class ManageAccountsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  {
 
@@ -29,6 +26,8 @@ public class ManageAccountsAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     private Fragment fragment;
     private Activity context;
     private ArrayList<Account> accounts;
+    ArrayList<String> nicknames = new ArrayList<>();
+    ArrayList<String> accountNumber = new ArrayList<>();
 
     public ManageAccountsAdapter(Fragment fragment, Activity context, ArrayList<Account> accounts) {
         this.fragment = fragment;
@@ -61,6 +60,7 @@ public class ManageAccountsAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                         account.setSelected(!account.isSelected());
+
                     }
                 });
                 break;
@@ -90,8 +90,9 @@ public class ManageAccountsAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     public ArrayList<Account> getAccounts() {
         ArrayList<Account> selectedAccounts = new ArrayList<>();
         for (Account account: accounts){
-            if(account.isSelected())
+            if(account.isSelected()) {
                 selectedAccounts.add(account);
+            }
         }
         return selectedAccounts;
     }
@@ -118,8 +119,15 @@ public class ManageAccountsAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             btnManageConsumption.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ArrayList<Account> selected = getAccounts();
-
+                    ArrayList<Account> selectedAccounts = getAccounts();
+                    if(!selectedAccounts.isEmpty()) {
+                        for(int i=0; i< selectedAccounts.size(); i++) {
+                            nicknames.add(selectedAccounts.get(i).getNickName());
+                            accountNumber.add(selectedAccounts.get(i).getAccountNumber());
+                        }
+                        ((ManageAccountsFragment) fragment).openManageAccountsFragment(FragmentUtils.INDEX_MANAGE_ACCOUNTS_QUESTIONS,
+                                nicknames, accountNumber);
+                    }
                 }
             });
         }

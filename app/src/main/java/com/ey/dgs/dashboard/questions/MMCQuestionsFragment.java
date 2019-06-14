@@ -7,15 +7,18 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatTextView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.ey.dgs.R;
 import com.ey.dgs.model.Account;
@@ -101,6 +104,22 @@ public class MMCQuestionsFragment extends Fragment implements View.OnClickListen
         layoutQuestion2 = rootView.findViewById(R.id.layout_question2);
         barChart = rootView.findViewById(R.id.bar_chart_questions);
         thresholdAnswer = rootView.findViewById((R.id.etAnswer));
+        thresholdAnswer.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
+                    Log.i("Done button","Enter pressed");
+                    Utils.hideKeyBoard(getActivity());
+                    String strThreshold = thresholdAnswer.getText().toString();
+                    if (!TextUtils.isEmpty(strThreshold) || Integer.valueOf(strThreshold) > 0) {
+                        Float threshold = Float.parseFloat(strThreshold);
+                        setChartData(barChart, billingHistory, threshold);
+                    } else {
+                        Utils.showToast(getActivity(), "Please enter value");
+                    }
+                }
+                return false;
+            }
+        });
     }
 
     @Override
