@@ -11,6 +11,7 @@ import com.ey.dgs.model.BillingHistory;
 import com.ey.dgs.model.EnergyConsumptions;
 import com.ey.dgs.model.Notification;
 import com.ey.dgs.model.User;
+import com.ey.dgs.model.UserSettings;
 
 import java.util.Arrays;
 import java.util.List;
@@ -385,7 +386,7 @@ public class DatabaseClient {
     }
 
     public void deleteAllNotifications(int requestCode, DatabaseCallback databaseCallback) {
-         class DeleteAllNotificationsTask extends AsyncTask<Void, Void, List<Notification>> {
+        class DeleteAllNotificationsTask extends AsyncTask<Void, Void, List<Notification>> {
 
             @Override
             protected List<Notification> doInBackground(Void... voids) {
@@ -518,6 +519,79 @@ public class DatabaseClient {
         }
 
         AddAccountsTask st = new AddAccountsTask();
+        st.execute();
+    }
+
+    public void addUserSettings(int requestCode, UserSettings userSettings, DatabaseCallback databaseCallback) {
+        class AddUserSettingsTask extends AsyncTask<Void, Void, Void> {
+
+            @Override
+            protected Void doInBackground(Void... voids) {
+
+                DatabaseClient.getInstance(mCtx).getAppDatabase()
+                        .getUserSettingsDao()
+                        .delete(userSettings);
+
+                DatabaseClient.getInstance(mCtx).getAppDatabase()
+                        .getUserSettingsDao()
+                        .insert(userSettings);
+
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                databaseCallback.onInsert(userSettings, requestCode, 0);
+            }
+        }
+
+        AddUserSettingsTask st = new AddUserSettingsTask();
+        st.execute();
+    }
+
+    public void updateUserSettings(int requestCode, UserSettings userSettings, DatabaseCallback databaseCallback) {
+        class UpdateUserSettingsTask extends AsyncTask<Void, Void, Void> {
+
+            @Override
+            protected Void doInBackground(Void... voids) {
+
+                DatabaseClient.getInstance(mCtx).getAppDatabase()
+                        .getUserSettingsDao()
+                        .update(userSettings);
+
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                databaseCallback.onUpdate(userSettings, requestCode, 0);
+            }
+        }
+
+        UpdateUserSettingsTask st = new UpdateUserSettingsTask();
+        st.execute();
+    }
+
+    public void getUserSettings(int requestCode, int userId, DatabaseCallback databaseCallback) {
+        class GetUserSettingsTask extends AsyncTask<Void, Void, UserSettings> {
+
+            @Override
+            protected UserSettings doInBackground(Void... voids) {
+                return DatabaseClient.getInstance(mCtx).getAppDatabase()
+                        .getUserSettingsDao()
+                        .getUserSettings(userId);
+            }
+
+            @Override
+            protected void onPostExecute(UserSettings userSettings) {
+                super.onPostExecute(userSettings);
+                databaseCallback.onReceived(userSettings, requestCode, 0);
+            }
+        }
+
+        GetUserSettingsTask st = new GetUserSettingsTask();
         st.execute();
     }
 

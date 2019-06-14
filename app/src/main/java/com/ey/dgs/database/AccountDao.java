@@ -15,7 +15,7 @@ import java.util.List;
 @Dao
 public interface AccountDao {
 
-    @Query("SELECT * FROM Account ")
+    @Query("SELECT * FROM Account")
     List<Account> getAll();
 
     @Insert
@@ -39,7 +39,7 @@ public interface AccountDao {
     @Insert
     void insert(List<Account> accounts);
 
-    @Query("SELECT * FROM Account WHERE user_id=:user_id ORDER BY isPrimaryAccount DESC, nickName")
+    @Query("SELECT * FROM Account WHERE user_id=:user_id ORDER BY nickName")
     List<Account> getUserAccounts(int user_id);
 
 }

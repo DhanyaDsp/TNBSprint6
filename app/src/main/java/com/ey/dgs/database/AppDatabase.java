@@ -10,8 +10,9 @@ import com.ey.dgs.model.BillingHistory;
 import com.ey.dgs.model.EnergyConsumptions;
 import com.ey.dgs.model.Notification;
 import com.ey.dgs.model.User;
+import com.ey.dgs.model.UserSettings;
 
-@Database(entities = {User.class, Account.class, Notification.class, AccountSettings.class, EnergyConsumptions.class, BillingHistory.class}, version = 2, exportSchema = false)
+@Database(entities = {User.class, Account.class, Notification.class, AccountSettings.class, EnergyConsumptions.class, BillingHistory.class, UserSettings.class}, version = 2, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
     public abstract UserDao taskDao();
@@ -22,7 +23,9 @@ public abstract class AppDatabase extends RoomDatabase {
 
     public abstract AccountSettingsDao getAccountSettingsDao();
 
+    public abstract UserSettingsDao getUserSettingsDao();
+
     public abstract EnergyConsumptionsDao getEnergyConsumptionsDao();
 
-    public abstract BillingHistoryDao getBillingHistoryDao ();
+    public abstract BillingHistoryDao getBillingHistoryDao();
 }

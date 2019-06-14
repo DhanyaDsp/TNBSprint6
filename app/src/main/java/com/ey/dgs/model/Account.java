@@ -32,10 +32,14 @@ public class Account implements Serializable {
     private boolean isAccount;
     private boolean isPrimaryAccount;
     private boolean isThreshold;
-    @Ignore
-    private boolean isSelected = false;
+    private String userThreshold;
+    private String currentMonthConsumption;
+    private String currentWeekConsumption;
+    private String currentDayConsumption;
+    private String peopleInProperty;
     @Ignore
     BillingDetails[] billingDetails;
+    private boolean selected;
 
     public int getAccountId() {
         return accountId;
@@ -167,11 +171,51 @@ public class Account implements Serializable {
         isThreshold = threshold;
     }
 
-    public void setSelected(boolean selected) {
-        isSelected = selected;
+    public String getUserThreshold() {
+        return userThreshold;
+    }
+
+    public void setUserThreshold(String userThreshold) {
+        this.userThreshold = userThreshold;
+    }
+
+    public String getCurrentMonthConsumption() {
+        return currentMonthConsumption;
+    }
+
+    public void setCurrentMonthConsumption(String currentMonthConsumption) {
+        this.currentMonthConsumption = currentMonthConsumption;
+    }
+
+    public String getCurrentWeekConsumption() {
+        return currentWeekConsumption;
+    }
+
+    public void setCurrentWeekConsumption(String currentWeekConsumption) {
+        this.currentWeekConsumption = currentWeekConsumption;
+    }
+
+    public String getCurrentDayConsumption() {
+        return currentDayConsumption;
+    }
+
+    public void setCurrentDayConsumption(String currentDayConsumption) {
+        this.currentDayConsumption = currentDayConsumption;
+    }
+
+    public String getPeopleInProperty() {
+        return peopleInProperty;
+    }
+
+    public void setPeopleInProperty(String peopleInProperty) {
+        this.peopleInProperty = peopleInProperty;
     }
 
     public boolean isSelected() {
-        return isSelected;
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
 }

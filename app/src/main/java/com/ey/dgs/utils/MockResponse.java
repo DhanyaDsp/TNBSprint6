@@ -78,4 +78,115 @@ public class MockResponse {
             "  ]\n" +
             "}";
 
+    public static String USER_SETTINGS_RESPONSE = "{\n" +
+            "    \"success\": true,\n" +
+            "    \"result\": {\n" +
+            "        \"showSplashScreen\": true,\n" +
+            "        \"pushNotificationFlag\": true,\n" +
+            "        \"smsNotificationFlag\": true,\n" +
+            "        \"outageAlertAcknowledgementFlag\": true,\n" +
+            "        \"restoreAlertAcknowledgementFlag\": true,\n" +
+            "        \"consumptionAlert\": [\n" +
+            "            {\n" +
+            "                \"accountNumber\": \"52000000\",\n" +
+            "                \"nickName\": \"Alif\"\n" +
+            "            },\n" +
+            "            {\n" +
+            "                \"accountNumber\": \"44000000\",\n" +
+            "                \"nickName\": \"Mix\"\n" +
+            "            },\n" +
+            "            {\n" +
+            "                \"accountNumber\": \"50000000\",\n" +
+            "                \"nickName\": \"Soraya\"\n" +
+            "            }\n" +
+            "        ],\n" +
+            "        \"outageAlert\": [\n" +
+            "            {\n" +
+            "                \"accountNumber\": \"52000000\",\n" +
+            "                \"nickName\": \"Alif\"\n" +
+            "            },\n" +
+            "            {\n" +
+            "                \"accountNumber\": \"21000000\",\n" +
+            "                \"nickName\": \"Derrick\"\n" +
+            "            },\n" +
+            "            {\n" +
+            "                \"accountNumber\": \"81000000\",\n" +
+            "                \"nickName\": \"Gurmit\"\n" +
+            "            },\n" +
+            "            {\n" +
+            "                \"accountNumber\": \"44000000\",\n" +
+            "                \"nickName\": \"Mix\"\n" +
+            "            },\n" +
+            "            {\n" +
+            "                \"accountNumber\": \"50000000\",\n" +
+            "                \"nickName\": \"Soraya\"\n" +
+            "            }\n" +
+            "        ],\n" +
+            "        \"restoreAlert\": [\n" +
+            "            {\n" +
+            "                \"accountNumber\": \"52000000\",\n" +
+            "                \"nickName\": \"Alif\"\n" +
+            "            },\n" +
+            "            {\n" +
+            "                \"accountNumber\": \"21000000\",\n" +
+            "                \"nickName\": \"Derrick\"\n" +
+            "            },\n" +
+            "            {\n" +
+            "                \"accountNumber\": \"81000000\",\n" +
+            "                \"nickName\": \"Gurmit\"\n" +
+            "            },\n" +
+            "            {\n" +
+            "                \"accountNumber\": \"44000000\",\n" +
+            "                \"nickName\": \"Mix\"\n" +
+            "            },\n" +
+            "            {\n" +
+            "                \"accountNumber\": \"50000000\",\n" +
+            "                \"nickName\": \"Soraya\"\n" +
+            "            }\n" +
+            "        ],\n" +
+            "        \"accountSettings\": [\n" +
+            "            {\n" +
+            "                \"accountNumber\": \"81000000\",\n" +
+            "                \"nickName\": \"Gurmit\",\n" +
+            "                \"isUserThresholdSet\": true,\n" +
+            "                \"hasConsumptionReached\": true,\n" +
+            "                \"outageAlertFlag\": true,\n" +
+            "                \"restoreAlertFlag\": true\n" +
+            "            },\n" +
+            "            {\n" +
+            "                \"accountNumber\": \"21000000\",\n" +
+            "                \"nickName\": \"Derrick\",\n" +
+            "                \"isUserThresholdSet\": true,\n" +
+            "                \"hasConsumptionReached\": true,\n" +
+            "                \"outageAlertFlag\": true,\n" +
+            "                \"restoreAlertFlag\": true\n" +
+            "            },\n" +
+            "            {\n" +
+            "                \"accountNumber\": \"44000000\",\n" +
+            "                \"nickName\": \"Mix\",\n" +
+            "                \"isUserThresholdSet\": false,\n" +
+            "                \"hasConsumptionReached\": false,\n" +
+            "                \"outageAlertFlag\": true,\n" +
+            "                \"restoreAlertFlag\": true\n" +
+            "            },\n" +
+            "            {\n" +
+            "                \"accountNumber\": \"50000000\",\n" +
+            "                \"nickName\": \"Soraya\",\n" +
+            "                \"isUserThresholdSet\": false,\n" +
+            "                \"hasConsumptionReached\": false,\n" +
+            "                \"outageAlertFlag\": true,\n" +
+            "                \"restoreAlertFlag\": true\n" +
+            "            },\n" +
+            "            {\n" +
+            "                \"accountNumber\": \"52000000\",\n" +
+            "                \"nickName\": \"Alif\",\n" +
+            "                \"isUserThresholdSet\": false,\n" +
+            "                \"hasConsumptionReached\": false,\n" +
+            "                \"outageAlertFlag\": true,\n" +
+            "                \"restoreAlertFlag\": true\n" +
+            "            }\n" +
+            "        ]\n" +
+            "    }\n" +
+            "}";
+
 }
