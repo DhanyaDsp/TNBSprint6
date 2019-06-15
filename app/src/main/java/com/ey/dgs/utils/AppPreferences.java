@@ -11,11 +11,13 @@ public class AppPreferences {
     public static String FCM_TOKEN = "fcm_token";
     public static String AUTH_TOKEN = "auth_token";
     public static String AZURE_REG_ID = "azure_reg_id";
+    public static String USER_NAME = "user_name";
     int user_id;
     String fcm_token;
     String azure_reg_id;
     String auth_token;
     boolean isLoginned;
+    String user_name;
 
     public AppPreferences(Context context) {
 
@@ -68,6 +70,15 @@ public class AppPreferences {
 
     public void setAzureRegId(String azureRegId) {
         preferences.edit().putString(AZURE_REG_ID, azureRegId).apply();
+    }
+
+    public String getUser_name() {
+        user_name = preferences.getString(user_name, null);
+        return user_name;
+    }
+
+    public void setUser_name(String user_name) {
+        preferences.edit().putString(USER_NAME, user_name).apply();
     }
 
     public void clearAll() {

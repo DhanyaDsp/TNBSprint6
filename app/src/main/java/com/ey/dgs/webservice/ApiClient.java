@@ -10,6 +10,7 @@ import com.ey.dgs.api_response.PrimaryAccountResponse;
 import com.ey.dgs.api_response.UserDetailResponse;
 import com.ey.dgs.api_response.UserSettingsResponse;
 import com.ey.dgs.model.Account;
+import com.ey.dgs.model.AccountDetailsRequest;
 import com.ey.dgs.model.AnswerRequest;
 import com.ey.dgs.model.BillingPeriodReqest;
 import com.ey.dgs.model.NotificationSettingsRequest;
@@ -30,6 +31,7 @@ public class ApiClient {
     public static final String BASE_URL = "https://apscadvdgsapm01.azure-api.net/Login/v3/";
     public static final String LOGIN_BASE_URL = "https://apscadvdgsapm01.azure-api.net/UserDetails/v3/";
     public static final String BILLING_BASE_URL = "https://apscadvdgsapm01.azure-api.net/BillingHistory/v3/";
+    public static final String ACCOUNT_DETAILS_URL = "https://apscadvdgsapm01.azure-api.net/UserDetails/v1.3/";
     private static Retrofit retrofit = null;
 
     public static int REQUEST_CODE_UPDATE_USER = 100;
@@ -62,6 +64,13 @@ public class ApiClient {
     public static Retrofit getBillingHistoryClient() {
         return retrofit = new Retrofit.Builder()
                 .baseUrl(BILLING_BASE_URL).client(HttpClientService.getUnsafeOkHttpClient())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+    }
+
+    public static Retrofit getAccountDetailsClient() {
+        return retrofit = new Retrofit.Builder()
+                .baseUrl(ACCOUNT_DETAILS_URL).client(HttpClientService.getUnsafeOkHttpClient())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
     }
@@ -377,4 +386,28 @@ public class ApiClient {
         });
     }
 
+    public void updateAccountDetails(String token, AccountDetailsRequest accountDetailsRequest, APICallback callback) {
+        ApiInterface apiInterface = ApiClient.getAccountDetailsClient().create(ApiInterface.class);
+        Call<APIResponse> call = apiInterface.updateAccountDetails(token, accountDetailsRequest);
+        call.enqueue(new Callback<APIResponse>() {
+            @Override
+            public void onResponse(Call<APIResponse> call, Response<APIResponse> response) {
+                APIResponse apiResponse = response.body();
+                if (apiResponse != null) {
+                    if (apiResponse.isSuccess()) {
+                        callback.onSuccess(REQUEST_CODE_ANSWER_QUESTIONS, apiResponse.getStatusCode(), response.code());
+                    } else {
+                        callback.onFailure(REQUEST_CODE_ANSWER_QUESTIONS, "Failed to answer this question", response.code());
+                    }
+                } else {
+                    callback.onFailure(REQUEST_CODE_ANSWER_QUESTIONS, "Failed to answer this question", response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<APIResponse> call, Throwable t) {
+
+            }
+        });
+    }
 }

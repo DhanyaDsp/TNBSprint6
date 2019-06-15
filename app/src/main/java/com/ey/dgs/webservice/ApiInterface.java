@@ -9,6 +9,7 @@ import com.ey.dgs.api_response.LoginResponse;
 import com.ey.dgs.api_response.PrimaryAccountResponse;
 import com.ey.dgs.api_response.UserDetailResponse;
 import com.ey.dgs.api_response.UserSettingsResponse;
+import com.ey.dgs.model.AccountDetailsRequest;
 import com.ey.dgs.model.AccountSettings;
 import com.ey.dgs.model.AnswerRequest;
 import com.ey.dgs.model.BillingPeriodReqest;
@@ -64,4 +65,7 @@ public interface ApiInterface {
 
     @POST("BillingDetails")
     Call<BillingDetailsResponse> getBillingHistory(@Header("Authorization") String token, @Body BillingPeriodReqest billingPeriodReqest);
+
+    @POST("AccountDetails")
+    Call<APIResponse> updateAccountDetails(@Header("Authorization") String token, @Body AccountDetailsRequest accountDetailsRequest);
 }

@@ -47,6 +47,7 @@
         android:minWidth="100dp"
         android:textColor="@android:color/white"
         android:textCursorDrawable="@drawable/cursorwhite"
-        android:textDirection="ltr" />
+        android:textDirection="ltr"
+        android:imeOptions="actionDone"/>
 
 </RelativeLayout>

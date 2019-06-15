@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 
 import com.ey.dgs.R;
 import com.ey.dgs.adapters.PeopleQuestionAdapter;
+import com.ey.dgs.utils.Utils;
 
 import java.util.ArrayList;
 
@@ -49,7 +50,12 @@ public class PeopleQuestionFragment extends Fragment {
         rvQuestions = view.findViewById(R.id.rvPeople);
         rvLayoutManager = new LinearLayoutManager(getActivity());
         rvQuestions.setLayoutManager(rvLayoutManager);
-        adapter = new PeopleQuestionAdapter(nicknames, accountNumber);
+        adapter = new PeopleQuestionAdapter(this, nicknames, accountNumber);
         rvQuestions.setAdapter(adapter);
+    }
+
+    public void setPeopleInProperty(ArrayList<String> accountNumber, ArrayList<Integer> peopleInProperty) {
+        Utils.showToast(getActivity(), "Clicked");
+        ThresholdQuestionFragment.setValues(accountNumber, peopleInProperty);
     }
 }

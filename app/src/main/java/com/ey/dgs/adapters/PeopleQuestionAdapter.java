@@ -1,6 +1,7 @@
 package com.ey.dgs.adapters;
 
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,17 +10,19 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.ey.dgs.R;
+import com.ey.dgs.dashboard.manageAccounts.PeopleQuestionFragment;
 
 import java.util.ArrayList;
 
 public class PeopleQuestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private int displayCount;
-    ArrayList<Integer> displayCounts = new ArrayList<>();
-    ArrayList<String> nicknames;
-    ArrayList<String> accountNumber;
+    private ArrayList<Integer> displayCounts = new ArrayList<>();
+    private ArrayList<String> nicknames;
+    private ArrayList<String> accountNumber;
+    private Fragment fragment;
 
-    public PeopleQuestionAdapter(ArrayList<String> nicknames, ArrayList<String> accountNumber) {
+    public PeopleQuestionAdapter(Fragment fragment, ArrayList<String> nicknames, ArrayList<String> accountNumber) {
+        this.fragment = fragment;
         this.nicknames = nicknames;
         this.accountNumber = accountNumber;
     }
@@ -36,7 +39,7 @@ public class PeopleQuestionAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         PeopleQuestionHolder holder = (PeopleQuestionHolder) viewHolder;
         holder.tvNickname.setText(nicknames.get(position));
         holder.tvAccountNo.setText(accountNumber.get(position));
-        displayCounts.add(position, 0);
+        displayCounts.add(position, 1);
         holder.decrease.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -45,6 +48,7 @@ public class PeopleQuestionAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                      number= number - 1;
                     holder.numberDisplay.setText("" + number);
                     displayCounts.set(position, number);
+                    setPeopleInProperty(displayCounts);
                 }
             }
         });
@@ -56,9 +60,15 @@ public class PeopleQuestionAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                     number= number + 1;
                     holder.numberDisplay.setText("" + number);
                     displayCounts.set(position, number);
+                    setPeopleInProperty(displayCounts);
                 }
             }
         });
+        setPeopleInProperty(displayCounts);
+    }
+
+    private void setPeopleInProperty(ArrayList<Integer> peopleInProperty) {
+        ((PeopleQuestionFragment) fragment).setPeopleInProperty(accountNumber, peopleInProperty);
     }
 
     @Override
@@ -80,22 +90,4 @@ public class PeopleQuestionAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             increase = itemView.findViewById(R.id.increase);
         }
     }
-
-    /*public void increaseInteger() {
-        if(displayCount < 10) {
-            displayCount = displayCount + 1;
-            display(displayCount);
-        }
-    }
-
-    public void decreaseInteger() {
-        if(displayCount > 1) {
-            displayCount = displayCount - 1;
-            display(displayCount);
-        }
-    }
-
-    private void display(int number) {
-        //numberDisplay.setText("" + number);
-    }*/
 }

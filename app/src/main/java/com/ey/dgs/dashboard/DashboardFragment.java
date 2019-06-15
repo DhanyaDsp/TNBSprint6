@@ -249,7 +249,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
     }
 
     private void showPrimaryAccountPopup() {
-        DialogHelper.showSuccessDialog(selectedAccount, getActivity(), new View.OnClickListener() {
+        DialogHelper.showSuccessDialog(selectedAccount, "",getActivity(), new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 DialogHelper.hidePopup();

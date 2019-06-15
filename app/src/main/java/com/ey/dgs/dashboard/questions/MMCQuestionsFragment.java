@@ -1,5 +1,6 @@
 package com.ey.dgs.dashboard.questions;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -22,6 +23,8 @@ import android.widget.TextView;
 
 import com.ey.dgs.R;
 import com.ey.dgs.model.Account;
+import com.ey.dgs.model.AccountDetails;
+import com.ey.dgs.model.AccountDetailsRequest;
 import com.ey.dgs.model.BillingDetails;
 import com.ey.dgs.model.BillingHistory;
 import com.ey.dgs.model.chart.ChartData;
@@ -43,6 +46,8 @@ public class MMCQuestionsFragment extends Fragment implements View.OnClickListen
     private BarChart barChart;
     private boolean onQuestion2 = false;
     private AppCompatEditText thresholdAnswer;
+    private QuestionsViewModel questionsViewModel;
+    private String peopleInProperty, thresholdValue;
     Account account;
     View loader;
     AppCompatTextView tvAccountName, tvPeopleQuestion;
@@ -129,8 +134,8 @@ public class MMCQuestionsFragment extends Fragment implements View.OnClickListen
     }
 
     private void subscribe() {
-        /*manageConsumptionAdapter = new ManageConsumptionAdapter(getActivity());
-        vpQuestions.setAdapter(manageConsumptionAdapter);*/
+        questionsViewModel = ViewModelProviders.of(this).get(QuestionsViewModel.class);
+        questionsViewModel.setContext(getActivity());
     }
 
     public void showProgress(boolean isProgress) {
@@ -138,6 +143,9 @@ public class MMCQuestionsFragment extends Fragment implements View.OnClickListen
             loader.setVisibility(View.VISIBLE);
         } else {
             loader.setVisibility(View.GONE);
+            if(questionsViewModel.isSuccess()) {
+                showSuccessPopup();
+            }
         }
     }
 
@@ -166,12 +174,33 @@ public class MMCQuestionsFragment extends Fragment implements View.OnClickListen
             layoutQuestion2.setVisibility(View.VISIBLE);
             setChartData(barChart, billingHistory);
         } else {
-            showSuccessPopup();
+            callAccountDetailsAPiService();
         }
     }
 
-    private void showSuccessPopup() {
-        DialogHelper.showSuccessDialog(account, getActivity(), new View.OnClickListener() {
+    private void callAccountDetailsAPiService() {
+        peopleInProperty = numberDisplay.getText().toString().trim();
+        thresholdValue = thresholdAnswer.getText().toString().trim();
+        if(!TextUtils.isEmpty(thresholdValue) && Integer.valueOf(thresholdValue) > 0) {
+            AccountDetails[] accountDetailsArray = new AccountDetails[1];
+            accountDetailsArray[0] = new AccountDetails(account.getAccountNumber(),
+                    peopleInProperty, thresholdValue);
+            AccountDetailsRequest accountDetailsRequest =
+                    new AccountDetailsRequest("Admin@xyzmail.com", accountDetailsArray);
+
+            showProgress(true);
+            questionsViewModel.updateAccountSettingsInServer(accountDetailsRequest);
+            questionsViewModel.getLoaderData().observe(getViewLifecycleOwner(), showProgress -> {
+                showProgress(showProgress);
+            });
+        }
+        else {
+            Utils.showToast(getActivity(), "Please enter value");
+        }
+    }
+
+    public void showSuccessPopup() {
+        DialogHelper.showSuccessDialog(account, thresholdValue, getActivity(), new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 DialogHelper.hidePopup();

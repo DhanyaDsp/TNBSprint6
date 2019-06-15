@@ -47,7 +47,6 @@
         android:id="@+id/vpQuestionItems"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/btnNext"
         android:layout_below="@+id/tlDots" />
 
     <android.support.v7.widget.AppCompatButton

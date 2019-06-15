@@ -129,7 +129,7 @@ public class BarsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         switch (holder.getItemViewType()) {
             case TYPE_ACCOUNT:
                 AccountHolder accountHolder = (AccountHolder) holder;
-                accountHolder.tvAcountID.setText(account.getAccountNumber());
+                accountHolder.tvAcountID.setText(account.getUserName());
                 accountHolder.tvAccountName.setText(account.getNickName());
                 accountHolder.tvLastBilledAmount.setText("RM " + account.getLastBilledAmount() + ".00");
                 accountHolder.tvDate.setText(Utils.formatAccountDate(account.getLastBilledDate()));
