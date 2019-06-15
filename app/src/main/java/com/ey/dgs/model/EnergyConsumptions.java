@@ -4,6 +4,9 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
+
+import org.w3c.dom.Text;
 
 import java.io.Serializable;
 
@@ -14,9 +17,10 @@ public class EnergyConsumptions implements Serializable {
     public static int REQUEST_CODE_GET_CONSUMPTION = 13;
     public static int REQUEST_CODE_UPDATE_CONSUMPTION = 14;
 
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     @NonNull
     private int accountId;
+
     private String accountNumber;
 
     private String userThreshold;
@@ -35,7 +39,7 @@ public class EnergyConsumptions implements Serializable {
     }
 
     public void setAccountId(int accountId) {
-        this.accountId = accountId;
+            this.accountId = accountId;
     }
 
     public String getAccountNumber() {

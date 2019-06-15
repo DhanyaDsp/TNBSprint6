@@ -4,6 +4,9 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
+import android.util.Log;
+
+import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
@@ -15,7 +18,7 @@ public class Account implements Serializable {
     public static int REQUEST_CODE_SET_PRIMARY_ACCOUNT = 16;
     public static int REQUEST_CODE_GET_PRIMARY_ACCOUNT = 17;
 
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     @NonNull
     private int accountId;
     private String accountNumber;

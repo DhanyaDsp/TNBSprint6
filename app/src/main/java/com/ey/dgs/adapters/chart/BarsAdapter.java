@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -30,7 +31,7 @@ public class BarsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     int parentLayoutWidth;
     int parentLayoutHeight;
     boolean isSelectionRequired;
-
+    float highlightTextViewHeight = 50f;
     float largestValWithBuffer = 0f;
 
     public BarsAdapter(BarChart barChart, Context context, ArrayList<ChartData> chartDatum,
@@ -100,7 +101,7 @@ public class BarsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         //barsHolder.bar_line.setLayoutParams(lineHolderParams);
 
         boolean isSelected = chartDatum.get(position).getIsSelected();
-
+        //barsHolder.highLightedValue.getLayoutParams().height = (int) highlightTextViewHeight;
         if (isSelected) {
             barsHolder.highLightedValue.setVisibility(View.VISIBLE);
         } else {
@@ -160,6 +161,5 @@ public class BarsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public int getItemCount() {
         return chartDatum.size();
     }
-
 
 }

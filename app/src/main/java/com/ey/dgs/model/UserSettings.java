@@ -1,6 +1,7 @@
 package com.ey.dgs.model;
 
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 
 import java.io.Serializable;
@@ -24,6 +25,9 @@ public class UserSettings implements Serializable {
     private boolean outageAlertAcknowledgementFlag;
 
     private boolean restoreAlertAcknowledgementFlag;
+
+    @Ignore
+    AccountSettings[] accountSettings;
 
     public int getUserId() {
         return userId;
@@ -71,5 +75,13 @@ public class UserSettings implements Serializable {
 
     public void setRestoreAlertAcknowledgementFlag(boolean restoreAlertAcknowledgementFlag) {
         this.restoreAlertAcknowledgementFlag = restoreAlertAcknowledgementFlag;
+    }
+
+    public AccountSettings[] getAccountSettings() {
+        return accountSettings;
+    }
+
+    public void setAccountSettings(AccountSettings[] accountSettings) {
+        this.accountSettings = accountSettings;
     }
 }

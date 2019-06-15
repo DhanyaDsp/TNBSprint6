@@ -4,6 +4,7 @@ import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.text.TextUtils;
+import android.widget.LinearLayout;
 
 import com.ey.dgs.model.Account;
 import com.ey.dgs.model.AccountSettings;
@@ -13,6 +14,7 @@ import com.ey.dgs.model.Notification;
 import com.ey.dgs.model.User;
 import com.ey.dgs.model.UserSettings;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -141,10 +143,12 @@ public class DatabaseClient {
                         .clear();
 
                 for (Account account : accounts) {
-                    DatabaseClient.getInstance(mCtx).getAppDatabase()
-                            .accountDao()
-                            .insert(account);
+                    account.setAccountId(Integer.parseInt(account.getAccountNumber()));
                 }
+
+                DatabaseClient.getInstance(mCtx).getAppDatabase()
+                        .accountDao()
+                        .insert(accounts);
 
                 return null;
             }
@@ -536,6 +540,10 @@ public class DatabaseClient {
                         .getUserSettingsDao()
                         .insert(userSettings);
 
+                DatabaseClient.getInstance(mCtx).getAppDatabase()
+                        .getAccountSettingsDao()
+                        .insert(Arrays.asList(userSettings.getAccountSettings()));
+
                 return null;
             }
 
@@ -648,7 +656,6 @@ public class DatabaseClient {
 
             @Override
             protected Void doInBackground(Void... voids) {
-
                 DatabaseClient.getInstance(mCtx).getAppDatabase()
                         .accountDao()
                         .update(account);
@@ -667,7 +674,7 @@ public class DatabaseClient {
     }
 
     public void updateAccounts(int requestCode, List<Account> accounts, DatabaseCallback databaseCallback) {
-        class UpdateAccountTask extends AsyncTask<Void, Void, Void> {
+        class UpdateAccountTasks extends AsyncTask<Void, Void, Void> {
 
             @Override
             protected Void doInBackground(Void... voids) {
@@ -685,7 +692,7 @@ public class DatabaseClient {
             }
         }
 
-        UpdateAccountTask st = new UpdateAccountTask();
+        UpdateAccountTasks st = new UpdateAccountTasks();
         st.execute();
     }
 }

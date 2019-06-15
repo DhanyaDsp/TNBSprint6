@@ -3,6 +3,7 @@ package com.ey.dgs.database;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
+import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 
 
@@ -20,10 +21,10 @@ public interface BillingHistoryDao {
     @Query("SELECT * FROM BillingHistory WHERE accountNumber=:accountNumber")
     BillingHistory getBillingHistory(String accountNumber);
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(List<BillingHistory> billingHistories);
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(BillingHistory billingHistory);
 
     @Query("DELETE FROM BillingHistory WHERE accountNumber=:accountNumber")

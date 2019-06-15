@@ -155,7 +155,7 @@ public class ConsumptionFragment extends Fragment implements View.OnClickListene
         barChart.setData(chartDatum)
                 .setTitle(null)
                 .setBarUnit("RM")
-                .setThreshold(true,60f)
+                .setThreshold(true,220f)
                 .setSelectionRequired(true);
     }
 
