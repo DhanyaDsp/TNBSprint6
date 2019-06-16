@@ -43,6 +43,8 @@ public class Account implements Serializable {
     @Ignore
     BillingDetails[] billingDetails;
     private boolean selected;
+    @Ignore
+    private boolean isNeededAccount;
 
     public int getAccountId() {
         return accountId;
@@ -220,5 +222,13 @@ public class Account implements Serializable {
 
     public void setSelected(boolean selected) {
         this.selected = selected;
+    }
+
+    public boolean isNeededAccount() {
+        return isNeededAccount;
+    }
+
+    public void setNeededAccount(boolean neededAccount) {
+        isNeededAccount = neededAccount;
     }
 }

@@ -50,6 +50,7 @@
     <string name="manage_accounts_questions">Tell us more about your favourite accounts and gain consumption insights.</string>
     <string name="people_question_accounts">How many people are staying in the property?</string>
     <string name="next">Next</string>
+    <string name="submit">Submit</string>
     <string name="not_sure">I\'m not sure</string>
     <string name="pay_bills">Pay Bills</string>
     <string name="title_activity_question">QuestionActivity</string>

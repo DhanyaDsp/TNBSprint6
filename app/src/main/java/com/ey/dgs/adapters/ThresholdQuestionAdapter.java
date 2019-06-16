@@ -59,6 +59,7 @@ public class ThresholdQuestionAdapter extends RecyclerView.Adapter<RecyclerView.
             holder.thresholdAnswer.setText(thresholdValues[holder.getAdapterPosition()]);
         } else if (viewHolder.getItemViewType() == TYPE_NEXT) {
             NextHolder holder = (NextHolder) viewHolder;
+            holder.btnNext.setText(R.string.submit);
         }
     }
 

@@ -111,6 +111,8 @@ public class FragmentUtils {
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             Fragment newFragment = null;
             newFragment = MMCManageAccountsFragment.newInstance(nicknames, accountNumber);
+            fragmentManager.popBackStack();
+            fragmentManager.popBackStack();
             fragmentTransaction.replace(viewId, newFragment, fragmentTag).addToBackStack(fragmentTag).commit();
         }
 

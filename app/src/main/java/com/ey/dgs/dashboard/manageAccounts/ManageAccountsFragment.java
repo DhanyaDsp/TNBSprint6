@@ -62,9 +62,8 @@ public class ManageAccountsFragment extends Fragment implements View.OnClickList
         dashboardViewModel.loadAccountsFromLocalDB(appPreferences.getUser_id());
         dashboardViewModel.getAccounts().observeForever(accounts -> {
             this.accounts.clear();
-            this.accounts.clear();
             Account addAccount = new Account();
-            addAccount.setAccount(true);
+            addAccount.setNeededAccount(true);
             accounts.add(addAccount);
             this.accounts.addAll(accounts);
             accountsAdapter.notifyDataSetChanged();

@@ -55,7 +55,6 @@ public class PeopleQuestionFragment extends Fragment {
     }
 
     public void setPeopleInProperty(ArrayList<String> accountNumber, ArrayList<Integer> peopleInProperty) {
-        Utils.showToast(getActivity(), "Clicked");
         ThresholdQuestionFragment.setValues(accountNumber, peopleInProperty);
     }
 }

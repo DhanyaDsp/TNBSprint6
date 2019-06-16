@@ -6,7 +6,6 @@ import android.content.Context;
 
 import com.ey.dgs.model.AccountDetailsRequest;
 import com.ey.dgs.utils.AppPreferences;
-import com.ey.dgs.utils.DialogHelper;
 import com.ey.dgs.utils.Utils;
 import com.ey.dgs.webservice.APICallback;
 import com.ey.dgs.webservice.ApiClient;
@@ -15,7 +14,7 @@ import static com.ey.dgs.webservice.ApiClient.REQUEST_CODE_ANSWER_QUESTIONS;
 
 public class QuestionsViewModel extends ViewModel implements APICallback {
 
-    Context context;
+    private Context context;
     AppPreferences appPreferences;
     boolean isSuccess = false;
     private MutableLiveData<Boolean> loaderData = new MutableLiveData<>();
@@ -45,7 +44,6 @@ public class QuestionsViewModel extends ViewModel implements APICallback {
     }
 
     public void updateAccountSettingsInServer(AccountDetailsRequest accountDetailsRequest) {
-        String username = appPreferences.getUser_name();
         new ApiClient().updateAccountDetails(appPreferences.getAuthToken(), accountDetailsRequest, this);
     }
 

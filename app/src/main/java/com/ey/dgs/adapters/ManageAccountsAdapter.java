@@ -75,7 +75,7 @@ public class ManageAccountsAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     @Override
     public int getItemViewType(int position) {
         Account account = this.accounts.get(position);
-        if (account.isAccount()) {
+        if (account.isNeededAccount()) {
             return TYPE_ADD_ACCOUNT;
         } else {
             return TYPE_ACCOUNT;

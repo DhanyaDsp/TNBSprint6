@@ -73,9 +73,8 @@ public class ThresholdQuestionFragment extends Fragment {
     }
 
     public void setThresholdValues(ArrayList<String> accountNumber, String[] threshold) {
-        Utils.showToast(getActivity(), "Clicked");
         if (accNumberFromQuestion.equals(accountNumber)) {
-            for (int i = 1; i < accountNumber.size(); i++) {
+            for (int i = 0; i < accountNumber.size(); i++) {
                 accountDetailsArray[i].setUserThreshold(threshold[i]);
             }
         }
@@ -86,10 +85,10 @@ public class ThresholdQuestionFragment extends Fragment {
         AccountDetailsRequest accountDetailsRequest =
                 new AccountDetailsRequest("Admin@xyzmail.com", accountDetails);
 
-        //showProgress(true);
+        showProgress(true);
         questionsViewModel.updateAccountSettingsInServer(accountDetailsRequest);
         questionsViewModel.getLoaderData().observe(getViewLifecycleOwner(), showProgress -> {
-            //showProgress(showProgress);
+            showProgress(showProgress);
         });
     }
 
@@ -101,7 +100,7 @@ public class ThresholdQuestionFragment extends Fragment {
         }
         accountDetailsArray = new AccountDetails[accountNumbers.size()];
         if(accountNumbers.size() ==  peopleInProperty.size()) {
-            for (int i = 1; i < accountNumbers.size(); i++) {
+            for (int i = 0; i < accountNumbers.size(); i++) {
                 accountDetailsArray[i] = new AccountDetails(accountNumbers.get(i),
                         peopleInPropertyArray.get(i), null);
             }
@@ -114,7 +113,7 @@ public class ThresholdQuestionFragment extends Fragment {
         } else {
             loader.setVisibility(View.GONE);
             if(questionsViewModel.isSuccess()) {
-                //showSuccessPopup();
+                getActivity().onBackPressed();
             }
         }
     }
