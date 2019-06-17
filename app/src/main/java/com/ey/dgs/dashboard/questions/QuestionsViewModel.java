@@ -44,6 +44,7 @@ public class QuestionsViewModel extends ViewModel implements APICallback {
     }
 
     public void updateAccountDetailsInServer(AccountDetailsRequest accountDetailsRequest) {
+        String user = appPreferences.getAuthToken();
         new ApiClient().updateAccountDetails(appPreferences.getAuthToken(), accountDetailsRequest, this);
     }
 
