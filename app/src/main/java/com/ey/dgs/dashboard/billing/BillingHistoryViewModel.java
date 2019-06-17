@@ -20,8 +20,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class BillingHistoryViewModel extends ViewModel implements DatabaseCallback, APICallback {
 
@@ -69,8 +67,8 @@ public class BillingHistoryViewModel extends ViewModel implements DatabaseCallba
         return context;
     }
 
-    public void getBillingHistoryFromServer(User user, Account account) {
-        new ApiClient().getBillingHistoryFromServer(appPreferences.getAuthToken(), account, user.getEmail(), this);
+    public void getBillingHistoryFromServer(User user, String period, Account account) {
+        new ApiClient().getBillingHistoryFromServer(appPreferences.getAuthToken(), account, period, user.getEmail(), this);
     }
 
     /*public void addBillingHistoriesToLocalDB(List<BillingHistory> billingHistories) {
@@ -98,7 +96,7 @@ public class BillingHistoryViewModel extends ViewModel implements DatabaseCallba
 
     @Override
     public void onUpdate(Object object, int requestCode, int responseCode) {
-        
+
     }
 
     @Override

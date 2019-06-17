@@ -12,6 +12,7 @@ import com.ey.dgs.api_response.UserSettingsResponse;
 import com.ey.dgs.model.Account;
 import com.ey.dgs.model.AccountDetailsRequest;
 import com.ey.dgs.model.AnswerRequest;
+import com.ey.dgs.model.BillingHistory;
 import com.ey.dgs.model.BillingPeriodReqest;
 import com.ey.dgs.model.NotificationSettingsRequest;
 import com.ey.dgs.model.SetPrimaryAccountRequest;
@@ -386,7 +387,7 @@ public class ApiClient {
         });
     }
 
-    public void getBillingHistoryFromServer(String token, Account account, String
+    public void getBillingHistoryFromServer(String token, Account account, String period, String
             userName, APICallback callback) {
         ApiInterface apiService = ApiClient.getBillingHistoryClient().create(ApiInterface.class);
         BillingPeriodReqest billingPeriodReqest = new BillingPeriodReqest(account.getAccountNumber(), 1);
@@ -395,6 +396,10 @@ public class ApiClient {
             @Override
             public void onResponse(Call<BillingDetailsResponse> call, Response<BillingDetailsResponse> response) {
                 BillingDetailsResponse billingDetailsResponse = response.body();
+                if (period.equalsIgnoreCase(BillingHistory.DAILY)) {
+                    Gson gson = new Gson();
+                    billingDetailsResponse = gson.fromJson(MockResponse.MOCK_BILLING_RESPONSE, BillingDetailsResponse.class);
+                }
                 if (billingDetailsResponse != null) {
                     if (billingDetailsResponse.isSuccess()) {
                         account.setBillingDetails(billingDetailsResponse.getResult().getBillingDetails());

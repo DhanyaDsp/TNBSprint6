@@ -60,9 +60,8 @@ public class HomeActivity extends AppCompatActivity implements MyAccountFragment
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         appPreferences = new AppPreferences(this);
-        userName = getIntent().getStringExtra("UserName");
-        user = new User();
-        user.setEmail(userName);
+        user = (User) getIntent().getSerializableExtra("user");
+        userName = user.getEmail();
         dashboardViewModel = ViewModelProviders.of(this).get(DashboardViewModel.class);
         dashboardViewModel.setContext(this);
         loginViewModel = ViewModelProviders.of(this).get(LoginViewModel.class);

@@ -43,6 +43,7 @@ public class BarChart extends LinearLayout {
     boolean isThresholdRequired;
     float thresholdValue = 0f;
     String unit = "RM";
+    private BarsAdapter barsAdapter;
 
     public BarChart(Context context) {
         super(context);
@@ -106,7 +107,7 @@ public class BarChart extends LinearLayout {
     public void fillChartBarData(int parentLayoutWidth, int parentLayoutHeight) {
         RecyclerView barsRecylerView = view.findViewById(R.id.bars);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
-        BarsAdapter barsAdapter = new BarsAdapter(this, context, chartDatum, parentLayoutWidth, parentLayoutHeight, isSelectionRequired);
+        barsAdapter = new BarsAdapter(this, context, chartDatum, parentLayoutWidth, parentLayoutHeight, isSelectionRequired);
         barsRecylerView.setLayoutManager(layoutManager);
         barsRecylerView.setAdapter(barsAdapter);
         barsAdapter.notifyDataSetChanged();
@@ -219,4 +220,11 @@ public class BarChart extends LinearLayout {
         }
     }
 
+    public BarsAdapter getBarsAdapter() {
+        return barsAdapter;
+    }
+
+    public void setBarsAdapter(BarsAdapter barsAdapter) {
+        this.barsAdapter = barsAdapter;
+    }
 }
