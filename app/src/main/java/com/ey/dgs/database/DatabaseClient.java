@@ -6,6 +6,8 @@ import android.os.AsyncTask;
 import android.text.TextUtils;
 
 import com.ey.dgs.model.Account;
+import com.ey.dgs.model.AccountDetails;
+import com.ey.dgs.model.AccountDetailsRequest;
 import com.ey.dgs.model.AccountSettings;
 import com.ey.dgs.model.BillingHistory;
 import com.ey.dgs.model.EnergyConsumptions;
@@ -720,6 +722,31 @@ public class DatabaseClient {
         }
 
         UpdateAccountTasks st = new UpdateAccountTasks();
+        st.execute();
+    }
+
+    public void updateSingleAccountThreshold(int requestCode, AccountDetails[] accounts,
+                                             DatabaseCallback databaseCallback) {
+        class UpdateAccountTask extends AsyncTask<Void, Void, Void> {
+
+            @Override
+            protected Void doInBackground(Void... voids) {
+                for (AccountDetails account : accounts) {
+                    DatabaseClient.getInstance(mCtx).getAppDatabase()
+                            .accountDao()
+                            .updateAccountDetail(account.getAccountNumber(), account.getUserThreshold(), account.getPeopleInProperty());
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                databaseCallback.onUpdate(accounts, requestCode, 0);
+            }
+        }
+
+        UpdateAccountTask st = new UpdateAccountTask();
         st.execute();
     }
 }
