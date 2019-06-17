@@ -3,6 +3,8 @@ package com.ey.dgs.dashboard.questions;
 import android.app.Activity;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.databinding.DataBindingUtil;
+import android.databinding.ViewDataBinding;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -24,6 +26,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ey.dgs.R;
+import com.ey.dgs.databinding.MmcquestionsFragmentBinding;
 import com.ey.dgs.model.Account;
 import com.ey.dgs.model.AccountDetails;
 import com.ey.dgs.model.AccountDetailsRequest;
@@ -39,10 +42,10 @@ import com.google.gson.Gson;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import static com.ey.dgs.dashboard.MyDashboardFragment.IS_THRESHOLD_SET;
 
 public class MMCQuestionsFragment extends Fragment implements View.OnClickListener, View.OnKeyListener{
 
+    public static boolean THRESHOLD_SET = false;
     private View rootView;
     private int displayCount;
     private LinearLayout layoutQuestion1;
@@ -54,6 +57,7 @@ public class MMCQuestionsFragment extends Fragment implements View.OnClickListen
     private String peopleInProperty, thresholdValue;
     private Context context;
     private BillingDetails[] billingDetails;
+    private MmcquestionsFragmentBinding binding;
     Account account;
     View loader;
     AppCompatTextView tvAccountName, tvPeopleQuestion;
@@ -88,7 +92,9 @@ public class MMCQuestionsFragment extends Fragment implements View.OnClickListen
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.mmcquestions_fragment, container, false);
+        /*rootView = inflater.inflate(R.layout.mmcquestions_fragment, container, false);*/
+        binding = DataBindingUtil.inflate(inflater, R.layout.mmcquestions_fragment, container, false);
+        rootView = binding.getRoot();
         initViews();
         setData();
         subscribe();
@@ -98,6 +104,8 @@ public class MMCQuestionsFragment extends Fragment implements View.OnClickListen
     private void setData() {
         tvAccountName.setText(account.getNickName());
         tvPeopleQuestion.setText(rootView.getContext().getString(R.string.people_question, account.getNickName()));
+        numberDisplay.setText(account.getPeopleInProperty());
+        thresholdAnswer.setText(account.getUserThreshold());
     }
 
     private void initViews() {
@@ -123,6 +131,7 @@ public class MMCQuestionsFragment extends Fragment implements View.OnClickListen
                     String strThreshold = thresholdAnswer.getText().toString();
                     if (!TextUtils.isEmpty(strThreshold) && Integer.valueOf(strThreshold) > 0) {
                         float threshold = Float.parseFloat(strThreshold);
+                        THRESHOLD_SET = true;
                         setChartData(barChart, billingHistory, threshold);
                     } else {
                         Utils.showToast(getActivity(), "Please enter value");
@@ -142,6 +151,18 @@ public class MMCQuestionsFragment extends Fragment implements View.OnClickListen
     private void subscribe() {
         questionsViewModel = ViewModelProviders.of(this).get(QuestionsViewModel.class);
         questionsViewModel.setContext(getActivity());
+        questionsViewModel.getAccountFromLocalDB(account);
+        questionsViewModel.getAccount().observe(getViewLifecycleOwner(), account -> {
+            setDynamicData(account);
+        });
+    }
+
+    private void setDynamicData(Account account) {
+        if (account != null) {
+            binding.setAccount(account);
+        }
+        /*numberDisplay.setText(accountDetails[0].getPeopleInProperty());
+        thresholdAnswer.setText(accountDetails[0].getUserThreshold());*/
     }
 
     public void showProgress(boolean isProgress) {
@@ -315,7 +336,7 @@ public class MMCQuestionsFragment extends Fragment implements View.OnClickListen
 
         String startDate = Utils.formatAccountDate(account.getBillingCycleStartDate());
         String endDate = Utils.formatAccountDate(account.getBillingCycleEndDate());
-        if (!IS_THRESHOLD_SET) {
+        if (!THRESHOLD_SET) {
             for (int i = 0; i < billingDetails.length; i++) {
                 BillingDetails billingDetail = billingDetails[i];
                 chartData = new ChartData();
@@ -351,13 +372,12 @@ public class MMCQuestionsFragment extends Fragment implements View.OnClickListen
             ((ViewGroup) rootView.findViewById(R.id.rlChart)).addView(tmpBarChart);
 
             tmpBarChart.setData(chartDatum)
-                    .setTitle(startDate + " - " + endDate)
                     .setBarUnit("RM")
                     .setThreshold(true, Float.parseFloat(account.getUserThreshold()))
                     //.setThreshold(selectedAccount.isThreshold(), Float.parseFloat(energyConsumptions.getUserThreshold()))
                     .setSelectionRequired(true); //.updateData(); // .invalidate();
 
-            IS_THRESHOLD_SET = false;
+            THRESHOLD_SET = false;
         }
     }
 
@@ -365,5 +385,13 @@ public class MMCQuestionsFragment extends Fragment implements View.OnClickListen
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         this.context = activity;
+    }
+
+    public void refresh() {
+        if (THRESHOLD_SET) {
+            account.setThreshold(true);
+            //setChartData(billingDetails);
+            questionsViewModel.getAccountFromLocalDB(account);
+        }
     }
 }

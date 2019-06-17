@@ -12,6 +12,8 @@ public class Account implements Serializable {
 
     public static int REQUEST_CODE_ADD_ACCOUNTS = 5;
     public static int REQUEST_CODE_UPDATE_ACCOUNT = 15;
+    public static int REQUEST_CODE_UPDATE_ACCOUNTS = 23;
+    public static int REQUEST_CODE_GET_ACCOUNT = 24;
 
     @PrimaryKey
     @NonNull

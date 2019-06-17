@@ -21,8 +21,8 @@ public interface AccountDao {
     @Insert
     void insert(Account account);
 
-    @Query("SELECT * FROM Account WHERE isPrimaryAccount=:flag")
-    Account getPrimaryAccount(boolean flag);
+    @Query("SELECT * FROM Account WHERE accountNumber=:accountNo")
+    Account getAccount(String accountNo);
 
     @Delete
     void delete(Account account);
@@ -44,4 +44,7 @@ public interface AccountDao {
 
     @Query("UPDATE Account SET lastBilledDate=:lastBilledDate,lastBilledAmount=:lastBilledAmount,billingCycleStartDate=:billingCycleStartDate,billingCycleEndDate=:billingCycleEndDate,userThreshold=:userThreshold,userThreshold=:userThreshold1,currentDayConsumption=:currentDayConsumption,currentMonthConsumption=:currentMonthConsumption,currentWeekConsumption=:currentWeekConsumption,peopleInProperty=:peopleInProperty WHERE accountNumber=:accountNumber")
     void updateDetail(String accountNumber, String lastBilledDate, String lastBilledAmount, String billingCycleStartDate, String billingCycleEndDate, String userThreshold, String userThreshold1, String currentMonthConsumption, String currentWeekConsumption, String currentDayConsumption, String peopleInProperty);
+
+    @Query("UPDATE Account SET userThreshold=:userThreshold, peopleInProperty=:peopleInProperty WHERE accountNumber=:accountNumber")
+    void updateAccountDetail(String accountNumber,String userThreshold, String peopleInProperty);
 }

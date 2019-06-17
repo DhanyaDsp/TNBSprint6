@@ -6,6 +6,8 @@ import android.os.AsyncTask;
 import android.text.TextUtils;
 
 import com.ey.dgs.model.Account;
+import com.ey.dgs.model.AccountDetails;
+import com.ey.dgs.model.AccountDetailsRequest;
 import com.ey.dgs.model.AccountSettings;
 import com.ey.dgs.model.BillingHistory;
 import com.ey.dgs.model.EnergyConsumptions;
@@ -309,16 +311,16 @@ public class DatabaseClient {
         st.execute();
     }
 
-    public void getPrimaryAccount(int requestCode, DatabaseCallback databaseCallback) {
+    public void getAccount(int requestCode, Account account, DatabaseCallback databaseCallback) {
 
-        class GetPrimaryAccountTask extends AsyncTask<Void, Void, Account> {
+        class GetAccount extends AsyncTask<Void, Void, Account> {
 
             @Override
             protected Account doInBackground(Void... voids) {
 
                 return DatabaseClient.getInstance(mCtx).getAppDatabase()
                         .accountDao()
-                        .getPrimaryAccount(true);
+                        .getAccount(account.getAccountNumber());
             }
 
             @Override
@@ -328,7 +330,7 @@ public class DatabaseClient {
             }
         }
 
-        GetPrimaryAccountTask st = new GetPrimaryAccountTask();
+        GetAccount st = new GetAccount();
         st.execute();
     }
 
@@ -710,6 +712,31 @@ public class DatabaseClient {
         }
 
         UpdateAccountTasks st = new UpdateAccountTasks();
+        st.execute();
+    }
+
+    public void updateSingleAccountThreshold(int requestCode, AccountDetails[] accounts,
+                                             DatabaseCallback databaseCallback) {
+        class updateSingleAccountThreshold extends AsyncTask<Void, Void, Void> {
+
+            @Override
+            protected Void doInBackground(Void... voids) {
+                for (AccountDetails account : accounts) {
+                    DatabaseClient.getInstance(mCtx).getAppDatabase()
+                            .accountDao()
+                            .updateAccountDetail(account.getAccountNumber(), account.getUserThreshold(), account.getPeopleInProperty());
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                databaseCallback.onUpdate(accounts, requestCode, 0);
+            }
+        }
+
+        updateSingleAccountThreshold st = new updateSingleAccountThreshold();
         st.execute();
     }
 }

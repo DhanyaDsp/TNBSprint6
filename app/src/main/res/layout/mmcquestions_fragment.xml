@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<data>
+
+    <variable
+        name="Account"
+        type="com.ey.dgs.model.Account" />
+
+</data>
+
+<RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_login"
@@ -102,7 +111,7 @@
                 android:layout_height="@dimen/dimen40"
                 android:background="@drawable/bg_number_textview"
                 style="@style/NumberView"
-                android:text="1"
+                android:text="@{Account.peopleInProperty}"
                 android:textSize="@dimen/text_size_small"
                 android:clickable="false" />
 
@@ -165,6 +174,7 @@
             android:minWidth="100dp"
             android:paddingLeft="@dimen/small_padding"
             android:paddingRight="@dimen/medium_padding"
+            android:text="@{Account.userThreshold}"
             android:textColor="@android:color/white"
             android:textCursorDrawable="@drawable/cursorwhite"
             android:textDirection="ltr" />
@@ -197,3 +207,4 @@
         layout="@layout/loader"
         android:visibility="gone" />
 </RelativeLayout>
+</layout>
