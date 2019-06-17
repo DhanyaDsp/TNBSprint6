@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.AppCompatEditText;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,6 +47,7 @@ public class LoginFragment extends Fragment implements APICallback {
     private boolean isLoginClicked;
     private Observer<User> getUserReceiver;
     private UserSettings userSettings;
+    AppCompatEditText etEmail;
 
     public static LoginFragment newInstance() {
         return new LoginFragment();
@@ -64,6 +66,7 @@ public class LoginFragment extends Fragment implements APICallback {
     }
 
     private void initViews() {
+        etEmail = loginFragmentBinding.getRoot().findViewById(R.id.etEmail);
         loader = loginFragmentBinding.getRoot().findViewById(R.id.loader);
     }
 
@@ -98,11 +101,10 @@ public class LoginFragment extends Fragment implements APICallback {
         getUserReceiver = usr -> {
             if (usr != null) {
                 user = usr;
-                if (!usr.isRememberMe()) {
-                    user.setEmail(null);
-                } else {
-                }
                 loginFragmentBinding.setUser(user);
+                if (user.isRememberMe()) {
+                    etEmail.setText(user.getEmail());
+                }
             }
         };
         loginViewModel.getUserDetail().observe(getViewLifecycleOwner(), getUserReceiver);
@@ -145,6 +147,7 @@ public class LoginFragment extends Fragment implements APICallback {
         getActivity().finish();
         Intent intent = new Intent(getActivity(), HomeActivity.class);
         intent.putExtra("UserName", user.getEmail());
+        intent.putExtra("user", (Serializable) user);
         getActivity().startActivity(intent);
     }
 
@@ -170,6 +173,7 @@ public class LoginFragment extends Fragment implements APICallback {
                     loginViewModel.addUserToLocalDB(user);
                     appPreferences.setLoginned(true);
                     appPreferences.setUser_id(user.getUserId());
+                    appPreferences.setUser_name(user.getEmail());
                 }
             }
             appPreferences.setAuthToken(loginResponse.getToken());

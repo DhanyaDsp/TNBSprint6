@@ -45,10 +45,6 @@ public class DashboardViewModel extends ViewModel implements DatabaseCallback, A
         loaderData.postValue(showLoader);
     }
 
-    public void getBillingHistoryFromServer(User user, Account account) {
-        new ApiClient().getBillingHistoryFromServer(appPreferences.getAuthToken(), account, user.getEmail(), this);
-    }
-
     public void loadAccountsFromLocalDB(int user_id) {
         DatabaseClient.getInstance(context).getAccounts(Account.REQUEST_CODE_ADD_ACCOUNTS, user_id, this);
     }

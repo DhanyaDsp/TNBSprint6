@@ -1,7 +1,6 @@
 package com.ey.dgs.dashboard.myaccount;
 
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,13 +12,11 @@ import android.widget.AdapterView;
 import android.widget.Gallery;
 import android.widget.LinearLayout;
 
-import com.ey.dgs.HomeActivity;
 import com.ey.dgs.R;
 import com.ey.dgs.adapters.DaysAdapter;
 import com.ey.dgs.authentication.LoginViewModel;
 import com.ey.dgs.dashboard.billing.BillingHistoryViewModel;
 import com.ey.dgs.dashboard.questions.MMCQuestionsFragment;
-import com.ey.dgs.dashboard.questions.QuestionActivity;
 import com.ey.dgs.databinding.FragmentConsumptionBinding;
 import com.ey.dgs.model.Account;
 import com.ey.dgs.model.BillingDetails;
@@ -55,6 +52,7 @@ public class ConsumptionFragment extends Fragment implements View.OnClickListene
     Gallery glDays;
     DaysAdapter daysAdapter;
     private ArrayList<String> days;
+    private ArrayList<ChartData> chartDatum;
 
     public ConsumptionFragment() {
     }
@@ -97,7 +95,7 @@ public class ConsumptionFragment extends Fragment implements View.OnClickListene
             this.user = user;
             billingHistoryViewModel.getBillingHistory().observe(getViewLifecycleOwner(), billingHistory -> {
                 if (billingHistory == null) {
-                    billingHistoryViewModel.getBillingHistoryFromServer(user, account);
+                    billingHistoryViewModel.getBillingHistoryFromServer(user, BillingHistory.MONTHLY, account);
                 } else {
                     this.billingHistory = billingHistory;
                     Gson gson = new Gson();
@@ -115,7 +113,7 @@ public class ConsumptionFragment extends Fragment implements View.OnClickListene
     }
 
     private void setChartData(BillingDetails[] billingDetails) {
-        ArrayList<ChartData> chartDatum = new ArrayList<>();
+        chartDatum = new ArrayList<>();
         ChartData chartData;
 
         String startDate = Utils.formatAccountDate(account.getBillingCycleStartDate());
@@ -155,7 +153,7 @@ public class ConsumptionFragment extends Fragment implements View.OnClickListene
         barChart.setData(chartDatum)
                 .setTitle(null)
                 .setBarUnit("RM")
-                .setThreshold(true,220f)
+                .setThreshold(true, 220f)
                 .setSelectionRequired(true);
     }
 
@@ -217,7 +215,7 @@ public class ConsumptionFragment extends Fragment implements View.OnClickListene
 
     private void getBillingHistory(String period) {
         showProgress(true);
-        billingHistoryViewModel.getBillingHistoryFromServer(user, account);
+        billingHistoryViewModel.getBillingHistoryFromServer(user, period, account);
     }
 
     public void showProgress(boolean show) {
@@ -230,7 +228,17 @@ public class ConsumptionFragment extends Fragment implements View.OnClickListene
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        daysAdapter.selectItem(position);
+        try {
+            daysAdapter.selectItem(position);
+            if (chartDatum != null) {
+                for (ChartData chartData : chartDatum) {
+                    chartData.setIsSelected(false);
+                }
+                chartDatum.get(position).setIsSelected(true);
+                barChart.getBarsAdapter().notifyDataSetChanged();
+            }
+        } catch (NullPointerException e) {
+        }
     }
 
     @Override

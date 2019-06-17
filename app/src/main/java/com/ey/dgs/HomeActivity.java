@@ -21,7 +21,6 @@ import com.ey.dgs.dashboard.DashboardFragment;
 import com.ey.dgs.dashboard.DashboardViewModel;
 import com.ey.dgs.dashboard.MyDashboardFragment;
 import com.ey.dgs.dashboard.manageAccounts.MMCManageAccountsFragment;
-import com.ey.dgs.dashboard.manageAccounts.ManageAccountsFragment;
 import com.ey.dgs.dashboard.myaccount.MyAccountFragment;
 import com.ey.dgs.model.Account;
 import com.ey.dgs.model.User;
@@ -31,6 +30,8 @@ import com.ey.dgs.notifications.settings.NotificationSettingsActivity;
 import com.ey.dgs.utils.AppPreferences;
 import com.ey.dgs.utils.FragmentUtils;
 import com.ey.dgs.utils.Utils;
+
+import java.util.Arrays;
 
 public class HomeActivity extends AppCompatActivity implements MyAccountFragment.OnFragmentInteractionListener, DashboardFragment.OnFragmentInteractionListener, MyDashboardFragment.OnFragmentInteractionListener, FragmentManager.OnBackStackChangedListener {
 
@@ -60,10 +61,8 @@ public class HomeActivity extends AppCompatActivity implements MyAccountFragment
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         appPreferences = new AppPreferences(this);
-        userName = getIntent().getStringExtra("UserName");
-        user = new User();
-        user.setEmail(userName);
-        appPreferences.setUser_name(userName);
+        user = (User) getIntent().getSerializableExtra("user");
+        userName = user.getEmail();
         dashboardViewModel = ViewModelProviders.of(this).get(DashboardViewModel.class);
         dashboardViewModel.setContext(this);
         loginViewModel = ViewModelProviders.of(this).get(LoginViewModel.class);

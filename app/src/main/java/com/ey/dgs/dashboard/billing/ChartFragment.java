@@ -2,7 +2,6 @@ package com.ey.dgs.dashboard.billing;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -18,6 +17,7 @@ import com.ey.dgs.dashboard.myaccount.AccountSettingsViewModel;
 import com.ey.dgs.model.Account;
 import com.ey.dgs.model.AccountSettings;
 import com.ey.dgs.model.BillingDetails;
+import com.ey.dgs.model.BillingHistory;
 import com.ey.dgs.model.EnergyConsumptions;
 import com.ey.dgs.model.User;
 import com.ey.dgs.model.chart.ChartData;
@@ -118,7 +118,7 @@ public class ChartFragment extends Fragment {
                             if (energyConsumptions != null) {
                                 billingHistoryViewModel.getBillingHistory().observe(getViewLifecycleOwner(), billingHistory -> {
                                     if (billingHistory == null) {
-                                        billingHistoryViewModel.getBillingHistoryFromServer(user, account);
+                                        billingHistoryViewModel.getBillingHistoryFromServer(user, BillingHistory.MONTHLY, account);
                                     } else {
                                         if (account.isThreshold()) {
                                             tvEnergyTip.setVisibility(View.VISIBLE);

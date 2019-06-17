@@ -9,16 +9,13 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatButton;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.ey.dgs.R;
-import com.ey.dgs.adapters.NotificationSettingsAdapter;
 import com.ey.dgs.authentication.LoginViewModel;
 import com.ey.dgs.dashboard.billing.BillingHistoryViewModel;
 import com.ey.dgs.dashboard.myaccount.AccountSettingsViewModel;
@@ -188,7 +185,7 @@ public class MyDashboardFragment extends Fragment implements View.OnClickListene
                             if (energyConsumptions != null) {
                                 billingHistoryViewModel.getBillingHistory().observe(getViewLifecycleOwner(), billingHistory -> {
                                     if (billingHistory == null) {
-                                        billingHistoryViewModel.getBillingHistoryFromServer(user, selectedAccount);
+                                        billingHistoryViewModel.getBillingHistoryFromServer(user, BillingHistory.MONTHLY, selectedAccount);
                                     } else {
                                         this.billingHistory = billingHistory;
                                         Gson gson = new Gson();
