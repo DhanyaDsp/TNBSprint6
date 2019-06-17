@@ -32,7 +32,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ApiClient {
     private static final String BASE_URL = "https://apscadvdgsapm01.azure-api.net/Login/v1.3/";
     private static final String LOGIN_BASE_URL = "https://apscadvdgsapm01.azure-api.net/UserDetails/v1.3/";
-    private static final String BILLING_BASE_URL = "https://apscadvdgsapm01.azure-api.net/BillingHistory/v3/";
+    private static final String BILLING_BASE_URL = "https://apscadvdgsapm01.azure-api.net/BillingHistory/v1.3/";
     private static final String ACCOUNT_DETAILS_URL = "https://apscadvdgsapm01.azure-api.net/UserDetails/v1.3/";
     private static Retrofit retrofit = null;
 
@@ -391,16 +391,16 @@ public class ApiClient {
     public void getBillingHistoryFromServer(String token, Account account, String period, String
             userName, APICallback callback) {
         ApiInterface apiService = ApiClient.getBillingHistoryClient().create(ApiInterface.class);
-        BillingPeriodReqest billingPeriodReqest = new BillingPeriodReqest(account.getAccountNumber(), 1);
+        BillingPeriodReqest billingPeriodReqest = new BillingPeriodReqest(account.getAccountNumber(), period);
         Call<BillingDetailsResponse> call = apiService.getBillingHistory(token, billingPeriodReqest);
         call.enqueue(new Callback<BillingDetailsResponse>() {
             @Override
             public void onResponse(Call<BillingDetailsResponse> call, Response<BillingDetailsResponse> response) {
                 BillingDetailsResponse billingDetailsResponse = response.body();
-                if (period.equalsIgnoreCase(BillingHistory.DAILY)) {
+                /*if (period.equalsIgnoreCase(BillingHistory.DAILY)) {
                     Gson gson = new Gson();
                     billingDetailsResponse = gson.fromJson(MockResponse.MOCK_BILLING_RESPONSE, BillingDetailsResponse.class);
-                }
+                }*/
                 if (billingDetailsResponse != null) {
                     if (billingDetailsResponse.isSuccess()) {
                         account.setBillingDetails(billingDetailsResponse.getResult().getBillingDetails());
