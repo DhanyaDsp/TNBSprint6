@@ -17,10 +17,7 @@ import android.widget.CompoundButton;
 
 import com.ey.dgs.R;
 import com.ey.dgs.model.AccountSettings;
-import com.ey.dgs.model.EnergyConsumptions;
 import com.ey.dgs.model.NotificationSetting;
-import com.ey.dgs.notifications.settings.AccountNotificationSettingsFragment;
-import com.ey.dgs.utils.Utils;
 
 import java.util.ArrayList;
 
@@ -85,14 +82,15 @@ public class NotificationSettingsAdapter extends RecyclerView.Adapter<RecyclerVi
                 settingsHolder.scTurn.setChecked(notificationSetting.isTurnedOn());
 
                 if (accountSettings != null) {
-                    if (position == 4) {
+                    if (position == 3) {
+                        settingsHolder.scTurn.setChecked(accountSettings.isEnergyConsumptionFlag());
+                    } else if (position == 4) {
                         settingsHolder.scTurn.setChecked(accountSettings.isServiceAvailabilityFlag());
                     } else if (position == 6) {
                         settingsHolder.scTurn.setChecked(accountSettings.isPushNotificationFlag());
                     } else if (position == 7) {
                         settingsHolder.scTurn.setChecked(accountSettings.isSmsNotificationFlag());
                     }
-
                 }
 
                 settingsHolder.scTurn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -101,13 +99,13 @@ public class NotificationSettingsAdapter extends RecyclerView.Adapter<RecyclerVi
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                         if (!isUpdated) {
                             if (position == 3) {
-
+                                accountSettings.setEnergyConsumptionFlag(isChecked);
                             } else if (position == 4) {
-
+                                accountSettings.setServiceAvailabilityFlag(isChecked);
                             } else if (position == 6) {
-
+                                accountSettings.setPushNotificationFlag(isChecked);
                             } else if (position == 7) {
-
+                                accountSettings.setSmsNotificationFlag(isChecked);
                             }
                         }
                     }

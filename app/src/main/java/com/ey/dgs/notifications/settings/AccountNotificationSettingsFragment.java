@@ -10,7 +10,6 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,13 +18,11 @@ import com.ey.dgs.R;
 import com.ey.dgs.adapters.NotificationSettingsAdapter;
 import com.ey.dgs.authentication.LoginViewModel;
 import com.ey.dgs.dashboard.DashboardFragment;
-import com.ey.dgs.dashboard.DashboardViewModel;
 import com.ey.dgs.dashboard.MyDashboardFragment;
 import com.ey.dgs.dashboard.myaccount.AccountSettingsViewModel;
 import com.ey.dgs.databinding.FragmentAccountNotificationSettingsBinding;
 import com.ey.dgs.model.Account;
 import com.ey.dgs.model.AccountSettings;
-import com.ey.dgs.model.EnergyConsumptions;
 import com.ey.dgs.model.NotificationSetting;
 import com.ey.dgs.model.NotificationSettingsRequest;
 import com.ey.dgs.model.Setting;
@@ -92,7 +89,7 @@ public class AccountNotificationSettingsFragment extends Fragment {
             if (accountSettings == null) {
                 showProgress(true);
                 accountSettingsViewModel.getAccountSettingsFromServer(user.getEmail(), account.getAccountNumber());
-                serverCalled=true;
+                serverCalled = true;
             } else {
                 this.accountSettings = accountSettings;
                 notificationSettingsAdapter = new NotificationSettingsAdapter(rvNotificationSettings, this, getActivity(), notificationSettings);
@@ -106,7 +103,7 @@ public class AccountNotificationSettingsFragment extends Fragment {
                 }
             }
         });
-        accountSettingsViewModel.getIsAccountDetailsUpdated().observe(getViewLifecycleOwner(), isUserUpdated -> {
+        accountSettingsViewModel.getIsAccountSettingsUpdated().observe(getViewLifecycleOwner(), isUserUpdated -> {
             showProgress(false);
             if (isUserUpdated) {
                 notificationSettingsAdapter.setUpdated(true);
@@ -180,6 +177,15 @@ public class AccountNotificationSettingsFragment extends Fragment {
         if (!isProgressing) {
             AccountSettings accountSettings = notificationSettingsAdapter.getAccountSettings();
             NotificationSettingsRequest notificationSettingsRequest = new NotificationSettingsRequest();
+            notificationSettingsRequest.setUserName(user.getEmail());
+            notificationSettingsRequest.setAccountNumber(account.getAccountNumber());
+            Setting setting = new Setting();
+            setting.setServiceAvailabilityFlag(accountSettings.isServiceAvailabilityFlag());
+            setting.setPushNotificationFlag(accountSettings.isPushNotificationFlag());
+            setting.setSmsNotificationFlag(accountSettings.isSmsNotificationFlag());
+            setting.setEnergyConsumptionFlag(accountSettings.isEnergyConsumptionFlag());
+            notificationSettingsRequest.setSetting(setting);
+            isProgressing = true;
             showProgress(true);
             accountSettingsViewModel.updateAccountSettingsInServer(notificationSettingsRequest);
         }

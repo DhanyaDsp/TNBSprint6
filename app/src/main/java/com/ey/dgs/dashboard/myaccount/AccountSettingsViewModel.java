@@ -21,7 +21,7 @@ public class AccountSettingsViewModel extends ViewModel implements DatabaseCallb
     private MutableLiveData<EnergyConsumptions> energyConsumptionData = new MutableLiveData<>();
     private Context context;
     private AppPreferences appPreferences;
-    private MutableLiveData<Boolean> isAccountDetailsUpdated = new MutableLiveData<>();
+    private MutableLiveData<Boolean> isAccountSettingsUpdated = new MutableLiveData<>();
     private MutableLiveData<Boolean> loaderData = new MutableLiveData<>();
 
     public AccountSettingsViewModel() {
@@ -48,12 +48,12 @@ public class AccountSettingsViewModel extends ViewModel implements DatabaseCallb
         loaderData.postValue(showLoader);
     }
 
-    public LiveData<Boolean> getIsAccountDetailsUpdated() {
-        return isAccountDetailsUpdated;
+    public LiveData<Boolean> getIsAccountSettingsUpdated() {
+        return isAccountSettingsUpdated;
     }
 
-    private void setAccountDetailsUpdated(boolean isUserUpdated) {
-        this.isAccountDetailsUpdated.postValue(isUserUpdated);
+    private void setAccountSettingsUpdated(boolean isUserUpdated) {
+        this.isAccountSettingsUpdated.postValue(isUserUpdated);
     }
 
     public LiveData<AccountSettings> getAccountSettings() {
@@ -106,12 +106,10 @@ public class AccountSettingsViewModel extends ViewModel implements DatabaseCallb
 
     @Override
     public void onUpdate(Object object, int requestCode, int responseCode) {
-        if (requestCode == EnergyConsumptions.REQUEST_CODE_UPDATE_CONSUMPTION) {
-            EnergyConsumptions energyConsumptions = (EnergyConsumptions) object;
-            Utils.showToast(context, "Account Details Updated");
-            setAccountDetailsUpdated(true);
-        } else if (requestCode == AccountSettings.REQUEST_CODE_UPDATE_ACCOUNT_SETTINGS) {
+        if (requestCode == AccountSettings.REQUEST_CODE_UPDATE_ACCOUNT_SETTINGS) {
             AccountSettings accountSettings = (AccountSettings) object;
+            Utils.showToast(context, "Account Details Updated");
+            setAccountSettingsUpdated(true);
         }
     }
 
@@ -133,15 +131,13 @@ public class AccountSettingsViewModel extends ViewModel implements DatabaseCallb
     public void onSuccess(int requestCode, Object obj, int code) {
         if (requestCode == ApiClient.REQUEST_CODE_UPDATE_ACCOUNT_DETAILS) {
             NotificationSettingsRequest notificationSettingsRequest = (NotificationSettingsRequest) obj;
-            setEnergyCOnsumptions(notificationSettingsRequest.getSetting().getEnergyConsumptions());
             AccountSettings accountSettings = new AccountSettings();
-            accountSettings.setAccountId(notificationSettingsRequest.getSetting().getEnergyConsumptions().getAccountId());
             accountSettings.setAccountNumber(notificationSettingsRequest.getAccountNumber());
+            accountSettings.setAccountId(Integer.parseInt(notificationSettingsRequest.getAccountNumber()));
             accountSettings.setSmsNotificationFlag(notificationSettingsRequest.getSetting().getSmsNotificationFlag());
             accountSettings.setPushNotificationFlag(notificationSettingsRequest.getSetting().getPushNotificationFlag());
             accountSettings.setServiceAvailabilityFlag(notificationSettingsRequest.getSetting().getServiceAvailabilityFlag());
             updateAccountSettingsInLocalDB(accountSettings);
-            updateEnergyConsumptionsInLocalDB(notificationSettingsRequest.getSetting().getEnergyConsumptions());
         } else if (requestCode == ApiClient.REQUEST_CODE_GET_ACCOUNT_DETAILS) {
             AccountSettings accountSettings = (AccountSettings) obj;
             addAccountSettingsToLocalDB(accountSettings);
@@ -152,7 +148,7 @@ public class AccountSettingsViewModel extends ViewModel implements DatabaseCallb
     public void onFailure(int requestCode, Object obj, int code) {
         if (requestCode == ApiClient.REQUEST_CODE_UPDATE_ACCOUNT_DETAILS) {
             Utils.showToast(context, (String) obj);
-            setAccountDetailsUpdated(false);
+            setAccountSettingsUpdated(false);
         } else if (requestCode == ApiClient.REQUEST_CODE_GET_ACCOUNT_DETAILS) {
             setLoader(false);
             Utils.showToast(context, (String) obj);

@@ -3,13 +3,15 @@ package com.ey.dgs.model;
 import java.io.Serializable;
 
 public class Setting implements Serializable {
+
     private boolean smsNotificationFlag;
 
     private boolean pushNotificationFlag;
 
     private boolean serviceAvailabilityFlag;
 
-    private EnergyConsumptions energyConsumptions;
+    private boolean energyConsumptionFlag;
+
 
     public boolean getSmsNotificationFlag() {
         return smsNotificationFlag;
@@ -35,16 +37,21 @@ public class Setting implements Serializable {
         this.serviceAvailabilityFlag = serviceAvailabilityFlag;
     }
 
-    public EnergyConsumptions getEnergyConsumptions() {
-        return energyConsumptions;
+    public boolean isEnergyConsumptionFlag() {
+        return energyConsumptionFlag;
     }
 
-    public void setEnergyConsumptions(EnergyConsumptions energyConsumptions) {
-        this.energyConsumptions = energyConsumptions;
+    public void setEnergyConsumptionFlag(boolean energyConsumptionFlag) {
+        this.energyConsumptionFlag = energyConsumptionFlag;
     }
 
     @Override
     public String toString() {
-        return "ClassPojo [smsNotificationFlag = " + smsNotificationFlag + ", pushNotificationFlag = " + pushNotificationFlag + ", serviceAvailabilityFlag = " + serviceAvailabilityFlag + ", energyConsumptions = " + energyConsumptions + "]";
+        return "Setting{" +
+                "smsNotificationFlag=" + smsNotificationFlag +
+                ", pushNotificationFlag=" + pushNotificationFlag +
+                ", serviceAvailabilityFlag=" + serviceAvailabilityFlag +
+                ", energyConsumptionFlag=" + energyConsumptionFlag +
+                '}';
     }
 }
