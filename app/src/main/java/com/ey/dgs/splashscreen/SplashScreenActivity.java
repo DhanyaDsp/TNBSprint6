@@ -18,6 +18,7 @@ import com.ey.dgs.model.UserSettings;
 import com.ey.dgs.usersettings.UserSettingsViewModel;
 import com.ey.dgs.utils.AppPreferences;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 
@@ -83,6 +84,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         finish();
         Intent intent = new Intent(this, HomeActivity.class);
         intent.putExtra("UserName", getIntent().getStringExtra("UserName"));
+        intent.putExtra("user", (Serializable) user);
         startActivity(intent);
     }
 

@@ -40,10 +40,8 @@ public class AccountNotificationSettingsFragment extends Fragment {
 
     private View view, loader;
     private RecyclerView rvNotificationSettings;
-    private LinearLayoutManager rvLayoutManager;
     private ArrayList<NotificationSetting> notificationSettings = new ArrayList<>();
     private NotificationSettingsAdapter notificationSettingsAdapter;
-    private NotificationSettingsViewModel mViewModel;
     User user = new User();
     FragmentAccountNotificationSettingsBinding binding;
     private OnFragmentInteractionListener mListener;
@@ -51,8 +49,6 @@ public class AccountNotificationSettingsFragment extends Fragment {
     AccountSettings accountSettings;
     AccountSettingsViewModel accountSettingsViewModel;
     LoginViewModel loginViewModel;
-    DashboardViewModel dashboardViewModel;
-    private EnergyConsumptions energyConsumptions;
     AppPreferences appPreferences;
     Activity activity;
     private boolean isProgressing;
@@ -87,8 +83,6 @@ public class AccountNotificationSettingsFragment extends Fragment {
         accountSettingsViewModel.setContext(getActivity());
         loginViewModel = ViewModelProviders.of(this).get(LoginViewModel.class);
         loginViewModel.setContext(getActivity());
-        dashboardViewModel = ViewModelProviders.of(this).get(DashboardViewModel.class);
-        dashboardViewModel.setContext(getActivity());
         loginViewModel.getUserDetail(appPreferences.getUser_id());
         loginViewModel.getUserDetail().observe(getViewLifecycleOwner(), user -> {
             this.user = user;
@@ -100,18 +94,11 @@ public class AccountNotificationSettingsFragment extends Fragment {
                 accountSettingsViewModel.getAccountSettingsFromServer(user.getEmail(), account.getAccountNumber());
             } else {
                 this.accountSettings = accountSettings;
-                accountSettingsViewModel.loadEnergyConsumptionsFromLocalDB(accountSettings.getAccountNumber());
-                accountSettingsViewModel.getEnergyConsumptions().observe(getViewLifecycleOwner(), energyConsumptions -> {
-                    this.energyConsumptions = energyConsumptions;
-                    if (energyConsumptions != null) {
-                        notificationSettingsAdapter = new NotificationSettingsAdapter(rvNotificationSettings, this, getActivity(), notificationSettings);
-                        notificationSettingsAdapter.setNotificationSettings(notificationSettingsCopy);
-                        notificationSettingsAdapter.setAccountSettings(this.accountSettings);
-                        notificationSettingsAdapter.setEnergyConsumptions(this.energyConsumptions);
-                        rvNotificationSettings.setAdapter(notificationSettingsAdapter);
-                        showProgress(false);
-                    }
-                });
+                notificationSettingsAdapter = new NotificationSettingsAdapter(rvNotificationSettings, this, getActivity(), notificationSettings);
+                notificationSettingsAdapter.setNotificationSettings(notificationSettingsCopy);
+                notificationSettingsAdapter.setAccountSettings(this.accountSettings);
+                rvNotificationSettings.setAdapter(notificationSettingsAdapter);
+                showProgress(false);
                 if (!serverCalled) {
                     accountSettingsViewModel.getAccountSettingsFromServer(user.getEmail(), account.getAccountNumber());
                     serverCalled = true;
@@ -124,7 +111,6 @@ public class AccountNotificationSettingsFragment extends Fragment {
                 notificationSettingsAdapter.setUpdated(true);
                 if (activity != null) {
                     account.setThreshold(true);
-                    dashboardViewModel.updateAccount(account);
                     Utils.hideKeyBoard(activity);
                     DashboardFragment.IS_THRESHOLD_SET = true;
                     MyDashboardFragment.IS_THRESHOLD_SET = true;
@@ -148,13 +134,13 @@ public class AccountNotificationSettingsFragment extends Fragment {
         ((NotificationSettingsActivity) getActivity()).getSupportActionBar().setTitle(account.getNickName());
         rvNotificationSettings = view.findViewById(R.id.rvNotificationSettings);
         rvNotificationSettings.setHasFixedSize(true);
-        rvLayoutManager = new LinearLayoutManager(getActivity());
+        LinearLayoutManager rvLayoutManager = new LinearLayoutManager(getActivity());
         rvNotificationSettings.setLayoutManager(rvLayoutManager);
         DividerItemDecoration itemDecorator = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL);
         rvNotificationSettings.addItemDecoration(itemDecorator);
         rvNotificationSettings.setItemAnimator(new DefaultItemAnimator());
         loader = view.findViewById(R.id.loader);
-        mViewModel = ViewModelProviders.of(this).get(NotificationSettingsViewModel.class);
+        NotificationSettingsViewModel mViewModel = ViewModelProviders.of(this).get(NotificationSettingsViewModel.class);
         mViewModel.getNotificationSettings().observe(getViewLifecycleOwner(), notificationSettings -> {
             if (notificationSettings != null) {
                 this.notificationSettings.clear();
@@ -192,28 +178,9 @@ public class AccountNotificationSettingsFragment extends Fragment {
         Utils.hideKeyBoard(getActivity());
         if (!isProgressing) {
             AccountSettings accountSettings = notificationSettingsAdapter.getAccountSettings();
-            EnergyConsumptions energyConsumptions;
-            energyConsumptions = notificationSettingsAdapter.getEnergyConsumptions();
             NotificationSettingsRequest notificationSettingsRequest = new NotificationSettingsRequest();
-            notificationSettingsRequest.setUserName(user.getEmail());
-            notificationSettingsRequest.setAccountNumber(accountSettings.getAccountNumber());
-            Setting setting = new Setting();
-            setting.setEnergyConsumptions(energyConsumptions);
-            setting.setPushNotificationFlag(accountSettings.isPushNotificationFlag());
-            setting.setServiceAvailabilityFlag(accountSettings.isServiceAvailabilityFlag());
-            setting.setSmsNotificationFlag(accountSettings.isSmsNotificationFlag());
-            notificationSettingsRequest.setSetting(setting);
             showProgress(true);
-            if (!TextUtils.isEmpty(notificationSettingsRequest.getSetting().getEnergyConsumptions().getUserThreshold())
-                    && Integer.parseInt(notificationSettingsRequest.getSetting().getEnergyConsumptions().getUserThreshold()) > 0) {
-                accountSettingsViewModel.updateAccountSettingsInServer(notificationSettingsRequest);
-            } else {
-                Utils.showToast(activity, "Please Enter a Threshold Value Great than Zero and Non Empty");
-            }
-            if (notificationSettingsAdapter.isThresholdChanged()) {
-                user.setMmcAlertFlag(false);
-                loginViewModel.updateUserInServer(user);
-            }
+            accountSettingsViewModel.updateAccountSettingsInServer(notificationSettingsRequest);
         }
     }
 
