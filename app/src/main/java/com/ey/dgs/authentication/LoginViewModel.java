@@ -8,7 +8,6 @@ import com.ey.dgs.api_response.UserDetailResponse;
 import com.ey.dgs.database.DatabaseCallback;
 import com.ey.dgs.database.DatabaseClient;
 import com.ey.dgs.model.Account;
-import com.ey.dgs.model.SetPrimaryAccountRequest;
 import com.ey.dgs.model.User;
 import com.ey.dgs.utils.AppPreferences;
 import com.ey.dgs.utils.Utils;
@@ -22,7 +21,7 @@ public class LoginViewModel extends ViewModel implements DatabaseCallback, APICa
 
     private Context context;
     private MutableLiveData<User> userData = new MutableLiveData<>();
-    private MutableLiveData<ArrayList<User>> userListData = new MutableLiveData<>();
+    private MutableLiveData<Boolean> showProgress = new MutableLiveData<>();
     private AppPreferences appPreference;
 
     public void addUserToLocalDB(User user) {
@@ -33,12 +32,21 @@ public class LoginViewModel extends ViewModel implements DatabaseCallback, APICa
         DatabaseClient.getInstance(context).deleteUser(User.REQUEST_CODE_DELETE_USER, user, this);
     }
 
+    public MutableLiveData<Boolean> getShowProgress() {
+        return showProgress;
+    }
+
+    public void setShowProgress(Boolean showProgress) {
+        this.showProgress.postValue(showProgress);
+    }
+
     public void getUserDetail(int user_id) {
         DatabaseClient.getInstance(context).getUser(User.REQUEST_CODE_GET_USER_DETAIL, user_id, this);
     }
 
     public void getUserDetailFromServer(User user) {
-        new ApiClient().getUser(appPreference.getAuthToken(), user, this);
+        setShowProgress(true);
+        new ApiClient().getUserDetail(appPreference.getAuthToken(), user, this);
     }
 
     public void updateUserInServer(User user) {
@@ -95,18 +103,23 @@ public class LoginViewModel extends ViewModel implements DatabaseCallback, APICa
         if (requestCode == ApiClient.REQUEST_CODE_UPDATE_USER) {
             User user = (User) obj;
             update(user);
-        } else {
+        } else if (requestCode == ApiClient.REQUEST_CODE_GET_USER) {
+            setShowProgress(false);
             UserDetailResponse userDetailResponse = (UserDetailResponse) obj;
-            User serverUser = userDetailResponse.getUser();
-          /*  serverUser.setUserId(1);
-            serverUser.setRememberMe(true);*/
-            //setUserData(serverUser);
-            update(serverUser);
+            User user = userDetailResponse.getUser();
+            user.setUserId(1);
+            update(user);
+            getAccountDetails(user);
         }
+    }
+
+    public void getAccountDetails(User user) {
+        DatabaseClient.getInstance(context).getAccountDetails(User.REQUEST_CODE_UPDATE_USER_DETAIL, user, this);
     }
 
     @Override
     public void onFailure(int requestCode, Object obj, int code) {
+        setShowProgress(false);
         Utils.showToast(context, (String) obj);
     }
 

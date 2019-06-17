@@ -65,8 +65,13 @@ public class AccountAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 AccountHolder accountHolder = (AccountHolder) holder;
                 accountHolder.tvAcountID.setText(account.getAccountNumber());
                 accountHolder.tvAccountName.setText(account.getNickName());
-                accountHolder.tvLastBilledAmount.setText("RM " + account.getLastBilledAmount() + ".00");
+                accountHolder.tvLastBilledAmount.setText("RM " + account.getLastBilledAmount());
                 accountHolder.tvDate.setText(Utils.formatAccountDate(account.getLastBilledDate()));
+                if (account.isHasConsumptionReached()) {
+                    accountHolder.tvConsumptionReached.setVisibility(View.VISIBLE);
+                } else {
+                    accountHolder.tvConsumptionReached.setVisibility(View.GONE);
+                }
                 break;
 
             case TYPE_ADD_ACCOUNT:
@@ -84,7 +89,7 @@ public class AccountAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     public class AccountHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        AppCompatTextView tvAcountID, tvAccountName, tvLastBilledAmount, tvDate;
+        AppCompatTextView tvAcountID, tvAccountName, tvLastBilledAmount, tvDate, tvConsumptionReached;
 
         private AccountHolder(View itemView) {
             super(itemView);
@@ -92,6 +97,7 @@ public class AccountAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             tvAccountName = itemView.findViewById(R.id.tvAccountName);
             tvLastBilledAmount = itemView.findViewById(R.id.tvLastBilledAmount);
             tvDate = itemView.findViewById(R.id.tvDate);
+            tvConsumptionReached = itemView.findViewById(R.id.tvConsumptionReached);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -109,6 +115,7 @@ public class AccountAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public class AddAccountHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         AppCompatButton btnManageAccounts;
+
         private AddAccountHolder(View itemView) {
             super(itemView);
             btnManageAccounts = itemView.findViewById(R.id.btnManageAccounts);

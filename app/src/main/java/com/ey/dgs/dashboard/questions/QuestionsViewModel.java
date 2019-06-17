@@ -43,7 +43,7 @@ public class QuestionsViewModel extends ViewModel implements APICallback {
 
     }
 
-    public void updateAccountSettingsInServer(AccountDetailsRequest accountDetailsRequest) {
+    public void updateAccountDetailsInServer(AccountDetailsRequest accountDetailsRequest) {
         new ApiClient().updateAccountDetails(appPreferences.getAuthToken(), accountDetailsRequest, this);
     }
 

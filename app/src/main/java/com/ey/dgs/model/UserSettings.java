@@ -16,7 +16,7 @@ public class UserSettings implements Serializable {
     @PrimaryKey
     private int userId;
 
-    private boolean showSplashScreen;
+    private boolean showSplashScreen = true;
 
     private boolean pushNotificationFlag;
 

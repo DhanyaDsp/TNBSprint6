@@ -82,7 +82,6 @@ public class HomeActivity extends AppCompatActivity implements MyAccountFragment
 
     public static void registerWithNotificationHubs(Context context, String emailID) {
         if (Utils.checkPlayServices(context)) {
-            // Start IntentService to register this application with FCM.
             Intent intent = new Intent(context, AzureRegistrationIntentService.class);
             intent.putExtra("emailTag", emailID);
 
@@ -95,50 +94,14 @@ public class HomeActivity extends AppCompatActivity implements MyAccountFragment
 
 
     private void subscribe() {
-        showProgress(true);
-        loginViewModel.getUserDetail(appPreferences.getUser_id());
+        loginViewModel.getUserDetailFromServer(user);
         loginViewModel.getUserDetail().observe(this, user -> {
             if (user != null) {
-                this.user = user;
-                notificationsSetup();
-                if (!isUserDetailsServiceCalled) {
-                    dashboardViewModel.loadAccountsFromLocalDB(appPreferences.getUser_id());
-                    loginViewModel.getUserDetailFromServer(this.user);
-                    isUserDetailsServiceCalled = true;
-                } else {
-                    dashboardViewModel.loadAccountsFromLocalDB(appPreferences.getUser_id());
-                    dashboardViewModel.getAccounts().observeForever(accounts -> {
-                        if (!isServerAccountUpdated) {
-                            if (accounts == null || accounts.size() <= 0) {
-                                if (this.user.getAccountDetails() != null && this.user.getAccountDetails().length > 0) {
-                                    dashboardViewModel.addAccountsToLocalDB(Arrays.asList(this.user.getAccountDetails()));
-                                }
-                            } else {
-                                for (Account account : accounts) {
-                                    if (account.isPrimaryAccount()) {
-                                        selectedAccount = account;
-                                        /*if (!user.isPrimaryAccountSet()) {
-                                            user.setPrimaryAccountSet(true);
-                                            loginViewModel.update(user);
-                                        }*/
-                                    }
-                                }
-                                if (!dashboardShown) {
-                                    showProgress(false);
-                                    navigation.setSelectedItemId(R.id.navigation_dashboard);
-                                    dashboardShown = true;
-                                }
-                                //Data from server
-                                /*if (this.user.getAccountDetails() != null && this.user.getAccountDetails().length > 0) {
-                                    dashboardViewModel.addAccountsToLocalDB(Arrays.asList(this.user.getAccountDetails()));
-                                    isServerAccountUpdated = true;
-                                }*/
-                            }
-                        }
-                    });
-                }
-
+                navigation.setSelectedItemId(R.id.navigation_dashboard);
             }
+        });
+        loginViewModel.getShowProgress().observe(this, showProgress -> {
+            showProgress(showProgress);
         });
     }
 
@@ -290,7 +253,7 @@ public class HomeActivity extends AppCompatActivity implements MyAccountFragment
         }
         if (currentFragment != null) {
             if (currentFragment instanceof MyDashboardFragment) {
-                ((MyDashboardFragment)currentFragment).refresh();
+                ((MyDashboardFragment) currentFragment).refresh();
             }
         }
     }

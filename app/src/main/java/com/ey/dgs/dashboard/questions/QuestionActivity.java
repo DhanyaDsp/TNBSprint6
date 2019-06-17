@@ -70,7 +70,7 @@ public class QuestionActivity extends AppCompatActivity implements MyDashboardFr
             super.onBackPressed();
             setActionBarTitle("More");
         } else if (currentFragment instanceof AccountNotificationSettingsFragment) {
-            ((AccountNotificationSettingsFragment) currentFragment).updateAccountDetails();
+            ((AccountNotificationSettingsFragment) currentFragment).getAccountDetails();
             setActionBarTitle("Notifications");
         }*/
     }

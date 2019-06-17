@@ -14,7 +14,6 @@ import com.ey.dgs.adapters.ThresholdQuestionAdapter;
 import com.ey.dgs.dashboard.questions.QuestionsViewModel;
 import com.ey.dgs.model.AccountDetails;
 import com.ey.dgs.model.AccountDetailsRequest;
-import com.ey.dgs.utils.Utils;
 
 import java.util.ArrayList;
 
@@ -86,7 +85,7 @@ public class ThresholdQuestionFragment extends Fragment {
                 new AccountDetailsRequest("Admin@xyzmail.com", accountDetails);
 
         showProgress(true);
-        questionsViewModel.updateAccountSettingsInServer(accountDetailsRequest);
+        questionsViewModel.updateAccountDetailsInServer(accountDetailsRequest);
         questionsViewModel.getLoaderData().observe(getViewLifecycleOwner(), showProgress -> {
             showProgress(showProgress);
         });

@@ -29,9 +29,7 @@ public class DashboardViewModel extends ViewModel implements DatabaseCallback, A
     private NotificationViewModel notificationViewModel;
     private Context context;
     private AppPreferences appPreferences;
-    public MutableLiveData<Boolean> isPrimaryAccountSet = new MutableLiveData<>();
     private MutableLiveData<Boolean> loaderData = new MutableLiveData<>();
-    private MutableLiveData<Account> primaryAccount = new MutableLiveData<>();
 
     public DashboardViewModel() {
         if (accounts == null) {
@@ -47,37 +45,12 @@ public class DashboardViewModel extends ViewModel implements DatabaseCallback, A
         loaderData.postValue(showLoader);
     }
 
-
-    public MutableLiveData<Account> getPrimaryAccount() {
-        return primaryAccount;
-    }
-
-    public void getPrimaryAccountFromLocalDB() {
-        DatabaseClient.getInstance(context).getPrimaryAccount(Account.REQUEST_CODE_GET_PRIMARY_ACCOUNT, this);
-    }
-
-    public void setPrimaryAccountData(Account account) {
-        primaryAccount.postValue(account);
-    }
-
-    public void setPrimaryAccountInServer(User user, Account account) {
-        new ApiClient().setPrimaryAccount(user, account, appPreferences.getAuthToken(), this);
-    }
-
     public void getBillingHistoryFromServer(User user, Account account) {
         new ApiClient().getBillingHistoryFromServer(appPreferences.getAuthToken(), account, user.getEmail(), this);
     }
 
     public void loadAccountsFromLocalDB(int user_id) {
         DatabaseClient.getInstance(context).getAccounts(Account.REQUEST_CODE_ADD_ACCOUNTS, user_id, this);
-    }
-
-    public LiveData<Boolean> isPrimaryAccountSet() {
-        return isPrimaryAccountSet;
-    }
-
-    public void setIsPrimaryAccountSet(boolean ssPrimaryAccountSet) {
-        this.isPrimaryAccountSet.postValue(ssPrimaryAccountSet);
     }
 
     public LiveData<ArrayList<Account>> getAccounts() {
@@ -134,11 +107,7 @@ public class DashboardViewModel extends ViewModel implements DatabaseCallback, A
 
     @Override
     public void onUpdate(Object object, int requestCode, int responseCode) {
-        if (requestCode == Account.REQUEST_CODE_SET_PRIMARY_ACCOUNT) {
-            setIsPrimaryAccountSet(true);
-            setAccounts((ArrayList<Account>) object);
-            //setPrimaryAccountData((Account) object);
-        } else if (requestCode == Account.REQUEST_CODE_UPDATE_ACCOUNT) {
+        if (requestCode == Account.REQUEST_CODE_UPDATE_ACCOUNT) {
         }
     }
 
@@ -146,8 +115,6 @@ public class DashboardViewModel extends ViewModel implements DatabaseCallback, A
     public void onReceived(Object object, int requestCode, int responseCode) {
         if (requestCode == Account.REQUEST_CODE_ADD_ACCOUNTS) {
             setAccounts((ArrayList<Account>) object);
-        } else if (requestCode == Account.REQUEST_CODE_GET_PRIMARY_ACCOUNT) {
-            setPrimaryAccountData((Account) object);
         }
     }
 
@@ -168,25 +135,9 @@ public class DashboardViewModel extends ViewModel implements DatabaseCallback, A
         DatabaseClient.getInstance(context).updateAccount(Account.REQUEST_CODE_UPDATE_ACCOUNT, selectedAccount, this);
     }
 
-    public void setPrimaryAccount(Account selectedAccount) {
-        List<Account> accounts = getAccounts().getValue();
-        for (Account account : accounts) {
-            if (account.getAccountNumber().equalsIgnoreCase(selectedAccount.getAccountNumber())) {
-                account.setPrimaryAccount(true);
-            } else {
-                account.setPrimaryAccount(false);
-            }
-        }
-        DatabaseClient.getInstance(context).updateAccounts(Account.REQUEST_CODE_SET_PRIMARY_ACCOUNT, accounts, this);
-    }
-
     @Override
     public void onSuccess(int requestCode, Object obj, int code) {
-        if (requestCode == ApiClient.REQUEST_CODE_SET_PRIMARY_ACCOUNT) {
-            Account account = (Account) obj;
-            account.setPrimaryAccount(true);
-            setPrimaryAccount(account);
-        } else if (requestCode == ApiClient.REQUEST_CODE_GET_BILLING_HISTORY) {
+        if (requestCode == ApiClient.REQUEST_CODE_GET_BILLING_HISTORY) {
             Account account = (Account) obj;
             updateBillingDetailsToAccount(account);
         }

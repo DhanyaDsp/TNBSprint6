@@ -4,7 +4,6 @@ import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.text.TextUtils;
-import android.widget.LinearLayout;
 
 import com.ey.dgs.model.Account;
 import com.ey.dgs.model.AccountSettings;
@@ -14,7 +13,6 @@ import com.ey.dgs.model.Notification;
 import com.ey.dgs.model.User;
 import com.ey.dgs.model.UserSettings;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -117,6 +115,8 @@ public class DatabaseClient {
                 DatabaseClient.getInstance(mCtx).getAppDatabase()
                         .taskDao()
                         .update(user);
+                Account[] accountDetails = user.getAccountDetails();
+
                 return null;
             }
 
@@ -141,10 +141,6 @@ public class DatabaseClient {
                 DatabaseClient.getInstance(mCtx).getAppDatabase()
                         .accountDao()
                         .clear();
-
-                for (Account account : accounts) {
-                    account.setAccountId(Integer.parseInt(account.getAccountNumber()));
-                }
 
                 DatabaseClient.getInstance(mCtx).getAppDatabase()
                         .accountDao()
@@ -659,6 +655,7 @@ public class DatabaseClient {
                 DatabaseClient.getInstance(mCtx).getAppDatabase()
                         .accountDao()
                         .update(account);
+
                 return null;
             }
 
@@ -670,6 +667,36 @@ public class DatabaseClient {
         }
 
         UpdateAccountTask st = new UpdateAccountTask();
+        st.execute();
+    }
+
+
+    public void getAccountDetails(int requestCode, User user, DatabaseCallback databaseCallback) {
+        class GetAccountDetailsTask extends AsyncTask<Void, Void, Void> {
+
+            @Override
+            protected Void doInBackground(Void... voids) {
+                Account accounts[] = user.getAccountDetails();
+                for (Account account : accounts) {
+                    DatabaseClient.getInstance(mCtx).getAppDatabase()
+                            .accountDao()
+                            .updateDetail(account.getAccountNumber(), account.getLastBilledDate(), account.getLastBilledAmount(),
+                                    account.getBillingCycleStartDate(), account.getBillingCycleEndDate(),
+                                    account.getUserThreshold(), account.getUserThreshold(),
+                                    account.getCurrentDayConsumption(), account.getCurrentWeekConsumption(),
+                                    account.getCurrentDayConsumption(), account.getPeopleInProperty());
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                databaseCallback.onUpdate(user, requestCode, 0);
+            }
+        }
+
+        GetAccountDetailsTask st = new GetAccountDetailsTask();
         st.execute();
     }
 

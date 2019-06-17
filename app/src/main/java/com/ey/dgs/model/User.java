@@ -41,7 +41,7 @@ public class User implements Serializable {
 
     private boolean isSplashScreenSeen;
 
-    private boolean loggedInUserName;
+    private String loggedInUserName;
 
     @Ignore
     private Account[] accountDetails;
@@ -128,11 +128,11 @@ public class User implements Serializable {
         isSplashScreenSeen = splashScreenSeen;
     }
 
-    public boolean isLoggedInUserName() {
+    public String getLoggedInUserName() {
         return loggedInUserName;
     }
 
-    public void setLoggedInUserName(boolean loggedInUserName) {
+    public void setLoggedInUserName(String loggedInUserName) {
         this.loggedInUserName = loggedInUserName;
     }
 }

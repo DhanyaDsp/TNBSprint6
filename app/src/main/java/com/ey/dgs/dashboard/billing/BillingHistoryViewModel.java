@@ -98,9 +98,7 @@ public class BillingHistoryViewModel extends ViewModel implements DatabaseCallba
 
     @Override
     public void onUpdate(Object object, int requestCode, int responseCode) {
-        if (requestCode == Account.REQUEST_CODE_SET_PRIMARY_ACCOUNT) {
-
-        }
+        
     }
 
     @Override

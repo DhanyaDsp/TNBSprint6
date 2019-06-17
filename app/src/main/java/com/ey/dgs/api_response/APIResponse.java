@@ -8,6 +8,8 @@ public class APIResponse {
 
     private boolean success;
 
+    private boolean result;
+
     public int getStatusCode() {
         return statusCode;
     }
@@ -30,5 +32,13 @@ public class APIResponse {
 
     public void setSuccess(boolean success) {
         this.success = success;
+    }
+
+    public boolean isResult() {
+        return result;
+    }
+
+    public void setResult(boolean result) {
+        this.result = result;
     }
 }

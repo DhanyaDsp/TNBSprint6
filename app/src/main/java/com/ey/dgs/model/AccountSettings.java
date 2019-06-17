@@ -1,24 +1,20 @@
 package com.ey.dgs.model;
 
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
-import android.text.TextUtils;
 
 import java.io.Serializable;
 
 @Entity
-public class AccountSettings implements Serializable {
+public class AccountSettings extends Account implements Serializable {
 
     public static final int REQUEST_CODE_ADD_ACCOUNT_SETTINGS = 6;
     public static final int REQUEST_CODE_GET_ACCOUNT_SETTINGS = 11;
     public static final int REQUEST_CODE_UPDATE_ACCOUNT_SETTINGS = 12;
 
-    @PrimaryKey
-    @NonNull
-    private int accountId;
-    private String accountNumber;
     private boolean serviceAvailabilityFlag;
     private boolean pushNotificationFlag;
     private boolean smsNotificationFlag;
@@ -26,22 +22,6 @@ public class AccountSettings implements Serializable {
 
     @Ignore
     private EnergyConsumptions energyConsumptions;
-
-    public int getAccountId() {
-        return accountId;
-    }
-
-    public void setAccountId(int accountId) {
-            this.accountId = accountId;
-    }
-
-    public String getAccountNumber() {
-        return accountNumber;
-    }
-
-    public void setAccountNumber(String accountNumber) {
-        this.accountNumber = accountNumber;
-    }
 
     public boolean isServiceAvailabilityFlag() {
         return serviceAvailabilityFlag;

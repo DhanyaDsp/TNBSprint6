@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.net.ParseException;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
@@ -82,19 +83,22 @@ public class Utils {
     }
 
     public static String formatAccountDate(String serverDate) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-        Date sourceDate = null;
-        try {
-            sourceDate = dateFormat.parse(serverDate);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        } catch (java.text.ParseException e) {
-            e.printStackTrace();
-        }
+        if (!TextUtils.isEmpty(serverDate)) {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+            Date sourceDate = null;
+            try {
+                sourceDate = dateFormat.parse(serverDate);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            } catch (java.text.ParseException e) {
+                e.printStackTrace();
+            }
 
-        SimpleDateFormat targetFormat = new SimpleDateFormat("dd MMM");
-        String outputDate = targetFormat.format(sourceDate);
-        return outputDate;
+            SimpleDateFormat targetFormat = new SimpleDateFormat("dd MMM");
+            String outputDate = targetFormat.format(sourceDate);
+            return outputDate;
+        }
+        return "";
     }
 
     public static String formatNotificationDate() {

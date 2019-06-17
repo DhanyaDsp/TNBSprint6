@@ -2,6 +2,10 @@ package com.ey.dgs.utils;
 
 public class MockResponse {
 
+    public static final String MOCK_BASE_UPDATE_RESPONSE = "{\n" +
+            "    \"success\": true,\n" +
+            "    \"result\": true\n" +
+            "}";
     public static String MOCK_USER_DETAILS_PRIMARY_SET = "{\n" +
             "  \"success\": true,\n" +
             "  \"message\": \"\",\n" +
@@ -188,5 +192,6 @@ public class MockResponse {
             "        ]\n" +
             "    }\n" +
             "}";
+
 
 }

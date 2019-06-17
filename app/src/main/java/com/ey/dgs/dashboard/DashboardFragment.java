@@ -133,7 +133,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
             showProgress(showProgress);
         });
         dashboardViewModel.loadAccountsFromLocalDB(appPreferences.getUser_id());
-        dashboardViewModel.getAccounts().observeForever(accounts -> {
+        dashboardViewModel.getAccounts().observe(getViewLifecycleOwner(), accounts -> {
             showProgress(false);
             if (accounts.size() > 0) {
                 this.accounts.clear();
@@ -217,7 +217,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
     public void openManageAccountsFragment(int index) {
         if (index == INDEX_MANAGE_ACCOUNTS) {
             FragmentUtils.newInstance(((HomeActivity) getActivity()).getSupportFragmentManager())
-                    .addFragment(index,null, ManageAccountsFragment.class.getName(), R.id.homeFlContainer);
+                    .addFragment(index, null, ManageAccountsFragment.class.getName(), R.id.homeFlContainer);
         }
     }
 
@@ -227,36 +227,11 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
             case R.id.tvSubscribe:
                 moveToNotificationSettingsPage();
                 break;
-            case R.id.btnSetPrimaryAccount:
-                setPrimaryAccount();
-                break;
             default:
                 break;
         }
     }
 
-    private void setPrimaryAccount() {
-        if (selectedAccount != null) {
-            showProgress(true);
-            dashboardViewModel.setPrimaryAccountInServer(user, selectedAccount);
-            /*Demo*/
-            /*user.setPrimaryAccountSet(true);
-            loginViewModel.update(user);
-            updateOtherAccounts(accounts);
-            showPrimaryAccountPopup();*/
-        }
-
-    }
-
-    private void showPrimaryAccountPopup() {
-        DialogHelper.showSuccessDialog(selectedAccount, "",getActivity(), new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DialogHelper.hidePopup();
-                moveToMyDashboardPage(selectedAccount);
-            }
-        });
-    }
 
     private void moveToNotificationSettingsPage() {
         if (accounts != null && accounts.size() > 0) {

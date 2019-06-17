@@ -189,7 +189,7 @@ public class MMCQuestionsFragment extends Fragment implements View.OnClickListen
                     new AccountDetailsRequest("Admin@xyzmail.com", accountDetailsArray);
 
             showProgress(true);
-            questionsViewModel.updateAccountSettingsInServer(accountDetailsRequest);
+            questionsViewModel.updateAccountDetailsInServer(accountDetailsRequest);
             questionsViewModel.getLoaderData().observe(getViewLifecycleOwner(), showProgress -> {
                 showProgress(showProgress);
             });

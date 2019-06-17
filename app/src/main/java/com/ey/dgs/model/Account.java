@@ -4,9 +4,6 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
-import android.util.Log;
-
-import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
@@ -15,8 +12,6 @@ public class Account implements Serializable {
 
     public static int REQUEST_CODE_ADD_ACCOUNTS = 5;
     public static int REQUEST_CODE_UPDATE_ACCOUNT = 15;
-    public static int REQUEST_CODE_SET_PRIMARY_ACCOUNT = 16;
-    public static int REQUEST_CODE_GET_PRIMARY_ACCOUNT = 17;
 
     @PrimaryKey
     @NonNull
@@ -40,6 +35,11 @@ public class Account implements Serializable {
     private String currentWeekConsumption;
     private String currentDayConsumption;
     private String peopleInProperty;
+    private boolean isUserThresholdSet;
+    private boolean hasConsumptionReached;
+    private boolean outageAlertFlag;
+    private boolean restoreAlertFlag;
+
     @Ignore
     BillingDetails[] billingDetails;
     private boolean selected;
@@ -230,5 +230,37 @@ public class Account implements Serializable {
 
     public void setNeededAccount(boolean neededAccount) {
         isNeededAccount = neededAccount;
+    }
+
+    public boolean isUserThresholdSet() {
+        return isUserThresholdSet;
+    }
+
+    public void setUserThresholdSet(boolean userThresholdSet) {
+        isUserThresholdSet = userThresholdSet;
+    }
+
+    public boolean isHasConsumptionReached() {
+        return hasConsumptionReached;
+    }
+
+    public void setHasConsumptionReached(boolean hasConsumptionReached) {
+        this.hasConsumptionReached = hasConsumptionReached;
+    }
+
+    public boolean isOutageAlertFlag() {
+        return outageAlertFlag;
+    }
+
+    public void setOutageAlertFlag(boolean outageAlertFlag) {
+        this.outageAlertFlag = outageAlertFlag;
+    }
+
+    public boolean isRestoreAlertFlag() {
+        return restoreAlertFlag;
+    }
+
+    public void setRestoreAlertFlag(boolean restoreAlertFlag) {
+        this.restoreAlertFlag = restoreAlertFlag;
     }
 }

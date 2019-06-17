@@ -16,6 +16,7 @@ import com.ey.dgs.model.BillingPeriodReqest;
 import com.ey.dgs.model.NotificationSettingsRequest;
 import com.ey.dgs.model.SetPrimaryAccountRequest;
 import com.ey.dgs.model.User;
+import com.ey.dgs.model.UserSettings;
 
 import java.util.Map;
 
@@ -50,6 +51,9 @@ public interface ApiInterface {
 
     @GET("UserSettings")
     Call<UserSettingsResponse> getUserSettings(@Header("Authorization") String token, @Query("UserName") String UserName);
+
+    @POST("UserSettings")
+    Call<APIResponse> updateUserSettings(@Header("Authorization") String token, @Body UserSettings userSettings);
 
     @GET("AccountDetails")
     Call<AccountSettingsResponse> getAccountSettings(@Header("Authorization") String token, @Query("AccountNumber") String AccountNumber, @Query("UserName") String userName);

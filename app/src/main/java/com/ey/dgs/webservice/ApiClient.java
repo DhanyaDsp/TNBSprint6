@@ -16,6 +16,7 @@ import com.ey.dgs.model.BillingPeriodReqest;
 import com.ey.dgs.model.NotificationSettingsRequest;
 import com.ey.dgs.model.SetPrimaryAccountRequest;
 import com.ey.dgs.model.User;
+import com.ey.dgs.model.UserSettings;
 import com.ey.dgs.utils.HttpClientService;
 import com.ey.dgs.utils.MockResponse;
 import com.google.gson.Gson;
@@ -28,8 +29,8 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiClient {
-    public static final String BASE_URL = "https://apscadvdgsapm01.azure-api.net/Login/v3/";
-    public static final String LOGIN_BASE_URL = "https://apscadvdgsapm01.azure-api.net/UserDetails/v3/";
+    public static final String BASE_URL = "https://apscadvdgsapm01.azure-api.net/Login/v1.3/";
+    public static final String LOGIN_BASE_URL = "https://apscadvdgsapm01.azure-api.net/UserDetails/v1.3/";
     public static final String BILLING_BASE_URL = "https://apscadvdgsapm01.azure-api.net/BillingHistory/v3/";
     public static final String ACCOUNT_DETAILS_URL = "https://apscadvdgsapm01.azure-api.net/UserDetails/v1.3/";
     private static Retrofit retrofit = null;
@@ -44,6 +45,7 @@ public class ApiClient {
     public static int REQUEST_CODE_GET_BILLING_HISTORY = 107;
     public static int REQUEST_CODE_ANSWER_QUESTIONS = 108;
     public static int REQUEST_CODE_GET_USER_SETTINGS = 109;
+    public static int REQUEST_CODE_UPDATE_USER_SETTINGS = 110;
 
     public static Retrofit getClient() {
         return new Retrofit.Builder()
@@ -118,22 +120,16 @@ public class ApiClient {
         });
     }
 
-    public void getUser(String token, User user, APICallback callback) {
+    public void getUserDetail(String token, User user, APICallback callback) {
         ApiInterface apiService = ApiClient.getUserDetailsClient().create(ApiInterface.class);
-
         Call<UserDetailResponse> call = apiService.getUserDetails(token, user.getEmail());
         call.enqueue(new Callback<UserDetailResponse>() {
             @Override
             public void onResponse(Call<UserDetailResponse> call, Response<UserDetailResponse> response) {
                 UserDetailResponse userDetailResponse = response.body();
-//                /*MOCK RESPONSE*/
-//                Gson gson = new Gson();
-//                userDetailResponse = gson.fromJson(MockResponse.MOCK_USER_DETAILS_PRIMARY_NOT_SET, UserDetailResponse.class);
-//                /*MOCK RESPONSE*/
                 if (userDetailResponse != null) {
                     if (userDetailResponse.getSuccess()) {
                         //setting local user data
-                        userDetailResponse.getUser().setPrimaryAccountSet(user.isPrimaryAccountSet());
                         userDetailResponse.getUser().setRememberMe(user.isRememberMe());
                         userDetailResponse.getUser().setUserId(user.getUserId());
                         userDetailResponse.getUser().setSplashScreenSeen(user.isSplashScreenSeen());
@@ -187,10 +183,10 @@ public class ApiClient {
         call.enqueue(new Callback<UserSettingsResponse>() {
             @Override
             public void onResponse(Call<UserSettingsResponse> call, Response<UserSettingsResponse> response) {
-                //UserSettingsResponse userSettingsResponse = response.body();
+                UserSettingsResponse userSettingsResponse = response.body();
                 /*MOCK RESPONSE*/
-                Gson gson = new Gson();
-                UserSettingsResponse userSettingsResponse = gson.fromJson(MockResponse.USER_SETTINGS_RESPONSE, UserSettingsResponse.class);
+                //Gson gson = new Gson();
+                //UserSettingsResponse userSettingsResponse = gson.fromJson(MockResponse.USER_SETTINGS_RESPONSE, UserSettingsResponse.class);
                 /*MOCK RESPONSE*/
                 if (userSettingsResponse != null) {
                     if (userSettingsResponse.isSuccess()) {
@@ -212,6 +208,37 @@ public class ApiClient {
                 UserSettingsResponse userSettingsResponse = new UserSettingsResponse();
                 userSettingsResponse.setMessage("Please try again!");
                 callback.onFailure(REQUEST_CODE_GET_USER_SETTINGS, userSettingsResponse.getMessage(), 0);
+            }
+        });
+    }
+
+    public void getAccountDetails(String token, String userName, APICallback callback) {
+        ApiInterface apiService = ApiClient.getUserDetailsClient().create(ApiInterface.class);
+
+        Call<UserDetailResponse> call = apiService.getUserDetails(token, userName);
+        call.enqueue(new Callback<UserDetailResponse>() {
+            @Override
+            public void onResponse(Call<UserDetailResponse> call, Response<UserDetailResponse> response) {
+                UserDetailResponse userDetailResponse = response.body();
+                if (userDetailResponse != null) {
+                    if (userDetailResponse.getSuccess()) {
+                        callback.onSuccess(REQUEST_CODE_GET_USER, userDetailResponse, response.code());
+                    } else {
+                        userDetailResponse.setMessage("Please try again!");
+                        callback.onFailure(REQUEST_CODE_GET_USER, userDetailResponse.getMessage(), response.code());
+                    }
+                } else {
+                    userDetailResponse = new UserDetailResponse();
+                    userDetailResponse.setMessage("Please try again!");
+                    callback.onFailure(REQUEST_CODE_GET_USER, userDetailResponse.getMessage(), response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UserDetailResponse> call, Throwable t) {
+                UserDetailResponse userDetailResponse = new UserDetailResponse();
+                userDetailResponse.setMessage("Please try again!");
+                callback.onFailure(REQUEST_CODE_GET_USER, userDetailResponse.getMessage(), 0);
             }
         });
     }
@@ -294,6 +321,36 @@ public class ApiClient {
             @Override
             public void onFailure(Call<APIResponse> call, Throwable t) {
                 callback.onFailure(REQUEST_CODE_UPDATE_ACCOUNT_DETAILS, "Failed to update Account Settings", 0);
+            }
+        });
+    }
+
+    public void updateUserSettingsInServer(String token, UserSettings userSettings, APICallback callback) {
+        ApiInterface apiService = ApiClient.getRawTextClient().create(ApiInterface.class);
+        Call<APIResponse> call = apiService.updateUserSettings(token, userSettings);
+        call.enqueue(new Callback<APIResponse>() {
+            @Override
+            public void onResponse(Call<APIResponse> call, Response<APIResponse> response) {
+                //APIResponse apiResponse = response.body();
+                Gson gson = new Gson();
+                APIResponse apiResponse = gson.fromJson(MockResponse.MOCK_BASE_UPDATE_RESPONSE, APIResponse.class);
+                if (apiResponse != null) {
+                    if (apiResponse.isSuccess()) {
+                        callback.onSuccess(REQUEST_CODE_UPDATE_USER_SETTINGS, userSettings, response.code());
+                    } else {
+                        apiResponse.setMessage("Failed to update User Settings");
+                        callback.onFailure(REQUEST_CODE_UPDATE_USER_SETTINGS, apiResponse.getMessage(), response.code());
+                    }
+                } else {
+                    apiResponse = new APIResponse();
+                    apiResponse.setMessage("Failed to update User Settings");
+                    callback.onFailure(REQUEST_CODE_UPDATE_USER_SETTINGS, apiResponse.getMessage(), response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<APIResponse> call, Throwable t) {
+                callback.onFailure(REQUEST_CODE_UPDATE_USER_SETTINGS, "Failed to update User Settings", 0);
             }
         });
     }

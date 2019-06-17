@@ -29,9 +29,9 @@
     <android.support.design.widget.TabLayout
         android:id="@+id/tlDots"
         android:layout_width="wrap_content"
-        android:layout_centerHorizontal="true"
         android:layout_height="wrap_content"
         android:layout_above="@+id/btnNext"
+        android:layout_centerHorizontal="true"
         app:tabBackground="@drawable/splash_tab_selector"
         app:tabGravity="center"
         app:tabIndicatorHeight="0dp" />
@@ -54,5 +54,10 @@
         android:textAllCaps="false"
         android:textColor="@android:color/white"
         android:textSize="@dimen/text_size_medium" />
+
+    <include
+        android:id="@+id/loader"
+        layout="@layout/loader"
+        android:visibility="gone" />
 
 </RelativeLayout>
