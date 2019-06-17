@@ -30,18 +30,18 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiClient {
-    public static final String BASE_URL = "https://apscadvdgsapm01.azure-api.net/Login/v1.3/";
-    public static final String LOGIN_BASE_URL = "https://apscadvdgsapm01.azure-api.net/UserDetails/v1.3/";
-    public static final String BILLING_BASE_URL = "https://apscadvdgsapm01.azure-api.net/BillingHistory/v3/";
-    public static final String ACCOUNT_DETAILS_URL = "https://apscadvdgsapm01.azure-api.net/UserDetails/v1.3/";
+    private static final String BASE_URL = "https://apscadvdgsapm01.azure-api.net/Login/v1.3/";
+    private static final String LOGIN_BASE_URL = "https://apscadvdgsapm01.azure-api.net/UserDetails/v1.3/";
+    private static final String BILLING_BASE_URL = "https://apscadvdgsapm01.azure-api.net/BillingHistory/v3/";
+    private static final String ACCOUNT_DETAILS_URL = "https://apscadvdgsapm01.azure-api.net/UserDetails/v1.3/";
     private static Retrofit retrofit = null;
 
     public static int REQUEST_CODE_UPDATE_USER = 100;
-    public static int REQUEST_CODE_LOGIN_USER = 101;
+    private static int REQUEST_CODE_LOGIN_USER = 101;
     public static int REQUEST_CODE_GET_USER = 102;
     public static int REQUEST_CODE_UPDATE_ACCOUNT_DETAILS = 103;
     public static int REQUEST_CODE_GET_ACCOUNT_DETAILS = 104;
-    public static int REQUEST_CODE_SET_PRIMARY_ACCOUNT = 105;
+    private static int REQUEST_CODE_SET_PRIMARY_ACCOUNT = 105;
     public static int REQUEST_CODE_GET_QUESTIONS = 106;
     public static int REQUEST_CODE_GET_BILLING_HISTORY = 107;
     public static int REQUEST_CODE_ANSWER_QUESTIONS = 108;
@@ -273,16 +273,17 @@ public class ApiClient {
         });
     }
 
-    public void getAccountSettingsFromServer(String token, String accountNumber, String userName, APICallback callback) {
+    public void getAccountSettingsFromServer(String token, String userName, String accountNumber, APICallback callback) {
         ApiInterface apiService = ApiClient.getUserDetailsClient().create(ApiInterface.class);
 
-        Call<AccountSettingsResponse> call = apiService.getAccountSettings(token, accountNumber, userName);
+        Call<AccountSettingsResponse> call = apiService.getAccountSettings(token, userName, accountNumber);
         call.enqueue(new Callback<AccountSettingsResponse>() {
             @Override
             public void onResponse(Call<AccountSettingsResponse> call, Response<AccountSettingsResponse> response) {
                 AccountSettingsResponse accountSettingsResponse = response.body();
                 if (accountSettingsResponse != null) {
                     accountSettingsResponse.getResult().setAccountNumber(accountNumber);
+                    accountSettingsResponse.getResult().setAccountId(Integer.parseInt(accountNumber));
                     callback.onSuccess(REQUEST_CODE_GET_ACCOUNT_DETAILS, accountSettingsResponse.getResult(), response.code());
                 } else {
                     accountSettingsResponse = new AccountSettingsResponse();
