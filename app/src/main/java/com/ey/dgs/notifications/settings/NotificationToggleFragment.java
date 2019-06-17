@@ -22,6 +22,8 @@ import com.ey.dgs.dashboard.DashboardViewModel;
 import com.ey.dgs.databinding.FragmentNotificationToggleBinding;
 import com.ey.dgs.model.Account;
 import com.ey.dgs.model.User;
+import com.ey.dgs.model.UserSettings;
+import com.ey.dgs.usersettings.UserSettingsViewModel;
 import com.ey.dgs.utils.AppPreferences;
 
 import java.util.ArrayList;
@@ -34,8 +36,9 @@ public class NotificationToggleFragment extends Fragment {
     private ArrayList<Account> accounts = new ArrayList<>();
     private NotificationAccountAdapter accountAdapter;
     private DashboardViewModel mViewModel;
-    private LoginViewModel loginViewModel;
-    User user = new User();
+    UserSettingsViewModel userSettingsViewModel;
+    User user;
+    UserSettings userSettings;
     FragmentNotificationToggleBinding binding;
     private OnFragmentInteractionListener mListener;
     private AppPreferences appPreferences;
@@ -48,17 +51,20 @@ public class NotificationToggleFragment extends Fragment {
         return new NotificationToggleFragment();
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        appPreferences = new AppPreferences(getActivity());
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_notification_toggle, container, false);
         binding.setFragment(this);
-        user.setNotificationFlag(true);
         binding.setUser(user);
         view = binding.getRoot();
-        appPreferences = new AppPreferences(getActivity());
         initViews();
-        return binding.getRoot();
+        return view;
     }
 
     private void initViews() {
@@ -75,37 +81,34 @@ public class NotificationToggleFragment extends Fragment {
         rvAccounts.setItemAnimator(new DefaultItemAnimator());
         accountAdapter = new NotificationAccountAdapter(this, getActivity(), accounts);
         rvAccounts.setAdapter(accountAdapter);
-        mViewModel = ViewModelProviders.of(this).get(DashboardViewModel.class);
-        loginViewModel = ViewModelProviders.of(this).get(LoginViewModel.class);
-        loginViewModel.setContext(getActivity());
-        loginViewModel.getUserDetail(appPreferences.getUser_id());
-        loginViewModel.getUserDetail().observeForever(user -> {
-            this.user = user;
-            binding.setUser(this.user);
-            if (this.user.isNotificationFlag()) {
-                rvAccounts.setVisibility(View.VISIBLE);
-                tvLabel.setVisibility(View.VISIBLE);
-            } else {
-                rvAccounts.setVisibility(View.GONE);
-                tvLabel.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        subscribe();
+    }
+
+    private void subscribe() {
+        userSettingsViewModel = ViewModelProviders.of(this).get(UserSettingsViewModel.class);
+        userSettingsViewModel.getUserSettingsFromLocalDB(appPreferences.getUser_id());
+        userSettingsViewModel.getUserSettings().observe(getViewLifecycleOwner(), userSettings -> {
+            if (userSettings != null) {
+                this.userSettings = userSettings;
+                binding.setUserSettings(userSettings);
             }
         });
+        mViewModel = ViewModelProviders.of(this).get(DashboardViewModel.class);
         mViewModel.loadAccountsFromLocalDB(appPreferences.getUser_id());
-        mViewModel.getAccounts().observeForever(accounts -> {
+        mViewModel.getAccounts().observe(getViewLifecycleOwner(), accounts -> {
             this.accounts.clear();
             this.accounts.addAll(accounts);
             accountAdapter.notifyDataSetChanged();
         });
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-    }
-
     public void toggleNotification(View view, boolean isChecked) {
-        user.setNotificationFlag(isChecked);
-        loginViewModel.updateUserInServer(user);
+        //loginViewModel.updateUserInServer(user);
         if (isChecked) {
             rvAccounts.setVisibility(View.VISIBLE);
             tvLabel.setVisibility(View.VISIBLE);

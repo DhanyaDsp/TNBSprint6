@@ -37,6 +37,7 @@
     <string name="notifications">Notifications</string>
     <string name="title_activity_notification_settings">NotificationSettings</string>
     <string name="notification_toggle_heading">Set notifications for account below</string>
+    <string name="notification_sms_heading">SMS notifications are only activated for important messages like billing payment and service disruption</string>
     <string name="title_activity_notification_detail_page">NotificationDetailPage</string>
     <string name="here_is_a_tip">Here\'s a tip!</string>
     <string name="set_primary_account">Set Primary Account</string>
@@ -79,4 +80,6 @@
     <string name="monthly">Monthly</string>
     <string name="yearly">Yearly</string>
     <string name="weekly">Weekly</string>
+    <string name="push_notifications">Push Notifications</string>
+    <string name="sms">SMS</string>
 </resources>

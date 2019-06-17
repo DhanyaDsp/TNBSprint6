@@ -48,6 +48,7 @@ public class LoginFragment extends Fragment implements APICallback {
     private Observer<User> getUserReceiver;
     private UserSettings userSettings;
     AppCompatEditText etEmail;
+    private String email;
 
     public static LoginFragment newInstance() {
         return new LoginFragment();
@@ -124,6 +125,8 @@ public class LoginFragment extends Fragment implements APICallback {
 
     public void login(View view) {
         isLoginClicked = true;
+        email = etEmail.getText().toString();
+        user.setEmail(email);
         if (isValidated(user)) {
             onProgress(0, true);
             new ApiClient().login(user, this);
