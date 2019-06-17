@@ -1,6 +1,8 @@
 package com.ey.dgs.dashboard.questions;
 
+import android.app.Activity;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -37,6 +39,8 @@ import com.google.gson.Gson;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import static com.ey.dgs.dashboard.MyDashboardFragment.IS_THRESHOLD_SET;
+
 public class MMCQuestionsFragment extends Fragment implements View.OnClickListener, View.OnKeyListener{
 
     private View rootView;
@@ -48,6 +52,8 @@ public class MMCQuestionsFragment extends Fragment implements View.OnClickListen
     private AppCompatEditText thresholdAnswer;
     private QuestionsViewModel questionsViewModel;
     private String peopleInProperty, thresholdValue;
+    private Context context;
+    private BillingDetails[] billingDetails;
     Account account;
     View loader;
     AppCompatTextView tvAccountName, tvPeopleQuestion;
@@ -115,8 +121,8 @@ public class MMCQuestionsFragment extends Fragment implements View.OnClickListen
                     Log.i("Done button","Enter pressed");
                     Utils.hideKeyBoard(getActivity());
                     String strThreshold = thresholdAnswer.getText().toString();
-                    if (!TextUtils.isEmpty(strThreshold) || Integer.valueOf(strThreshold) > 0) {
-                        Float threshold = Float.parseFloat(strThreshold);
+                    if (!TextUtils.isEmpty(strThreshold) && Integer.valueOf(strThreshold) > 0) {
+                        float threshold = Float.parseFloat(strThreshold);
                         setChartData(barChart, billingHistory, threshold);
                     } else {
                         Utils.showToast(getActivity(), "Please enter value");
@@ -172,7 +178,14 @@ public class MMCQuestionsFragment extends Fragment implements View.OnClickListen
             layoutQuestion1.setVisibility(View.GONE);
             onQuestion2 = true;
             layoutQuestion2.setVisibility(View.VISIBLE);
-            setChartData(barChart, billingHistory);
+            Gson gson = new Gson();
+            this.billingDetails = gson.fromJson(billingHistory.getBillingDetails(), BillingDetails[].class);
+            setChartData(billingDetails);
+            /*if(account.getUserThreshold() != null) {
+                setChartData(barChart, billingHistory, Float.parseFloat(account.getUserThreshold()));
+            } else {
+                setChartData(barChart, billingHistory);
+            }*/
         } else {
             callAccountDetailsAPiService();
         }
@@ -294,5 +307,63 @@ public class MMCQuestionsFragment extends Fragment implements View.OnClickListen
                     .setThreshold(true, threshold)
                     .setSelectionRequired(true);
         }
+    }
+
+    private void setChartData(BillingDetails[] billingDetails) {
+        ArrayList<ChartData> chartDatum = new ArrayList<>();
+        ChartData chartData;
+
+        String startDate = Utils.formatAccountDate(account.getBillingCycleStartDate());
+        String endDate = Utils.formatAccountDate(account.getBillingCycleEndDate());
+        if (!IS_THRESHOLD_SET) {
+            for (int i = 0; i < billingDetails.length; i++) {
+                BillingDetails billingDetail = billingDetails[i];
+                chartData = new ChartData();
+                chartData.setTag(Utils.formatAccountDate(billingDetail.getBilledDate()));
+                chartData.setVal(billingDetail.getBilledValue());
+                chartDatum.add(chartData);
+            }
+            if (account.isThreshold()) {
+                barChart.setData(chartDatum)
+                        .setBarUnit("RM")
+                        .setThreshold(true, Float.parseFloat(account.getUserThreshold()))
+                        .setSelectionRequired(true);
+            } else {
+                barChart.setData(chartDatum)
+                        .setBarUnit("RM")
+                        .setSelectionRequired(false);
+            }
+        } else {
+            for (int i = 0; i < billingDetails.length; i++) {
+                BillingDetails billingDetail = billingDetails[i];
+                chartData = new ChartData();
+                chartData.setTag(Utils.formatAccountDate(billingDetail.getBilledDate()));
+                chartData.setVal(billingDetail.getBilledValue());
+                chartDatum.add(chartData);
+            }
+            barChart = rootView.findViewById(R.id.accountChart);
+            ViewGroup.LayoutParams tmpLayParams = barChart.getLayoutParams();
+            ((ViewGroup) barChart.getParent()).removeView(barChart);
+
+            BarChart tmpBarChart = new BarChart(context);
+            tmpBarChart.setLayoutParams(tmpLayParams);
+            tmpBarChart.setId(R.id.accountChart);
+            ((ViewGroup) rootView.findViewById(R.id.rlChart)).addView(tmpBarChart);
+
+            tmpBarChart.setData(chartDatum)
+                    .setTitle(startDate + " - " + endDate)
+                    .setBarUnit("RM")
+                    .setThreshold(true, Float.parseFloat(account.getUserThreshold()))
+                    //.setThreshold(selectedAccount.isThreshold(), Float.parseFloat(energyConsumptions.getUserThreshold()))
+                    .setSelectionRequired(true); //.updateData(); // .invalidate();
+
+            IS_THRESHOLD_SET = false;
+        }
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        this.context = activity;
     }
 }

@@ -20,6 +20,7 @@ import com.ey.dgs.authentication.LoginViewModel;
 import com.ey.dgs.dashboard.DashboardFragment;
 import com.ey.dgs.dashboard.DashboardViewModel;
 import com.ey.dgs.dashboard.MyDashboardFragment;
+import com.ey.dgs.dashboard.manageAccounts.MMCManageAccountsFragment;
 import com.ey.dgs.dashboard.myaccount.MyAccountFragment;
 import com.ey.dgs.model.Account;
 import com.ey.dgs.model.User;
@@ -210,6 +211,9 @@ public class HomeActivity extends AppCompatActivity implements MyAccountFragment
             Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.homeFlContainer);
             if (fragment instanceof MyAccountFragment) {
                 setToolbarTitle("");
+            }
+            if (fragment instanceof MMCManageAccountsFragment) {
+                Utils.hideKeyBoard(this);
             }
             fm.popBackStack();
         } else {

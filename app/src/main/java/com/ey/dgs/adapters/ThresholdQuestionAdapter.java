@@ -1,5 +1,6 @@
 package com.ey.dgs.adapters;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatEditText;
@@ -15,6 +16,7 @@ import android.widget.Button;
 
 import com.ey.dgs.R;
 import com.ey.dgs.dashboard.manageAccounts.ThresholdQuestionFragment;
+import com.ey.dgs.utils.Utils;
 
 import java.util.ArrayList;
 
@@ -25,6 +27,7 @@ public class ThresholdQuestionAdapter extends RecyclerView.Adapter<RecyclerView.
     private Fragment fragment;
     final int TYPE_ACCOUNT = 2;
     final int TYPE_NEXT = 3;
+    private Context context;
 
     private String[] thresholdValues;
 
@@ -38,6 +41,7 @@ public class ThresholdQuestionAdapter extends RecyclerView.Adapter<RecyclerView.
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
+        context = viewGroup.getContext();
         if (viewType == TYPE_ACCOUNT) {
             View itemView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.threshold_question_item, viewGroup, false);
             return new ThresholdQuestionAdapter.ThresholdQuestionHolder(itemView, new MyCustomEditTextListener());
@@ -60,6 +64,17 @@ public class ThresholdQuestionAdapter extends RecyclerView.Adapter<RecyclerView.
         } else if (viewHolder.getItemViewType() == TYPE_NEXT) {
             NextHolder holder = (NextHolder) viewHolder;
             holder.btnNext.setText(R.string.submit);
+            holder.btnNext.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(!isEmptyStringArray(thresholdValues)) {
+                        ((ThresholdQuestionFragment) fragment).setThresholdValues(accountNumber, thresholdValues);
+                    } else {
+                        Utils.showToast(context, "Please enter all values");
+                    }
+
+                }
+            });
         }
     }
 
@@ -96,12 +111,13 @@ public class ThresholdQuestionAdapter extends RecyclerView.Adapter<RecyclerView.
         private NextHolder(View itemView) {
             super(itemView);
             btnNext = itemView.findViewById(R.id.btnNext);
-            btnNext.setOnClickListener(new View.OnClickListener() {
+            /*btnNext.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if(thresholdValues[])
                     ((ThresholdQuestionFragment) fragment).setThresholdValues(accountNumber, thresholdValues);
                 }
-            });
+            });*/
         }
     }
 
@@ -118,12 +134,21 @@ public class ThresholdQuestionAdapter extends RecyclerView.Adapter<RecyclerView.
 
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-            if (!TextUtils.isEmpty(charSequence.toString()) && Integer.valueOf(charSequence.toString()) > 0)
+            if (!TextUtils.isEmpty(charSequence.toString().trim()) && Integer.valueOf(charSequence.toString().trim()) > 0)
                 thresholdValues[position] = charSequence.toString();
         }
 
         @Override
         public void afterTextChanged(Editable editable) {
         }
+    }
+
+    public boolean isEmptyStringArray(String [] array){
+        for(int i=0; i<array.length; i++){
+            if(array[i]!= null && Integer.parseInt(array[i]) > 0 && i == array.length-1){
+                return false;
+            }
+        }
+        return true;
     }
 }
