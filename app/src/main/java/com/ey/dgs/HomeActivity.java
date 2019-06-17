@@ -22,6 +22,7 @@ import com.ey.dgs.dashboard.DashboardViewModel;
 import com.ey.dgs.dashboard.MyDashboardFragment;
 import com.ey.dgs.dashboard.manageAccounts.MMCManageAccountsFragment;
 import com.ey.dgs.dashboard.myaccount.MyAccountFragment;
+import com.ey.dgs.dashboard.questions.MMCQuestionsFragment;
 import com.ey.dgs.model.Account;
 import com.ey.dgs.model.User;
 import com.ey.dgs.notifications.NotificationListActivity;
@@ -212,7 +213,7 @@ public class HomeActivity extends AppCompatActivity implements MyAccountFragment
             if (fragment instanceof MyAccountFragment) {
                 setToolbarTitle("");
             }
-            if (fragment instanceof MMCManageAccountsFragment) {
+            if (fragment instanceof MMCManageAccountsFragment || fragment instanceof  MMCQuestionsFragment) {
                 Utils.hideKeyBoard(this);
             }
             fm.popBackStack();
@@ -237,6 +238,8 @@ public class HomeActivity extends AppCompatActivity implements MyAccountFragment
                 ((MyDashboardFragment) currentFragment).refresh();
                 getSupportActionBar().setHomeButtonEnabled(true);
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            } else if (currentFragment instanceof MMCQuestionsFragment) {
+                ((MMCQuestionsFragment) currentFragment).refresh();
             } else {
                 getSupportActionBar().setHomeButtonEnabled(true);
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);

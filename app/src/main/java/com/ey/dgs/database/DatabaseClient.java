@@ -311,16 +311,16 @@ public class DatabaseClient {
         st.execute();
     }
 
-    public void getPrimaryAccount(int requestCode, DatabaseCallback databaseCallback) {
+    public void getAccount(int requestCode, Account account, DatabaseCallback databaseCallback) {
 
-        class GetPrimaryAccountTask extends AsyncTask<Void, Void, Account> {
+        class GetAccount extends AsyncTask<Void, Void, Account> {
 
             @Override
             protected Account doInBackground(Void... voids) {
 
                 return DatabaseClient.getInstance(mCtx).getAppDatabase()
                         .accountDao()
-                        .getPrimaryAccount(true);
+                        .getAccount(account.getAccountNumber());
             }
 
             @Override
@@ -330,7 +330,7 @@ public class DatabaseClient {
             }
         }
 
-        GetPrimaryAccountTask st = new GetPrimaryAccountTask();
+        GetAccount st = new GetAccount();
         st.execute();
     }
 
@@ -727,7 +727,7 @@ public class DatabaseClient {
 
     public void updateSingleAccountThreshold(int requestCode, AccountDetails[] accounts,
                                              DatabaseCallback databaseCallback) {
-        class UpdateAccountTask extends AsyncTask<Void, Void, Void> {
+        class updateSingleAccountThreshold extends AsyncTask<Void, Void, Void> {
 
             @Override
             protected Void doInBackground(Void... voids) {
@@ -746,7 +746,7 @@ public class DatabaseClient {
             }
         }
 
-        UpdateAccountTask st = new UpdateAccountTask();
+        updateSingleAccountThreshold st = new updateSingleAccountThreshold();
         st.execute();
     }
 }

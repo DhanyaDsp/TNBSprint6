@@ -22,7 +22,8 @@ public class QuestionsViewModel extends ViewModel implements APICallback, Databa
     AppPreferences appPreferences;
     boolean isSuccess = false;
     private MutableLiveData<Boolean> loaderData = new MutableLiveData<>();
-    private MutableLiveData<Account> accountData = new MutableLiveData<>();
+    private MutableLiveData<AccountDetails[]> accountData = new MutableLiveData<>();
+    private MutableLiveData<Account> account = new MutableLiveData<>();
     AccountDetails[] accountDetails;
 
     public void setContext(Context context) {
@@ -48,6 +49,11 @@ public class QuestionsViewModel extends ViewModel implements APICallback, Databa
     @Override
     public void onProgress(int requestCode, boolean isLoading) {
 
+    }
+
+    public void getAccountFromLocalDB(Account account) {
+        DatabaseClient.getInstance(context).getAccount(Account.REQUEST_CODE_GET_ACCOUNT,
+                account, this);
     }
 
     public void updateAccountDetailsToLocalDB(AccountDetails[] accountDetails) {
@@ -91,12 +97,20 @@ public class QuestionsViewModel extends ViewModel implements APICallback, Databa
 
     @Override
     public void onUpdate(Object object, int requestCode, int responseCode) {
-        this.accountData.postValue((Account) object);
+        if(requestCode == Account.REQUEST_CODE_UPDATE_ACCOUNTS) {
+            this.accountData.postValue((AccountDetails[]) object);
+        } else if (requestCode == Account.REQUEST_CODE_GET_ACCOUNT) {
+            this.account.postValue((Account) object);
+        }
     }
 
     @Override
     public void onReceived(Object object, int requestCode, int responseCode) {
-        this.accountData.postValue((Account) object);
+        if(requestCode == Account.REQUEST_CODE_UPDATE_ACCOUNTS) {
+            this.accountData.postValue((AccountDetails[]) object);
+        } else if (requestCode == Account.REQUEST_CODE_GET_ACCOUNT) {
+            this.account.postValue((Account) object);
+        }
     }
 
     @Override
@@ -104,11 +118,19 @@ public class QuestionsViewModel extends ViewModel implements APICallback, Databa
 
     }
 
-    public MutableLiveData<Account> getAccountData() {
+    public MutableLiveData<AccountDetails[]> getAccountData() {
         return accountData;
     }
 
-    public void setAccountData(MutableLiveData<Account> accountData) {
+    public void setAccountData(MutableLiveData<AccountDetails[]> accountData) {
         this.accountData = accountData;
+    }
+
+    public MutableLiveData<Account> getAccount() {
+        return account;
+    }
+
+    public void setAccount(MutableLiveData<Account> account) {
+        this.account = account;
     }
 }
