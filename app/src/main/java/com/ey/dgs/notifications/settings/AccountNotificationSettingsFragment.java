@@ -87,11 +87,12 @@ public class AccountNotificationSettingsFragment extends Fragment {
         loginViewModel.getUserDetail().observe(getViewLifecycleOwner(), user -> {
             this.user = user;
         });
-        showProgress(true);
         accountSettingsViewModel.loadAccountSettingsFromLocalDB(account.getAccountNumber());
         accountSettingsViewModel.getAccountSettingsData().observe(getViewLifecycleOwner(), accountSettings -> {
             if (accountSettings == null) {
+                showProgress(true);
                 accountSettingsViewModel.getAccountSettingsFromServer(user.getEmail(), account.getAccountNumber());
+                serverCalled=true;
             } else {
                 this.accountSettings = accountSettings;
                 notificationSettingsAdapter = new NotificationSettingsAdapter(rvNotificationSettings, this, getActivity(), notificationSettings);

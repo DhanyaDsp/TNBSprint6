@@ -94,7 +94,7 @@ public class AccountSettingsViewModel extends ViewModel implements DatabaseCallb
     }
 
     public void getAccountSettingsFromServer(String userName, String accountNumber) {
-        new ApiClient().getAccountSettingsFromServer(appPreferences.getAuthToken(), accountNumber, userName, this);
+        new ApiClient().getAccountSettingsFromServer(appPreferences.getAuthToken(), userName, accountNumber, this);
     }
 
     @Override

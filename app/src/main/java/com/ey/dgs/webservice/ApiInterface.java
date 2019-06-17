@@ -55,14 +55,14 @@ public interface ApiInterface {
     @POST("UserSettings")
     Call<APIResponse> updateUserSettings(@Header("Authorization") String token, @Body UserSettings userSettings);
 
-    @GET("AccountDetails")
-    Call<AccountSettingsResponse> getAccountSettings(@Header("Authorization") String token, @Query("AccountNumber") String AccountNumber, @Query("UserName") String userName);
+    @GET("AccountSettings")
+    Call<AccountSettingsResponse> getAccountSettings(@Header("Authorization") String token, @Query("UserName") String userName, @Query("AccountNumber") String AccountNumber);
 
-    @POST("AccountDetails")
+    @POST("AccountSettings")
     Call<APIResponse> updateAccountSettings(@Header("Authorization") String token, @Body NotificationSettingsRequest notificationSettingsRequest);
 
     @POST("Questionnaire")
-    Call<APIResponse> answerQuestions(@Header("Authorization") String token,@Body AnswerRequest answerRequest);
+    Call<APIResponse> answerQuestions(@Header("Authorization") String token, @Body AnswerRequest answerRequest);
 
     @GET("Questionnaire")
     Call<GetQuestionsResponse> getQuestions(@Header("Authorization") String token, @Query("UserName") String UserName, @Query("AccountNumber") String AccountNumber);

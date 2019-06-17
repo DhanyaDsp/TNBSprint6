@@ -497,16 +497,6 @@ public class DatabaseClient {
                 DatabaseClient.getInstance(mCtx).getAppDatabase()
                         .getAccountSettingsDao()
                         .insert(accountSettings);
-                EnergyConsumptions energyConsumptions = accountSettings.getEnergyConsumptions();
-                energyConsumptions.setAccountNumber(accountSettings.getAccountNumber());
-                energyConsumptions.setThresholdSuggestions(Arrays.toString((energyConsumptions.getThresholdSuggestion())));
-
-                DatabaseClient.getInstance(mCtx).getAppDatabase()
-                        .getEnergyConsumptionsDao()
-                        .delete(energyConsumptions.getAccountNumber());
-
-                DatabaseClient.getInstance(mCtx).getAppDatabase().getEnergyConsumptionsDao()
-                        .insert(energyConsumptions);
 
                 return null;
             }
