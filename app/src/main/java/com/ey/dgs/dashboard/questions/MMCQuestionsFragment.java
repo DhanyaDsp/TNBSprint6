@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.databinding.DataBindingUtil;
-import android.databinding.ViewDataBinding;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -43,7 +42,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 
-public class MMCQuestionsFragment extends Fragment implements View.OnClickListener, View.OnKeyListener{
+public class MMCQuestionsFragment extends Fragment implements View.OnClickListener{
 
     public static boolean THRESHOLD_SET = false;
     private View rootView;
@@ -64,6 +63,7 @@ public class MMCQuestionsFragment extends Fragment implements View.OnClickListen
     AppPreferences appPreferences;
     BillingHistory billingHistory;
     Button decrease, increase, numberDisplay, btnNext;
+    String strThreshold;
 
 
     public static MMCQuestionsFragment newInstance(BillingHistory billingHistory) {
@@ -104,8 +104,6 @@ public class MMCQuestionsFragment extends Fragment implements View.OnClickListen
     private void setData() {
         tvAccountName.setText(account.getNickName());
         tvPeopleQuestion.setText(rootView.getContext().getString(R.string.people_question, account.getNickName()));
-        /*numberDisplay.setText(account.getPeopleInProperty());
-        thresholdAnswer.setText(account.getUserThreshold());*/
     }
 
     private void initViews() {
@@ -128,11 +126,11 @@ public class MMCQuestionsFragment extends Fragment implements View.OnClickListen
                 if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
                     Log.i("Done button","Enter pressed");
                     Utils.hideKeyBoard(getActivity());
-                    String strThreshold = thresholdAnswer.getText().toString();
+                    strThreshold = thresholdAnswer.getText().toString();
                     if (!TextUtils.isEmpty(strThreshold) && Integer.valueOf(strThreshold) > 0) {
                         float threshold = Float.parseFloat(strThreshold);
                         THRESHOLD_SET = true;
-                        setChartData(barChart, billingHistory, threshold);
+                        setChartData(billingDetails);
                     } else {
                         Utils.showToast(getActivity(), "Please enter value");
                     }
@@ -200,11 +198,6 @@ public class MMCQuestionsFragment extends Fragment implements View.OnClickListen
             Gson gson = new Gson();
             this.billingDetails = gson.fromJson(billingHistory.getBillingDetails(), BillingDetails[].class);
             setChartData(billingDetails);
-            /*if(account.getUserThreshold() != null) {
-                setChartData(barChart, billingHistory, Float.parseFloat(account.getUserThreshold()));
-            } else {
-                setChartData(barChart, billingHistory);
-            }*/
         } else {
             callAccountDetailsAPiService();
         }
@@ -259,122 +252,41 @@ public class MMCQuestionsFragment extends Fragment implements View.OnClickListen
         numberDisplay.setText("" + number);
     }
 
-    @Override
-    public boolean onKey(View v, int keyCode, KeyEvent event) {
-        if (event.getAction() == KeyEvent.ACTION_DOWN) {
-            switch (keyCode) {
-                case KeyEvent.KEYCODE_DPAD_CENTER:
-                case KeyEvent.KEYCODE_ENTER:
-                    Utils.hideKeyBoard(getActivity());
-                    String strThreshold = thresholdAnswer.getText().toString();
-                    if (!TextUtils.isEmpty(strThreshold) || Integer.valueOf(strThreshold) > 0) {
-                        Float threshold = Float.parseFloat(strThreshold);
-                        setChartData(barChart, billingHistory, threshold);
-                    } else {
-                        Utils.showToast(getActivity(), "Please enter value");
-                    }
-                    return true;
-                default:
-                    break;
-            }
-        }
-        return false;
-    }
-
-    private void setChartData(BarChart barChart, BillingHistory billingHistory) {
-        Gson gson = new Gson();
-        BillingDetails[] billingDetails = gson.fromJson(billingHistory.getBillingDetails(), BillingDetails[].class);
-
-        ArrayList<ChartData> chartDatum = new ArrayList<>();
-        ChartData chartData;
-
-        String startDate = Utils.formatAccountDate(billingHistory.getAccount().getBillingCycleStartDate());
-        String endDate = Utils.formatAccountDate(billingHistory.getAccount().getBillingCycleEndDate());
-        for (int i = 0; i < billingDetails.length; i++) {
-            BillingDetails billingDetail = billingDetails[i];
-            chartData = new ChartData();
-            chartData.setTag(Utils.formatAccountDate(billingDetail.getBilledDate()));
-            chartData.setVal(billingDetail.getBilledValue());
-            chartDatum.add(chartData);
-        }
-        barChart.setData(chartDatum)
-                .setTitle(null)
-                .setBarUnit("RM")
-                .setSelectionRequired(true);
-    }
-
-    private void setChartData(BarChart bar_chart, BillingHistory billingHistory, float threshold) {
-        Gson gson = new Gson();
-        BillingDetails[] billingDetails = gson.fromJson(billingHistory.getBillingDetails(), BillingDetails[].class);
-
-        ArrayList<ChartData> chartDatum = new ArrayList<>();
-        ChartData chartData;
-
-        String startDate = Utils.formatAccountDate(billingHistory.getAccount().getBillingCycleStartDate());
-        String endDate = Utils.formatAccountDate(billingHistory.getAccount().getBillingCycleEndDate());
-        for (int i = 0; i < billingDetails.length; i++) {
-            BillingDetails billingDetail = billingDetails[i];
-            chartData = new ChartData();
-            chartData.setTag(Utils.formatAccountDate(billingDetail.getBilledDate()));
-            chartData.setVal(billingDetail.getBilledValue());
-            chartDatum.add(chartData);
-        }
-        if (billingHistory.getAccount().isThreshold()) {
-            bar_chart.setData(chartDatum)
-                    .setTitle(startDate + " - " + endDate)
-                    .setBarUnit("RM")
-                    .setThreshold(true, threshold)
-                    .setSelectionRequired(true);
-        }
-    }
-
     private void setChartData(BillingDetails[] billingDetails) {
+
         ArrayList<ChartData> chartDatum = new ArrayList<>();
         ChartData chartData;
 
-        String startDate = Utils.formatAccountDate(account.getBillingCycleStartDate());
-        String endDate = Utils.formatAccountDate(account.getBillingCycleEndDate());
-        if (!THRESHOLD_SET) {
-            for (int i = 0; i < billingDetails.length; i++) {
-                BillingDetails billingDetail = billingDetails[i];
-                chartData = new ChartData();
-                chartData.setTag(Utils.formatAccountDate(billingDetail.getBilledDate()));
-                chartData.setVal(billingDetail.getBilledValue());
-                chartDatum.add(chartData);
-            }
-            if (account.isThreshold()) {
-                barChart.setData(chartDatum)
-                        .setBarUnit("RM")
-                        .setThreshold(true, Float.parseFloat(account.getUserThreshold()))
-                        .setSelectionRequired(true);
-            } else {
-                barChart.setData(chartDatum)
-                        .setBarUnit("RM")
-                        .setSelectionRequired(false);
-            }
-        } else {
-            for (int i = 0; i < billingDetails.length; i++) {
-                BillingDetails billingDetail = billingDetails[i];
-                chartData = new ChartData();
-                chartData.setTag(Utils.formatAccountDate(billingDetail.getBilledDate()));
-                chartData.setVal(billingDetail.getBilledValue());
-                chartDatum.add(chartData);
-            }
-            barChart = rootView.findViewById(R.id.accountChart);
-            ViewGroup.LayoutParams tmpLayParams = barChart.getLayoutParams();
-            ((ViewGroup) barChart.getParent()).removeView(barChart);
+        for (int i = 0; i < billingDetails.length; i++) {
+            BillingDetails billingDetail = billingDetails[i];
+            chartData = new ChartData();
+            chartData.setTag(Utils.formatAccountDate(billingDetail.getBilledDate()));
+            chartData.setVal(billingDetail.getBilledValue());
+            chartDatum.add(chartData);
+        }
+        ViewGroup.LayoutParams tmpLayParams = barChart.getLayoutParams();
+        ((ViewGroup) barChart.getParent()).removeView(barChart);
 
-            BarChart tmpBarChart = new BarChart(context);
-            tmpBarChart.setLayoutParams(tmpLayParams);
-            tmpBarChart.setId(R.id.accountChart);
-            ((ViewGroup) rootView.findViewById(R.id.rlChart)).addView(tmpBarChart);
-
+        BarChart tmpBarChart = new BarChart(getActivity());
+        tmpBarChart.setLayoutParams(tmpLayParams);
+        tmpBarChart.setId(R.id.bar_chart);
+        ((ViewGroup) rootView.findViewById(R.id.rlChart)).addView(tmpBarChart);
+        if (!THRESHOLD_SET ) {
             tmpBarChart.setData(chartDatum)
+                    .setTitle("")
                     .setBarUnit("RM")
                     .setThreshold(true, Float.parseFloat(account.getUserThreshold()))
-                    //.setThreshold(selectedAccount.isThreshold(), Float.parseFloat(energyConsumptions.getUserThreshold()))
                     .setSelectionRequired(true); //.updateData(); // .invalidate();
 
+            barChart = tmpBarChart;
+        } else {
+            tmpBarChart.setData(chartDatum)
+                    .setTitle("")
+                    .setBarUnit("RM")
+                    .setThreshold(true, Float.parseFloat(strThreshold))
+                    .setSelectionRequired(true); //.updateData(); // .invalidate();
+
+            barChart = tmpBarChart;
             THRESHOLD_SET = false;
         }
     }

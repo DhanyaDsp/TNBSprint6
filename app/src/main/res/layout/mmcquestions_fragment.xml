@@ -135,18 +135,25 @@
         android:visibility="gone"
         android:layout_below="@+id/layout_question1">
 
-        <com.ey.dgs.views.BarChart
+        <RelativeLayout
+            android:id="@+id/rlChart"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.ey.dgs.views.BarChart
             android:id="@+id/bar_chart_questions"
             android:layout_width="match_parent"
             android:layout_height="300dp"
             android:layout_marginRight="@dimen/margin24"
             android:layout_marginLeft="@dimen/margin24"/>
 
+        </RelativeLayout>
+
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/tvQuestion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/bar_chart_questions"
+            android:layout_below="@+id/rlChart"
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="@dimen/large_padding"
             android:layout_marginRight="@dimen/margin10"
@@ -160,7 +167,7 @@
             android:layout_width="@dimen/splash_icon_size"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
-            android:layout_below="@+id/bar_chart_questions"
+            android:layout_below="@+id/rlChart"
             android:layout_alignParentRight="true"
             android:layout_marginLeft="@dimen/margin13"
             android:layout_marginRight="@dimen/margin24"

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/dimen50"
+    android:layout_marginLeft="@dimen/margin25"
+    android:layout_marginRight="@dimen/margin25">
+
+    <AutoCompleteTextView
+        android:id="@+id/popup_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimen35"
+        android:layout_marginRight="@dimen/dimen35"
+        android:layout_marginTop="@dimen/margin20"
+        android:textSize="14sp"
+        android:textAlignment="center"
+        android:gravity="center"/>
+
+    <AutoCompleteTextView
+        android:id="@+id/popup_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/popup_title"
+        android:layout_marginTop="@dimen/margin10"
+        android:layout_marginRight="@dimen/margin20"
+        android:layout_marginLeft="@dimen/margin20"
+        android:textSize="14sp"
+        android:textAlignment="center"
+        android:gravity="center"/>
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/popup_message"/>
+    <Button
+        android:id="@+id/btn_close"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/close"
+        android:background="@android:color/transparent"
+        android:textColor="@color/light_green"
+        android:layout_below="@id/divider"/>
+
+</RelativeLayout>

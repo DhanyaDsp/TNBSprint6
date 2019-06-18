@@ -46,6 +46,19 @@ public class DialogHelper {
         }
     }
 
+    public static void showUserAlert(Context context, View.OnClickListener cancelListener, View.OnClickListener deleteListener) {
+        if (context != null) {
+            dialog = new AppCompatDialog(context);
+            dialog.setContentView(R.layout.delete_all_popup);
+            AppCompatButton btnCancel= dialog.getWindow().findViewById(R.id.btnCancel);
+            AppCompatButton btnDeleteAll = dialog.getWindow().findViewById(R.id.btnDeleteAll);
+            btnCancel.setOnClickListener(cancelListener);
+            btnDeleteAll.setOnClickListener(deleteListener);
+            dialog.setCancelable(false);
+            dialog.show();
+        }
+    }
+
     public static void hidePopup() {
         if (dialog != null) {
             dialog.dismiss();

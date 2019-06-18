@@ -52,6 +52,7 @@
     <string name="people_question_accounts">How many people are staying in the property?</string>
     <string name="next">Next</string>
     <string name="submit">Submit</string>
+    <string name="close">Close</string>
     <string name="not_sure">I\'m not sure</string>
     <string name="pay_bills">Pay Bills</string>
     <string name="title_activity_question">QuestionActivity</string>
