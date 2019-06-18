@@ -125,6 +125,7 @@ public class BarsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         layoutParams.height = Math.round(getBarHeight(chartDatum.get(position)));
         //barsHolder.bar_line_structure.setLayoutParams(layoutParams);
         barsHolder.bar_line.getLayoutParams().height = parentLayoutHeight;
+        barsHolder.bar_line.getLayoutParams().width = parentLayoutWidth / 7;
         /*final Account account = this.accounts.get(position);
         switch (holder.getItemViewType()) {
             case TYPE_ACCOUNT:

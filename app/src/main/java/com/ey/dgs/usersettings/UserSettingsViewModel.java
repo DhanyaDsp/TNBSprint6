@@ -23,6 +23,7 @@ public class UserSettingsViewModel extends ViewModel implements APICallback, Dat
 
     private MutableLiveData<UserSettings> userSettingsData = new MutableLiveData<>();
     private MutableLiveData<Boolean> showProgress = new MutableLiveData<>();
+
     private Context context;
 
     public void setContext(Context ctx) {
@@ -115,6 +116,7 @@ public class UserSettingsViewModel extends ViewModel implements APICallback, Dat
     public void onUpdate(Object object, int requestCode, int responseCode) {
         if (requestCode == UserSettings.REQUEST_CODE_UPDATE_USER_SETTINGS) {
             setUserSettingsData((UserSettings) object);
+        } else if (requestCode == UserSettings.REQUEST_CODE_TOGGLE_PUSH) {
         }
     }
 
@@ -133,7 +135,6 @@ public class UserSettingsViewModel extends ViewModel implements APICallback, Dat
     }
 
     public void updateUserSettingsInServer(String authToken, UserSettings userSettings) {
-
         new ApiClient().updateUserSettingsInServer(authToken, userSettings, this);
     }
 }

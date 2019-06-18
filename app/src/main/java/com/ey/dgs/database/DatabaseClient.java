@@ -7,7 +7,6 @@ import android.text.TextUtils;
 
 import com.ey.dgs.model.Account;
 import com.ey.dgs.model.AccountDetails;
-import com.ey.dgs.model.AccountDetailsRequest;
 import com.ey.dgs.model.AccountSettings;
 import com.ey.dgs.model.BillingHistory;
 import com.ey.dgs.model.EnergyConsumptions;
@@ -440,13 +439,6 @@ public class DatabaseClient {
                 AccountSettings accountSettings = DatabaseClient.getInstance(mCtx).getAppDatabase()
                         .getAccountSettingsDao()
                         .getAccountSettings(accountNumber);
-                EnergyConsumptions energyConsumptions =
-                        DatabaseClient.getInstance(mCtx).getAppDatabase()
-                                .getEnergyConsumptionsDao()
-                                .getEnergyConsumption(accountNumber);
-                if (accountSettings != null) {
-                    accountSettings.setEnergyConsumptions(energyConsumptions);
-                }
 
                 return accountSettings;
 
@@ -530,7 +522,15 @@ public class DatabaseClient {
 
                 DatabaseClient.getInstance(mCtx).getAppDatabase()
                         .getAccountSettingsDao()
-                        .insert(Arrays.asList(userSettings.getAccountSettings()));
+                        .clear();
+
+                List<AccountSettings> accountSettings = Arrays.asList(userSettings.getAccountSettings());
+                for (AccountSettings settings : accountSettings) {
+                    settings.setAccountId(Integer.parseInt(settings.getAccountNumber()));
+                }
+                DatabaseClient.getInstance(mCtx).getAppDatabase()
+                        .getAccountSettingsDao()
+                        .insert(accountSettings);
 
                 return null;
             }
@@ -592,7 +592,7 @@ public class DatabaseClient {
     }
 
     public void updateAccountSettings(int requestCode, AccountSettings accountSettings, DatabaseCallback databaseCallback) {
-        class UpdateAccountsTask extends AsyncTask<Void, Void, Void> {
+        class UpdateAccountSettingsTask extends AsyncTask<Void, Void, Void> {
 
             @Override
             protected Void doInBackground(Void... voids) {
@@ -600,6 +600,65 @@ public class DatabaseClient {
                 DatabaseClient.getInstance(mCtx).getAppDatabase()
                         .getAccountSettingsDao()
                         .update(accountSettings);
+
+                List<AccountSettings> accountSettingsList = DatabaseClient.getInstance(mCtx).getAppDatabase()
+                        .getAccountSettingsDao()
+                        .getAllAccountSettings();
+
+                UserSettings userSettings = DatabaseClient.getInstance(mCtx).getAppDatabase()
+                        .getUserSettingsDao()
+                        .getUserSettings(1);
+
+                if (accountSettings.isPushNotificationFlag()) {
+                    if (!userSettings.isPushNotificationFlag()) {
+                        userSettings.setPushNotificationFlag(true);
+                        DatabaseClient.getInstance(mCtx).getAppDatabase()
+                                .getUserSettingsDao()
+                                .update(userSettings);
+                    }
+                } else {
+                    boolean isAnyAccountPushEnabled = false;
+                    for (AccountSettings accountSettings : accountSettingsList) {
+                        if (accountSettings.isPushNotificationFlag()) {
+                            isAnyAccountPushEnabled = true;
+                        }
+                    }
+                    if (!isAnyAccountPushEnabled) {
+                        if (userSettings.isPushNotificationFlag()) {
+                            userSettings.setPushNotificationFlag(false);
+                            DatabaseClient.getInstance(mCtx).getAppDatabase()
+                                    .getUserSettingsDao()
+                                    .update(userSettings);
+                        }
+                    }
+
+                }
+
+                if (accountSettings.isSmsNotificationFlag()) {
+                    if (!userSettings.isSmsNotificationFlag()) {
+                        userSettings.setSmsNotificationFlag(true);
+                        DatabaseClient.getInstance(mCtx).getAppDatabase()
+                                .getUserSettingsDao()
+                                .update(userSettings);
+                    }
+                } else {
+                    boolean isAnyAccountSMSEnabled = false;
+                    for (AccountSettings accountSettings : accountSettingsList) {
+                        if (accountSettings.isSmsNotificationFlag()) {
+                            isAnyAccountSMSEnabled = true;
+                        }
+                    }
+                    if (!isAnyAccountSMSEnabled) {
+                        if (userSettings.isSmsNotificationFlag()) {
+                            userSettings.setSmsNotificationFlag(false);
+                            DatabaseClient.getInstance(mCtx).getAppDatabase()
+                                    .getUserSettingsDao()
+                                    .update(userSettings);
+                        }
+                    }
+
+                }
+
 
                 return null;
             }
@@ -611,7 +670,33 @@ public class DatabaseClient {
             }
         }
 
-        UpdateAccountsTask st = new UpdateAccountsTask();
+        UpdateAccountSettingsTask st = new UpdateAccountSettingsTask();
+        st.execute();
+    }
+
+    public void toggleNotificationForAllAccounts(int requestCode, boolean pushToggle, boolean smsToggle, List<Account> accounts, DatabaseCallback databaseCallback) {
+
+        class ToogleNotificationsTask extends AsyncTask<Void, Void, Void> {
+
+            @Override
+            protected Void doInBackground(Void... voids) {
+
+                for (Account account : accounts) {
+                    DatabaseClient.getInstance(mCtx).getAppDatabase()
+                            .getAccountSettingsDao()
+                            .togglePush(pushToggle, smsToggle, account.getAccountNumber());
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                databaseCallback.onUpdate(accounts, requestCode, 0);
+            }
+        }
+
+        ToogleNotificationsTask st = new ToogleNotificationsTask();
         st.execute();
     }
 

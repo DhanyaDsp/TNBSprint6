@@ -56,6 +56,7 @@ public class HomeActivity extends AppCompatActivity implements MyAccountFragment
     private boolean dashboardShown;
     private boolean notificationRegistered;
     View loader;
+    private Fragment currentFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -228,7 +229,7 @@ public class HomeActivity extends AppCompatActivity implements MyAccountFragment
 
     @Override
     public void onBackStackChanged() {
-        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.homeFlContainer);
+         currentFragment = getSupportFragmentManager().findFragmentById(R.id.homeFlContainer);
         if (currentFragment != null) {
             if (currentFragment instanceof DashboardFragment) {
                 ((DashboardFragment) currentFragment).onResume();
@@ -247,6 +248,9 @@ public class HomeActivity extends AppCompatActivity implements MyAccountFragment
         }
     }
 
+    public Fragment getCurrentFragment(){
+        return getSupportFragmentManager().findFragmentById(R.id.homeFlContainer);
+    }
     @Override
     protected void onResume() {
         super.onResume();

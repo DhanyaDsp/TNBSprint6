@@ -11,6 +11,7 @@ import android.support.v4.app.NotificationCompat;
 
 import com.ey.dgs.R;
 import com.ey.dgs.database.DatabaseClient;
+import com.ey.dgs.model.AccountSettings;
 import com.ey.dgs.model.Notification;
 import com.ey.dgs.notifications.NotificationDetailPage;
 import com.ey.dgs.utils.AppPreferences;
@@ -60,7 +61,8 @@ public class FireBaseMessagingService extends FirebaseMessagingService {
         DatabaseClient.getInstance(getApplication()).addNotification(Notification.REQUEST_CODE_ADD_NOTIFICATIONS, notification, null);
 
         appPreferences = new AppPreferences(getApplicationContext());
-        if (appPreferences.isLoginned()) {
+        AccountSettings accountSettings = DatabaseClient.getInstance(getApplicationContext()).getAppDatabase().getAccountSettingsDao().getAccountSettings(notification.getAccountNumber());
+        if (appPreferences.isLoginned() && accountSettings.isPushNotificationFlag()) {
             new NotificationHelper(getApplicationContext()).createNotification(title, notification, notification.getMessage());
         }
     }

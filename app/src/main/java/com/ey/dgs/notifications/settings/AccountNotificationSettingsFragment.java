@@ -27,11 +27,14 @@ import com.ey.dgs.model.NotificationSetting;
 import com.ey.dgs.model.NotificationSettingsRequest;
 import com.ey.dgs.model.Setting;
 import com.ey.dgs.model.User;
+import com.ey.dgs.model.UserSettings;
+import com.ey.dgs.usersettings.UserSettingsViewModel;
 import com.ey.dgs.utils.AppPreferences;
 import com.ey.dgs.utils.Utils;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 public class AccountNotificationSettingsFragment extends Fragment {
 
@@ -44,13 +47,16 @@ public class AccountNotificationSettingsFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
     Account account;
     AccountSettings accountSettings;
+    UserSettings userSettings;
     AccountSettingsViewModel accountSettingsViewModel;
+    UserSettingsViewModel userSettingsViewModel;
     LoginViewModel loginViewModel;
     AppPreferences appPreferences;
     Activity activity;
     private boolean isProgressing;
     private boolean serverCalled;
     private ArrayList<NotificationSetting> notificationSettingsCopy;
+    private AccountSettings editedAccountSettings;
 
     public AccountNotificationSettingsFragment() {
     }
@@ -78,6 +84,12 @@ public class AccountNotificationSettingsFragment extends Fragment {
         initViews();
         accountSettingsViewModel = ViewModelProviders.of(this).get(AccountSettingsViewModel.class);
         accountSettingsViewModel.setContext(getActivity());
+        userSettingsViewModel = ViewModelProviders.of(this).get(UserSettingsViewModel.class);
+        userSettingsViewModel.setContext(getActivity());
+        userSettingsViewModel.getUserSettingsFromLocalDB(1);
+        userSettingsViewModel.getUserSettings().observe(getViewLifecycleOwner(), userSettings -> {
+            this.userSettings = userSettings;
+        });
         loginViewModel = ViewModelProviders.of(this).get(LoginViewModel.class);
         loginViewModel.setContext(getActivity());
         loginViewModel.getUserDetail(appPreferences.getUser_id());
@@ -97,10 +109,10 @@ public class AccountNotificationSettingsFragment extends Fragment {
                 notificationSettingsAdapter.setAccountSettings(this.accountSettings);
                 rvNotificationSettings.setAdapter(notificationSettingsAdapter);
                 showProgress(false);
-                if (!serverCalled) {
+                /*if (!serverCalled) {
                     accountSettingsViewModel.getAccountSettingsFromServer(user.getEmail(), account.getAccountNumber());
                     serverCalled = true;
-                }
+                }*/
             }
         });
         accountSettingsViewModel.getIsAccountSettingsUpdated().observe(getViewLifecycleOwner(), isUserUpdated -> {
@@ -124,6 +136,7 @@ public class AccountNotificationSettingsFragment extends Fragment {
         });
         return binding.getRoot();
     }
+
 
     private void initViews() {
         if (mListener != null) {
@@ -175,7 +188,7 @@ public class AccountNotificationSettingsFragment extends Fragment {
     public void updateAccountDetails() {
         Utils.hideKeyBoard(getActivity());
         if (!isProgressing) {
-            AccountSettings accountSettings = notificationSettingsAdapter.getAccountSettings();
+            editedAccountSettings = notificationSettingsAdapter.getAccountSettings();
             NotificationSettingsRequest notificationSettingsRequest = new NotificationSettingsRequest();
             notificationSettingsRequest.setUserName(user.getEmail());
             notificationSettingsRequest.setAccountNumber(account.getAccountNumber());
@@ -188,6 +201,7 @@ public class AccountNotificationSettingsFragment extends Fragment {
             isProgressing = true;
             showProgress(true);
             accountSettingsViewModel.updateAccountSettingsInServer(notificationSettingsRequest);
+
         }
     }
 

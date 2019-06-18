@@ -192,6 +192,7 @@ public class ApiClient {
                 if (userSettingsResponse != null) {
                     if (userSettingsResponse.isSuccess()) {
                         userSettingsResponse.getUserSettings().setUserId(user.getUserId());
+                        userSettingsResponse.getUserSettings().setUserName(user.getEmail());
                         callback.onSuccess(REQUEST_CODE_GET_USER_SETTINGS, userSettingsResponse, response.code());
                     } else {
                         userSettingsResponse.setMessage("Please try again!");
@@ -333,9 +334,7 @@ public class ApiClient {
         call.enqueue(new Callback<APIResponse>() {
             @Override
             public void onResponse(Call<APIResponse> call, Response<APIResponse> response) {
-                //APIResponse apiResponse = response.body();
-                Gson gson = new Gson();
-                APIResponse apiResponse = gson.fromJson(MockResponse.MOCK_BASE_UPDATE_RESPONSE, APIResponse.class);
+                APIResponse apiResponse = response.body();
                 if (apiResponse != null) {
                     if (apiResponse.isSuccess()) {
                         callback.onSuccess(REQUEST_CODE_UPDATE_USER_SETTINGS, userSettings, response.code());

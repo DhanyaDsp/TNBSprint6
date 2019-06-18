@@ -17,90 +17,99 @@
 
     </data>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@android:color/white"
-        android:clickable="true"
-        android:focusableInTouchMode="true"
-        android:orientation="vertical">
+        android:layout_height="wrap_content">
 
-        <RelativeLayout
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:padding="@dimen/medium_padding">
-
-            <android.support.v7.widget.AppCompatTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:fontFamily="@font/museosans_500"
-                android:text="@string/push_notifications"
-                android:textColor="@color/black"
-                android:textSize="@dimen/text_size_medium" />
-
-            <android.support.v7.widget.SwitchCompat
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:checked="@={userSettings.pushNotificationFlag}"
-                android:onCheckedChanged="@{(view,isChecked)-> fragment.toggleNotification(view,isChecked)}"
-                android:theme="@style/SwitchCompatTheme" />
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:padding="@dimen/medium_padding">
-
-            <android.support.v7.widget.AppCompatTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:fontFamily="@font/museosans_500"
-                android:text="@string/sms"
-                android:textColor="@color/black"
-                android:textSize="@dimen/text_size_medium" />
-
-            <android.support.v7.widget.SwitchCompat
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:checked="@={userSettings.smsNotificationFlag}"
-                android:onCheckedChanged="@{(view,isChecked)-> fragment.toggleNotification(view,isChecked)}"
-                android:theme="@style/SwitchCompatTheme" />
-
-        </RelativeLayout>
-
-        <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/tvLabel2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/museosans_500"
-            android:padding="@dimen/medium_padding"
-            android:text="@string/notification_sms_heading"
-            android:textColor="@android:color/darker_gray"
-            android:textSize="@dimen/text_size_medium1" />
-
-        <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/tvLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/museosans_500"
-            android:padding="@dimen/medium_padding"
-            android:text="@string/notification_toggle_heading"
-            android:textColor="@color/blue1" />
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rvAccounts"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@android:color/white"
             android:clickable="true"
-            android:focusableInTouchMode="true" />
+            android:focusableInTouchMode="true"
+            android:orientation="vertical">
 
-    </LinearLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:padding="@dimen/medium_padding">
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:fontFamily="@font/museosans_500"
+                    android:text="@string/push_notifications"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_size_medium" />
+
+                <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/scPush"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:checked="@={userSettings.pushNotificationFlag}"
+                    android:onCheckedChanged="@{(view,isChecked)-> fragment.togglePushNotification(view,isChecked)}"
+                    android:theme="@style/SwitchCompatTheme" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:padding="@dimen/medium_padding">
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:fontFamily="@font/museosans_500"
+                    android:text="@string/sms"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_size_medium" />
+
+                <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/scSMS"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:checked="@={userSettings.smsNotificationFlag}"
+                    android:onCheckedChanged="@{(view,isChecked)-> fragment.toggleSMSNotification(view,isChecked)}"
+                    android:theme="@style/SwitchCompatTheme" />
+
+            </RelativeLayout>
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/tvLabel2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/museosans_500"
+                android:padding="@dimen/medium_padding"
+                android:text="@string/notification_sms_heading"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="@dimen/text_size_medium1" />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/tvLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/museosans_500"
+                android:padding="@dimen/medium_padding"
+                android:text="@string/notification_toggle_heading"
+                android:textColor="@color/blue1" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rvAccounts"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusableInTouchMode="true" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
 
 </layout>

@@ -1,12 +1,12 @@
 package com.ey.dgs.notifications.settings;
 
-import android.app.Activity;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.ey.dgs.HomeActivity;
 import com.ey.dgs.R;
@@ -19,6 +19,7 @@ public class NotificationSettingsActivity extends AppCompatActivity implements S
     boolean isComingFromPopup, isAddThreshold;
     Account account;
     AccountSettingsViewModel accountSettingsViewModel;
+    private View loader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +70,7 @@ public class NotificationSettingsActivity extends AppCompatActivity implements S
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("More");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        loader = findViewById(R.id.loader);
     }
 
     @Override
@@ -86,7 +88,7 @@ public class NotificationSettingsActivity extends AppCompatActivity implements S
         if (currentFragment instanceof SettingsMenuFragment) {
             finish();
         } else if (currentFragment instanceof NotificationToggleFragment) {
-            super.onBackPressed();
+            ((NotificationToggleFragment) currentFragment).updateUserSettings();
             setActionBarTitle("More");
         } else if (currentFragment instanceof AccountNotificationSettingsFragment) {
             ((AccountNotificationSettingsFragment) currentFragment).updateAccountDetails();
@@ -117,5 +119,13 @@ public class NotificationSettingsActivity extends AppCompatActivity implements S
 
     public void moveToNotificationTogglePage() {
         FragmentUtils.newInstance(getSupportFragmentManager()).addFragment(FragmentUtils.INDEX_NOTIFICATION_TOGGLE_FRAGMENT, null, NotificationToggleFragment.class.getName(), R.id.flNotificationContainer);
+    }
+
+    public void showProgress(boolean show) {
+        if (show) {
+            loader.setVisibility(View.VISIBLE);
+        } else {
+            loader.setVisibility(View.GONE);
+        }
     }
 }

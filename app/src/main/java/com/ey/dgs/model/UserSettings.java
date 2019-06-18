@@ -12,9 +12,12 @@ public class UserSettings implements Serializable {
     public static int REQUEST_CODE_ADD_USER_SETTINGS = 20;
     public static int REQUEST_CODE_GET_USER_SETTINGS = 21;
     public static int REQUEST_CODE_UPDATE_USER_SETTINGS = 22;
+    public static int REQUEST_CODE_TOGGLE_PUSH = 25;
 
     @PrimaryKey
     private int userId;
+
+    private String UserName;
 
     private boolean showSplashScreen = true;
 
@@ -83,5 +86,13 @@ public class UserSettings implements Serializable {
 
     public void setAccountSettings(AccountSettings[] accountSettings) {
         this.accountSettings = accountSettings;
+    }
+
+    public String getUserName() {
+        return UserName;
+    }
+
+    public void setUserName(String userName) {
+        UserName = userName;
     }
 }
