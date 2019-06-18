@@ -205,7 +205,7 @@ public class MMCQuestionsFragment extends Fragment implements View.OnClickListen
 
     private void callAccountDetailsAPiService() {
         peopleInProperty = numberDisplay.getText().toString().trim();
-        thresholdValue = thresholdAnswer.getText().toString().trim();
+        thresholdValue = thresholdAnswer.getText().toString().trim().replace(".","");
         if(!TextUtils.isEmpty(thresholdValue) && Integer.valueOf(thresholdValue) > 0) {
             AccountDetails[] accountDetailsArray = new AccountDetails[1];
             accountDetailsArray[0] = new AccountDetails(account.getAccountNumber(),
