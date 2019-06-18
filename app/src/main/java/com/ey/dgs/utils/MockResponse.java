@@ -322,4 +322,37 @@ public class MockResponse {
             "    }\n" +
             "}";
 
+    public static String MOCK_BILLING_RESPONSE_WEEKLY="{\n" +
+            "    \"success\": true,\n" +
+            "    \"result\": {\n" +
+            "        \"accountNumber\": \"21000000\",\n" +
+            "        \"billingDetails\": [\n" +
+            "            {\n" +
+            "                \"billedDate\": \"2018-10-18T00:00:00\",\n" +
+            "                \"billedValue\": 65\n" +
+            "            },\n" +
+            "            {\n" +
+            "                \"billedDate\": \"2018-10-25T00:00:00\",\n" +
+            "                \"billedValue\": 76\n" +
+            "            },\n" +
+            "            {\n" +
+            "                \"billedDate\": \"2018-11-04T00:00:00\",\n" +
+            "                \"billedValue\": 74\n" +
+            "            },\n" +
+            "            {\n" +
+            "                \"billedDate\": \"2018-11-11T00:00:00\",\n" +
+            "                \"billedValue\": 93\n" +
+            "            },\n" +
+            "            {\n" +
+            "                \"billedDate\": \"2018-11-18T00:00:00\",\n" +
+            "                \"billedValue\": 85\n" +
+            "            },\n" +
+            "            {\n" +
+            "                \"billedDate\": \"2018-11-25T00:00:00\",\n" +
+            "                \"billedValue\": 70\n" +
+            "            }\n" +
+            "        ]\n" +
+            "    }\n" +
+            "}";
+
 }
