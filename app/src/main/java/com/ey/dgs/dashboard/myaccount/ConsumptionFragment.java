@@ -31,6 +31,7 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 
 import static com.ey.dgs.model.BillingHistory.DAILY;
+import static com.ey.dgs.model.BillingHistory.MONTHLY;
 import static com.ey.dgs.model.BillingHistory.WEEKLY;
 import static com.ey.dgs.utils.FragmentUtils.INDEX_QUESTIONS_FRAGMENT;
 
@@ -171,7 +172,7 @@ public class ConsumptionFragment extends Fragment implements View.OnClickListene
         barChart.setSelectionRequired(true);
         btnDaily = view.findViewById(R.id.btnDaily);
         btnMonthly = view.findViewById(R.id.btnMonthly);
-        btnYearly = view.findViewById(R.id.btnYearly);
+        btnYearly = view.findViewById(R.id.btnWeekly);
         btnManageConsumption = view.findViewById(R.id.btnManageConsumption);
         btnManageConsumption.setOnClickListener(this);
         btnDaily.setOnClickListener(this);
@@ -199,11 +200,11 @@ public class ConsumptionFragment extends Fragment implements View.OnClickListene
                 btnDaily.setSelected(false);
                 btnMonthly.setSelected(true);
                 btnYearly.setSelected(false);
-                getBillingHistory(WEEKLY);
+                getBillingHistory(MONTHLY);
                 llDays.setVisibility(View.GONE);
                 break;
 
-            case R.id.btnYearly:
+            case R.id.btnWeekly:
                 btnDaily.setSelected(false);
                 btnMonthly.setSelected(false);
                 btnYearly.setSelected(true);

@@ -193,130 +193,130 @@ public class MockResponse {
             "    }\n" +
             "}";
 
-    public static String MOCK_BILLING_RESPONSE="{\n" +
+    public static String MOCK_BILLING_RESPONSE_DAILY ="{\n" +
             "    \"success\": true,\n" +
             "    \"result\": {\n" +
-            "        \"accountNumber\": \"50000000\",\n" +
+            "        \"accountNumber\": \"21000000\",\n" +
             "        \"billingDetails\": [\n" +
             "            {\n" +
-            "                \"billedDate\": \"2018-07-03T00:00:00\",\n" +
-            "                \"billedValue\": 104\n" +
+            "                \"billedDate\": \"2019-11-04T00:00:00\",\n" +
+            "                \"billedValue\": 55\n" +
             "            },\n" +
             "            {\n" +
-            "                \"billedDate\": \"2018-08-03T00:00:00\",\n" +
-            "                \"billedValue\": 88\n" +
-            "            },\n" +
-            "            {\n" +
-            "                \"billedDate\": \"2018-09-03T00:00:00\",\n" +
+            "                \"billedDate\": \"2019-11-05T00:00:00\",\n" +
             "                \"billedValue\": 72\n" +
             "            },\n" +
             "            {\n" +
-            "                \"billedDate\": \"2018-10-03T00:00:00\",\n" +
-            "                \"billedValue\": 56\n" +
-            "            },\n" +
-            "            {\n" +
-            "                \"billedDate\": \"2018-11-03T00:00:00\",\n" +
-            "                \"billedValue\": 98.4\n" +
-            "            },\n" +
-            "            {\n" +
-            "                \"billedDate\": \"2018-12-03T00:00:00\",\n" +
-            "                \"billedValue\": 61.6\n" +
-            "            },\n" +
-            "\t\t\t{\n" +
-            "                \"billedDate\": \"2018-07-03T00:00:00\",\n" +
-            "                \"billedValue\": 104\n" +
-            "            },\n" +
-            "            {\n" +
-            "                \"billedDate\": \"2018-08-03T00:00:00\",\n" +
+            "                \"billedDate\": \"2019-11-06T00:00:00\",\n" +
             "                \"billedValue\": 88\n" +
             "            },\n" +
             "            {\n" +
-            "                \"billedDate\": \"2018-09-03T00:00:00\",\n" +
-            "                \"billedValue\": 72\n" +
+            "                \"billedDate\": \"2019-11-07T00:00:00\",\n" +
+            "                \"billedValue\": 73\n" +
             "            },\n" +
             "            {\n" +
-            "                \"billedDate\": \"2018-10-03T00:00:00\",\n" +
-            "                \"billedValue\": 56\n" +
-            "            },\n" +
-            "            {\n" +
-            "                \"billedDate\": \"2018-11-03T00:00:00\",\n" +
-            "                \"billedValue\": 98.4\n" +
-            "            },\n" +
-            "            {\n" +
-            "                \"billedDate\": \"2018-12-03T00:00:00\",\n" +
-            "                \"billedValue\": 61.6\n" +
-            "            },\n" +
-            "\t\t\t{\n" +
-            "                \"billedDate\": \"2018-07-03T00:00:00\",\n" +
-            "                \"billedValue\": 104\n" +
-            "            },\n" +
-            "            {\n" +
-            "                \"billedDate\": \"2018-08-03T00:00:00\",\n" +
+            "                \"billedDate\": \"2019-11-08T00:00:00\",\n" +
             "                \"billedValue\": 88\n" +
             "            },\n" +
             "            {\n" +
-            "                \"billedDate\": \"2018-09-03T00:00:00\",\n" +
+            "                \"billedDate\": \"2019-11-09T00:00:00\",\n" +
+            "                \"billedValue\": 81\n" +
+            "            },\n" +
+            "            {\n" +
+            "                \"billedDate\": \"2019-11-10T00:00:00\",\n" +
+            "                \"billedValue\": 85\n" +
+            "            },\n" +
+            "            {\n" +
+            "                \"billedDate\": \"2019-11-11T00:00:00\",\n" +
+            "                \"billedValue\": 62\n" +
+            "            },\n" +
+            "            {\n" +
+            "                \"billedDate\": \"2019-11-12T00:00:00\",\n" +
+            "                \"billedValue\": 59\n" +
+            "            },\n" +
+            "            {\n" +
+            "                \"billedDate\": \"2019-11-13T00:00:00\",\n" +
+            "                \"billedValue\": 76\n" +
+            "            },\n" +
+            "            {\n" +
+            "                \"billedDate\": \"2019-11-14T00:00:00\",\n" +
+            "                \"billedValue\": 66\n" +
+            "            },\n" +
+            "            {\n" +
+            "                \"billedDate\": \"2019-11-15T00:00:00\",\n" +
+            "                \"billedValue\": 67\n" +
+            "            },\n" +
+            "            {\n" +
+            "                \"billedDate\": \"2019-11-16T00:00:00\",\n" +
+            "                \"billedValue\": 74\n" +
+            "            },\n" +
+            "            {\n" +
+            "                \"billedDate\": \"2019-11-17T00:00:00\",\n" +
+            "                \"billedValue\": 82\n" +
+            "            },\n" +
+            "            {\n" +
+            "                \"billedDate\": \"2019-11-18T00:00:00\",\n" +
+            "                \"billedValue\": 84\n" +
+            "            },\n" +
+            "            {\n" +
+            "                \"billedDate\": \"2019-11-19T00:00:00\",\n" +
+            "                \"billedValue\": 71\n" +
+            "            },\n" +
+            "            {\n" +
+            "                \"billedDate\": \"2019-11-20T00:00:00\",\n" +
+            "                \"billedValue\": 62\n" +
+            "            },\n" +
+            "            {\n" +
+            "                \"billedDate\": \"2019-11-21T00:00:00\",\n" +
+            "                \"billedValue\": 82\n" +
+            "            },\n" +
+            "            {\n" +
+            "                \"billedDate\": \"2019-11-22T00:00:00\",\n" +
+            "                \"billedValue\": 73\n" +
+            "            },\n" +
+            "            {\n" +
+            "                \"billedDate\": \"2019-11-23T00:00:00\",\n" +
+            "                \"billedValue\": 65\n" +
+            "            },\n" +
+            "            {\n" +
+            "                \"billedDate\": \"2019-11-24T00:00:00\",\n" +
+            "                \"billedValue\": 73\n" +
+            "            },\n" +
+            "            {\n" +
+            "                \"billedDate\": \"2019-11-25T00:00:00\",\n" +
             "                \"billedValue\": 72\n" +
             "            },\n" +
             "            {\n" +
-            "                \"billedDate\": \"2018-10-03T00:00:00\",\n" +
-            "                \"billedValue\": 56\n" +
+            "                \"billedDate\": \"2019-11-26T00:00:00\",\n" +
+            "                \"billedValue\": 85\n" +
             "            },\n" +
             "            {\n" +
-            "                \"billedDate\": \"2018-11-03T00:00:00\",\n" +
-            "                \"billedValue\": 98.4\n" +
+            "                \"billedDate\": \"2019-11-27T00:00:00\",\n" +
+            "                \"billedValue\": 74\n" +
             "            },\n" +
             "            {\n" +
-            "                \"billedDate\": \"2018-12-03T00:00:00\",\n" +
-            "                \"billedValue\": 61.6\n" +
-            "            },\n" +
-            "\t\t\t{\n" +
-            "                \"billedDate\": \"2018-07-03T00:00:00\",\n" +
-            "                \"billedValue\": 104\n" +
+            "                \"billedDate\": \"2019-11-28T00:00:00\",\n" +
+            "                \"billedValue\": 63\n" +
             "            },\n" +
             "            {\n" +
-            "                \"billedDate\": \"2018-08-03T00:00:00\",\n" +
+            "                \"billedDate\": \"2019-11-29T00:00:00\",\n" +
             "                \"billedValue\": 88\n" +
             "            },\n" +
             "            {\n" +
-            "                \"billedDate\": \"2018-09-03T00:00:00\",\n" +
+            "                \"billedDate\": \"2019-11-30T00:00:00\",\n" +
             "                \"billedValue\": 72\n" +
             "            },\n" +
             "            {\n" +
-            "                \"billedDate\": \"2018-10-03T00:00:00\",\n" +
-            "                \"billedValue\": 56\n" +
+            "                \"billedDate\": \"2019-12-01T00:00:00\",\n" +
+            "                \"billedValue\": 74\n" +
             "            },\n" +
             "            {\n" +
-            "                \"billedDate\": \"2018-11-03T00:00:00\",\n" +
-            "                \"billedValue\": 98.4\n" +
+            "                \"billedDate\": \"2019-12-02T00:00:00\",\n" +
+            "                \"billedValue\": 86\n" +
             "            },\n" +
             "            {\n" +
-            "                \"billedDate\": \"2018-12-03T00:00:00\",\n" +
-            "                \"billedValue\": 61.6\n" +
-            "            },\n" +
-            "\t\t\t{\n" +
-            "                \"billedDate\": \"2018-07-03T00:00:00\",\n" +
-            "                \"billedValue\": 104\n" +
-            "            },\n" +
-            "            {\n" +
-            "                \"billedDate\": \"2018-08-03T00:00:00\",\n" +
-            "                \"billedValue\": 88\n" +
-            "            },\n" +
-            "            {\n" +
-            "                \"billedDate\": \"2018-09-03T00:00:00\",\n" +
-            "                \"billedValue\": 72\n" +
-            "            },\n" +
-            "            {\n" +
-            "                \"billedDate\": \"2018-10-03T00:00:00\",\n" +
-            "                \"billedValue\": 56\n" +
-            "            },\n" +
-            "            {\n" +
-            "                \"billedDate\": \"2018-11-03T00:00:00\",\n" +
-            "                \"billedValue\": 98.4\n" +
-            "            },\n" +
-            "            {\n" +
-            "                \"billedDate\": \"2018-12-03T00:00:00\",\n" +
-            "                \"billedValue\": 61.6\n" +
+            "                \"billedDate\": \"2019-12-03T00:00:00\",\n" +
+            "                \"billedValue\": 73\n" +
             "            }\n" +
             "        ]\n" +
             "    }\n" +
@@ -350,6 +350,40 @@ public class MockResponse {
             "            {\n" +
             "                \"billedDate\": \"2018-11-25T00:00:00\",\n" +
             "                \"billedValue\": 70\n" +
+            "            }\n" +
+            "        ]\n" +
+            "    }\n" +
+            "}";
+
+
+    public static final String MOCK_BILLING_RESPONSE_MONTHLY = "{\n" +
+            "    \"success\": true,\n" +
+            "    \"result\": {\n" +
+            "        \"accountNumber\": \"21000000\",\n" +
+            "        \"billingDetails\": [\n" +
+            "            {\n" +
+            "                \"billedDate\": \"2018-07-03T00:00:00\",\n" +
+            "                \"billedValue\": 390\n" +
+            "            },\n" +
+            "            {\n" +
+            "                \"billedDate\": \"2018-08-03T00:00:00\",\n" +
+            "                \"billedValue\": 330\n" +
+            "            },\n" +
+            "            {\n" +
+            "                \"billedDate\": \"2018-09-03T00:00:00\",\n" +
+            "                \"billedValue\": 270\n" +
+            "            },\n" +
+            "            {\n" +
+            "                \"billedDate\": \"2018-10-03T00:00:00\",\n" +
+            "                \"billedValue\": 210\n" +
+            "            },\n" +
+            "            {\n" +
+            "                \"billedDate\": \"2018-11-03T00:00:00\",\n" +
+            "                \"billedValue\": 369\n" +
+            "            },\n" +
+            "            {\n" +
+            "                \"billedDate\": \"2018-12-03T00:00:00\",\n" +
+            "                \"billedValue\": 231\n" +
             "            }\n" +
             "        ]\n" +
             "    }\n" +

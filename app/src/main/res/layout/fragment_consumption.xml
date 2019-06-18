@@ -52,7 +52,7 @@
                         android:textSize="@dimen/text_size_small" />
 
                     <android.support.v7.widget.AppCompatButton
-                        android:id="@+id/btnMonthly"
+                        android:id="@+id/btnWeekly"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -64,7 +64,7 @@
                         android:textSize="@dimen/text_size_small" />
 
                     <android.support.v7.widget.AppCompatButton
-                        android:id="@+id/btnYearly"
+                        android:id="@+id/btnMonthly"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"

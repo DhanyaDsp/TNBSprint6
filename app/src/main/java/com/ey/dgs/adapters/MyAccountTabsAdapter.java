@@ -23,7 +23,7 @@ public class MyAccountTabsAdapter extends FragmentStatePagerAdapter {
     public MyAccountTabsAdapter(FragmentManager manager, Context context) {
         super(manager);
         this.context = context;
-        tabTitles = new String[]{"Consumption", "Energy Sights"};
+        tabTitles = new String[]{"Consumption", "Energy Insights"};
     }
 
     @Override
