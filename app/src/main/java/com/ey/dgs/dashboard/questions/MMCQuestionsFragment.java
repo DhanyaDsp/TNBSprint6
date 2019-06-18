@@ -104,8 +104,8 @@ public class MMCQuestionsFragment extends Fragment implements View.OnClickListen
     private void setData() {
         tvAccountName.setText(account.getNickName());
         tvPeopleQuestion.setText(rootView.getContext().getString(R.string.people_question, account.getNickName()));
-        numberDisplay.setText(account.getPeopleInProperty());
-        thresholdAnswer.setText(account.getUserThreshold());
+        /*numberDisplay.setText(account.getPeopleInProperty());
+        thresholdAnswer.setText(account.getUserThreshold());*/
     }
 
     private void initViews() {
@@ -161,8 +161,6 @@ public class MMCQuestionsFragment extends Fragment implements View.OnClickListen
         if (account != null) {
             binding.setAccount(account);
         }
-        /*numberDisplay.setText(accountDetails[0].getPeopleInProperty());
-        thresholdAnswer.setText(accountDetails[0].getUserThreshold());*/
     }
 
     public void showProgress(boolean isProgress) {
