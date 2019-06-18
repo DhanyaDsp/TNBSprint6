@@ -4,9 +4,9 @@ public class BillingPeriodReqest {
 
     private String AccountNumber;
 
-    private int BillingPeriod;
+    private String BillingPeriod;
 
-    public BillingPeriodReqest(String accountNumber, int billingPeriod) {
+    public BillingPeriodReqest(String accountNumber, String billingPeriod) {
         AccountNumber = accountNumber;
         BillingPeriod = billingPeriod;
     }
