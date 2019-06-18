@@ -397,10 +397,14 @@ public class ApiClient {
             @Override
             public void onResponse(Call<BillingDetailsResponse> call, Response<BillingDetailsResponse> response) {
                 BillingDetailsResponse billingDetailsResponse = response.body();
-                /*if (period.equalsIgnoreCase(BillingHistory.DAILY)) {
-                    Gson gson = new Gson();
-                    billingDetailsResponse = gson.fromJson(MockResponse.MOCK_BILLING_RESPONSE, BillingDetailsResponse.class);
-                }*/
+                Gson gson = new Gson();
+                if (period.equalsIgnoreCase(BillingHistory.DAILY)) {
+                    billingDetailsResponse = gson.fromJson(MockResponse.MOCK_BILLING_RESPONSE,
+                            BillingDetailsResponse.class);
+                } else if (period.equalsIgnoreCase(BillingHistory.WEEKLY)) {
+                    billingDetailsResponse = gson.fromJson(MockResponse.MOCK_BILLING_RESPONSE_WEEKLY,
+                            BillingDetailsResponse.class);
+                }
                 if (billingDetailsResponse != null) {
                     if (billingDetailsResponse.isSuccess()) {
                         account.setBillingDetails(billingDetailsResponse.getResult().getBillingDetails());
