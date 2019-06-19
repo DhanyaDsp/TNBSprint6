@@ -11,24 +11,33 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 
 import com.ey.dgs.R;
 import com.ey.dgs.adapters.NotificationAccountAdapter;
 import com.ey.dgs.authentication.LoginViewModel;
+import com.ey.dgs.dashboard.DashboardFragment;
 import com.ey.dgs.dashboard.DashboardViewModel;
+import com.ey.dgs.dashboard.MyDashboardFragment;
+import com.ey.dgs.dashboard.myaccount.AccountSettingsViewModel;
 import com.ey.dgs.databinding.FragmentNotificationToggleBinding;
 import com.ey.dgs.model.Account;
+import com.ey.dgs.model.AccountSettings;
+import com.ey.dgs.model.NotificationSettingsRequest;
+import com.ey.dgs.model.Setting;
 import com.ey.dgs.model.User;
 import com.ey.dgs.model.UserSettings;
 import com.ey.dgs.usersettings.UserSettingsViewModel;
 import com.ey.dgs.utils.AppPreferences;
+import com.ey.dgs.utils.Utils;
 
 import java.util.ArrayList;
 
-public class NotificationToggleFragment extends Fragment {
+public class NotificationToggleFragment extends Fragment implements CompoundButton.OnCheckedChangeListener {
 
     private View view;
     private RecyclerView rvAccounts;
@@ -37,12 +46,15 @@ public class NotificationToggleFragment extends Fragment {
     private NotificationAccountAdapter accountAdapter;
     private DashboardViewModel mViewModel;
     UserSettingsViewModel userSettingsViewModel;
+    AccountSettingsViewModel accountSettingsViewModel;
     User user;
-    UserSettings userSettings;
+    UserSettings userSettings, editedUserSettings;
     FragmentNotificationToggleBinding binding;
     private OnFragmentInteractionListener mListener;
     private AppPreferences appPreferences;
     AppCompatTextView tvLabel;
+    SwitchCompat scPush, scSMS;
+    private boolean isProgressing;
 
     public NotificationToggleFragment() {
     }
@@ -71,6 +83,10 @@ public class NotificationToggleFragment extends Fragment {
         if (mListener != null) {
             mListener.onFragmentInteraction("Notifications");
         }
+        scPush = view.findViewById(R.id.scPush);
+        scSMS = view.findViewById(R.id.scSMS);/*
+        scPush.setOnCheckedChangeListener(this);
+        scSMS.setOnCheckedChangeListener(this);*/
         tvLabel = view.findViewById(R.id.tvLabel);
         rvAccounts = view.findViewById(R.id.rvAccounts);
         rvAccounts.setHasFixedSize(true);
@@ -91,10 +107,15 @@ public class NotificationToggleFragment extends Fragment {
 
     private void subscribe() {
         userSettingsViewModel = ViewModelProviders.of(this).get(UserSettingsViewModel.class);
+        accountSettingsViewModel = ViewModelProviders.of(this).get(AccountSettingsViewModel.class);
+        accountSettingsViewModel.getLoaderData().observe(getViewLifecycleOwner(), show -> {
+            ((NotificationSettingsActivity) getActivity()).showProgress(show);
+        });
         userSettingsViewModel.getUserSettingsFromLocalDB(appPreferences.getUser_id());
         userSettingsViewModel.getUserSettings().observe(getViewLifecycleOwner(), userSettings -> {
             if (userSettings != null) {
                 this.userSettings = userSettings;
+                editedUserSettings = userSettings;
                 binding.setUserSettings(userSettings);
             }
         });
@@ -105,17 +126,47 @@ public class NotificationToggleFragment extends Fragment {
             this.accounts.addAll(accounts);
             accountAdapter.notifyDataSetChanged();
         });
+        accountSettingsViewModel.getIsAccountSettingsUpdated().observe(getViewLifecycleOwner(), isUserUpdated -> {
+            isProgressing = false;
+            if (isUserUpdated) {
+                Utils.showToast(getActivity(),"User Settings Updated");
+                getActivity().onBackPressed();
+            } else {
+            }
+        });
     }
 
-    public void toggleNotification(View view, boolean isChecked) {
-        //loginViewModel.updateUserInServer(user);
-        if (isChecked) {
-            rvAccounts.setVisibility(View.VISIBLE);
-            tvLabel.setVisibility(View.VISIBLE);
-        } else {
-            rvAccounts.setVisibility(View.GONE);
-            tvLabel.setVisibility(View.GONE);
+    public void togglePushNotification(View view, boolean isChecked) {
+        editedUserSettings.setPushNotificationFlag(isChecked);
+    }
+
+    public void toggleSMSNotification(View view, boolean isChecked) {
+        editedUserSettings.setSmsNotificationFlag(isChecked);
+    }
+
+    public void updateUserSettings() {
+        if (!isProgressing) {
+            accountSettingsViewModel.updateUserSettingsInServer(appPreferences.getAuthToken(), accounts, editedUserSettings);
+            isProgressing = true;
         }
+    }
+
+    private void updateAllAccountSettings(ArrayList<Account> accounts) {
+        for (Account account : accounts) {
+            NotificationSettingsRequest notificationSettingsRequest = new NotificationSettingsRequest();
+            notificationSettingsRequest.setUserName(user.getEmail());
+            notificationSettingsRequest.setAccountNumber(account.getAccountNumber());
+            Setting setting = new Setting();
+            setting.setPushNotificationFlag(editedUserSettings.isPushNotificationFlag());
+            setting.setSmsNotificationFlag(editedUserSettings.isSmsNotificationFlag());
+            notificationSettingsRequest.setSetting(setting);
+            accountSettingsViewModel.updateAccountSettingsInServer(notificationSettingsRequest);
+        }
+
+    }
+
+    private void toggleSMSForAllAccounts(boolean b) {
+
     }
 
     public void moveToNotificationSettings(Account account) {
@@ -137,6 +188,20 @@ public class NotificationToggleFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        switch (buttonView.getId()) {
+            case R.id.scPush:
+                togglePushNotification(buttonView, isChecked);
+                break;
+            case R.id.scSMS:
+                toggleSMSNotification(buttonView, isChecked);
+                break;
+            default:
+                break;
+        }
     }
 
     public interface OnFragmentInteractionListener {

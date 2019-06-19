@@ -101,6 +101,23 @@ public class Utils {
         return "";
     }
 
+    public static String formatCurrentDate(Date date) {
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        Date sourceDate = null;
+        try {
+            sourceDate = dateFormat.parse(dateFormat.format(date));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        } catch (java.text.ParseException e) {
+            e.printStackTrace();
+        }
+
+        SimpleDateFormat targetFormat = new SimpleDateFormat("dd MMM");
+        String outputDate = targetFormat.format(sourceDate);
+        return outputDate;
+    }
+
     public static String formatNotificationDate() {
         return new SimpleDateFormat("dd MMM yyyy").format(new Date());
     }

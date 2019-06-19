@@ -142,7 +142,7 @@ public class BarChart extends LinearLayout {
     }
 
     public void animateThresholdItem() {
-        float yVal = getThresholdY(this.thresholdValue) - (thresholdHolder.getHeight() * 1f);// + 100f;
+        float yVal = getThresholdY(this.thresholdValue) - (thresholdHolder.getHeight() * 1f);
         final ObjectAnimator oa = ObjectAnimator.ofFloat(this.thresholdHolder, "y", yVal);
         oa.setDuration(1000);
         oa.start();
@@ -160,7 +160,8 @@ public class BarChart extends LinearLayout {
             }
         }
         largestVal += largestVal * 0.1f;
-        return largestVal + 90f;
+        largestVal = largestVal;
+        return largestVal;
     }
 
     private float getThresholdY(float thresholdValue) {

@@ -22,7 +22,6 @@
         android:layout_width="18dp"
         android:layout_height="match_parent"
         android:layout_gravity="center_horizontal|bottom"
-        android:layout_marginTop="@dimen/medium_padding"
         android:background="@drawable/bg_chart_bar_default" />
 
 </LinearLayout>

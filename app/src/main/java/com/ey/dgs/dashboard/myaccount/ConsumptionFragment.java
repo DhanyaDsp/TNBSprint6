@@ -29,6 +29,7 @@ import com.ey.dgs.views.BarChart;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import static com.ey.dgs.model.BillingHistory.DAILY;
 import static com.ey.dgs.model.BillingHistory.MONTHLY;
@@ -145,6 +146,11 @@ public class ConsumptionFragment extends Fragment implements View.OnClickListene
             chartData.setVal(billingDetail.getBilledValue());
             chartDatum.add(chartData);
         }
+        chartData = new ChartData();
+        chartData.setTag(Utils.formatCurrentDate(new Date()));
+        chartData.setVal(Float.parseFloat(account.getCurrentMonthConsumption()));
+        chartDatum.add(chartData);
+
         barChart = view.findViewById(R.id.bar_chart);
         ViewGroup.LayoutParams tmpLayParams = barChart.getLayoutParams();
         ((ViewGroup) barChart.getParent()).removeView(barChart);

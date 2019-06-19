@@ -33,11 +33,11 @@ public class LegendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public void toggleSelection(int position) {
         boolean isCurrentlySelected = chartDatum.get(position).getIsSelected();
 
-        if(!isCurrentlySelected) {
+        if (!isCurrentlySelected) {
             // Change all other selections to false
             int i = 0;
-            for(ChartData chartData: chartDatum) {
-                if(i!=position) {
+            for (ChartData chartData : chartDatum) {
+                if (i != position) {
                     chartData.setIsSelected(false);
                 }
                 i++;
@@ -51,6 +51,7 @@ public class LegendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     public class LegendHolder extends RecyclerView.ViewHolder {
         AppCompatTextView x_txt_label;
+
         public LegendHolder(View v) {
             super(v);
             x_txt_label = v.findViewById(R.id.x_txt_label);
@@ -71,9 +72,9 @@ public class LegendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         legendHolder.x_txt_label.setText(chartDatum.get(position).getTag());
 
-        legendHolder.x_txt_label.setTextColor(chartDatum.get(position).getIsSelected()?
-                context.getResources().getColor(R.color.colorAccent): context.getResources().getColor(R.color.legend_disabled));
-
+        legendHolder.x_txt_label.setTextColor(chartDatum.get(position).getIsSelected() ?
+                context.getResources().getColor(R.color.colorAccent) : context.getResources().getColor(R.color.legend_disabled));
+        legendHolder.x_txt_label.getLayoutParams().width = parentLayoutWidth / 7;
         /*barsHolder.bar_line.setLayoutParams(new LinearLayout.LayoutParams(parentLayoutWidth/6, LinearLayout.LayoutParams.MATCH_PARENT));
 
         boolean isSelected = chartDatum.get(position).getIsSelected();
@@ -92,7 +93,6 @@ public class LegendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public int getItemCount() {
         return chartDatum.size();
     }
-
 
 
 }

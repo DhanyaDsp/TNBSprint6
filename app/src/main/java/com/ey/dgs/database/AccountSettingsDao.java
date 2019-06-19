@@ -30,7 +30,13 @@ public interface AccountSettingsDao {
     @Update
     void update(AccountSettings accountSettings);
 
+    @Query("UPDATE AccountSettings SET pushNotificationFlag=:pushToggle,smsNotificationFlag = :smsToggle WHERE accountNumber=:accountNumber")
+    void togglePush(boolean pushToggle, boolean smsToggle, String accountNumber);
+
     @Query("SELECT * FROM AccountSettings WHERE accountNumber=:accountNumber")
     AccountSettings getAccountSettings(String accountNumber);
+
+    @Query("DELETE FROM AccountSettings")
+    void clear();
 
 }
