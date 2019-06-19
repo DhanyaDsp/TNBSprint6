@@ -21,11 +21,29 @@
         android:focusableInTouchMode="true"
         android:orientation="vertical">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rvNotificationSettings"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:descendantFocusability="afterDescendants" />
+            android:orientation="vertical">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rvNotificationSettings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:descendantFocusability="afterDescendants" />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/tvLabel2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/museosans_500"
+                android:padding="@dimen/medium_padding"
+                android:text="@string/notification_sms_heading"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="@dimen/text_size_medium1" />
+
+        </LinearLayout>
+
 
         <include
             android:id="@+id/loader"

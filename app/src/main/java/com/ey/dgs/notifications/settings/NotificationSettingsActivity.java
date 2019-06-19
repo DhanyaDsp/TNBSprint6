@@ -3,6 +3,7 @@ package com.ey.dgs.notifications.settings;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -14,7 +15,7 @@ import com.ey.dgs.dashboard.myaccount.AccountSettingsViewModel;
 import com.ey.dgs.model.Account;
 import com.ey.dgs.utils.FragmentUtils;
 
-public class NotificationSettingsActivity extends AppCompatActivity implements SettingsMenuFragment.OnFragmentInteractionListener, NotificationToggleFragment.OnFragmentInteractionListener, AccountNotificationSettingsFragment.OnFragmentInteractionListener {
+public class NotificationSettingsActivity extends AppCompatActivity implements SettingsMenuFragment.OnFragmentInteractionListener, NotificationToggleFragment.OnFragmentInteractionListener, AccountNotificationSettingsFragment.OnFragmentInteractionListener, FragmentManager.OnBackStackChangedListener {
 
     boolean isComingFromPopup, isAddThreshold;
     Account account;
@@ -30,6 +31,7 @@ public class NotificationSettingsActivity extends AppCompatActivity implements S
         account = (Account) getIntent().getSerializableExtra("account");
         accountSettingsViewModel = ViewModelProviders.of(this).get(AccountSettingsViewModel.class);
         initViews();
+        getSupportFragmentManager().addOnBackStackChangedListener(this);
         showSettingsFragment();
     }
 
@@ -126,6 +128,14 @@ public class NotificationSettingsActivity extends AppCompatActivity implements S
             loader.setVisibility(View.VISIBLE);
         } else {
             loader.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void onBackStackChanged() {
+        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.flNotificationContainer);
+        if (currentFragment instanceof NotificationToggleFragment) {
+            ((NotificationToggleFragment) currentFragment).onRefresh();
         }
     }
 }

@@ -15,9 +15,9 @@ public class NotificationSettingsViewModel extends ViewModel {
     public NotificationSettingsViewModel() {
         ArrayList<NotificationSetting> notificationSettings = new ArrayList<>();
         notificationSettings.add(new NotificationSetting("Customise the type of notifications you wish to receive", false, true, false));
-        notificationSettings.add(new NotificationSetting("Billing and Payment", true, false, false));
+        notificationSettings.add(new NotificationSetting("Billing and payment", true, false, false));
         notificationSettings.add(new NotificationSetting("Account related matters", true, false, false));
-        notificationSettings.add(new NotificationSetting("Energy Consumption", false, false, false));
+        notificationSettings.add(new NotificationSetting("Energy consumption", false, false, false));
         notificationSettings.add(new NotificationSetting("Service disruption", false, false, false));
         notificationSettings.add(new NotificationSetting("Select how you wish to receive your notifications", false, true, false));
         notificationSettings.add(new NotificationSetting("Push notifications", true, false, false));

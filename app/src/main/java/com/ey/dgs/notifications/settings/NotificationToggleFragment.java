@@ -39,6 +39,7 @@ import java.util.ArrayList;
 
 public class NotificationToggleFragment extends Fragment implements CompoundButton.OnCheckedChangeListener {
 
+    public static boolean IS_SETTINGS_UPDATED = false;
     private View view;
     private RecyclerView rvAccounts;
     private LinearLayoutManager rvLayoutManager;
@@ -129,7 +130,7 @@ public class NotificationToggleFragment extends Fragment implements CompoundButt
         accountSettingsViewModel.getIsAccountSettingsUpdated().observe(getViewLifecycleOwner(), isUserUpdated -> {
             isProgressing = false;
             if (isUserUpdated) {
-                Utils.showToast(getActivity(),"User Settings Updated");
+                Utils.showToast(getActivity(), "User Settings Updated");
                 getActivity().onBackPressed();
             } else {
             }
@@ -201,6 +202,13 @@ public class NotificationToggleFragment extends Fragment implements CompoundButt
                 break;
             default:
                 break;
+        }
+    }
+
+    public void onRefresh() {
+        if (IS_SETTINGS_UPDATED) {
+            subscribe();
+            IS_SETTINGS_UPDATED = false;
         }
     }
 

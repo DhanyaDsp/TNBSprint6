@@ -121,13 +121,12 @@ public class AccountNotificationSettingsFragment extends Fragment {
                 notificationSettingsAdapter.setUpdated(true);
                 if (activity != null) {
                     account.setThreshold(true);
-                    Utils.hideKeyBoard(activity);
                     DashboardFragment.IS_THRESHOLD_SET = true;
                     MyDashboardFragment.IS_THRESHOLD_SET = true;
+                    NotificationToggleFragment.IS_SETTINGS_UPDATED = true;
                     ((NotificationSettingsActivity) activity).onBackPressed();
                 }
             } else {
-
                 Utils.showToast(getActivity(), "Failed to Update Settings");
             }
         });
