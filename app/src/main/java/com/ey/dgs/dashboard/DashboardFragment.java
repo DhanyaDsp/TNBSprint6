@@ -299,15 +299,15 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
 
     private void setServiceDisruptionPopup(ArrayList<Account> accounts) {
         ArrayList<String> accountWithServiceDisruption = new ArrayList<>();
-        String names ="";
-        for(Account account: accounts) {
+        String names = "";
+        for (Account account : accounts) {
             if (account.isOutageAlertFlag()) {
                 accountWithServiceDisruption.add(account.getNickName());
             }
         }
-        if(accountWithServiceDisruption.size() > 0 ) {
+        if (accountWithServiceDisruption.size() > 0) {
 
-            if(accountWithServiceDisruption.size() == 1 ) {
+            if (accountWithServiceDisruption.size() == 1) {
                 names = accountWithServiceDisruption.get(0);
             } else if (accountWithServiceDisruption.size() == 2) {
                 names = TextUtils.join(" and ", accountWithServiceDisruption);
@@ -322,7 +322,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                 names = builder.toString();
             }
         }
-        if(!TextUtils.isEmpty(names)) {
+        if (!TextUtils.isEmpty(names)) {
             DialogHelper.showUserAlert(getActivity(), getString(R.string.service_disruption), names);
         }
     }
