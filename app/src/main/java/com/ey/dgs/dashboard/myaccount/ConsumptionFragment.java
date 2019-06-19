@@ -5,6 +5,7 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatButton;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,6 +56,7 @@ public class ConsumptionFragment extends Fragment implements View.OnClickListene
     DaysAdapter daysAdapter;
     private ArrayList<String> days;
     private ArrayList<ChartData> chartDatum;
+    private String chartPeriod = BillingHistory.MONTHLY;
 
     public ConsumptionFragment() {
     }
@@ -107,11 +109,6 @@ public class ConsumptionFragment extends Fragment implements View.OnClickListene
                 }
             });
         });
-        billingHistoryViewModel.getDays().observe(getViewLifecycleOwner(), days -> {
-            this.days = days;
-            daysAdapter = new DaysAdapter(getActivity(), this.days);
-            glDays.setAdapter(daysAdapter);
-        });
     }
 
 /*    private void setChartData(BillingDetails[] billingDetails) {
@@ -163,11 +160,16 @@ public class ConsumptionFragment extends Fragment implements View.OnClickListene
         tmpBarChart.setData(chartDatum)
                 .setTitle("")
                 .setBarUnit("RM")
-                .setThreshold(true, Float.parseFloat(account.getUserThreshold()))
+                .setThreshold(chartPeriod.equalsIgnoreCase(BillingHistory.MONTHLY), Float.parseFloat(account.getUserThreshold()))
                 //.setThreshold(selectedAccount.isThreshold(), Float.parseFloat(energyConsumptions.getUserThreshold()))
                 .setSelectionRequired(true); //.updateData(); // .invalidate();
 
         barChart = tmpBarChart;
+
+        if (!TextUtils.isEmpty(chartPeriod) && chartPeriod.equalsIgnoreCase(BillingHistory.MONTHLY)) {
+            daysAdapter = new DaysAdapter(getActivity(), this.chartDatum);
+            glDays.setAdapter(daysAdapter);
+        }
     }
 
     private void initViews() {
@@ -228,6 +230,7 @@ public class ConsumptionFragment extends Fragment implements View.OnClickListene
 
     private void getBillingHistory(String period) {
         showProgress(true);
+        this.chartPeriod = period;
         billingHistoryViewModel.getBillingHistoryFromServer(user, period, account);
     }
 
