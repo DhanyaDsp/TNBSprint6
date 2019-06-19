@@ -74,7 +74,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         if (vpSplashItems.getCurrentItem() >= splashItems.size() - 1) {
             userSettings.setShowSplashScreen(false);
             showProgress(true);
-            userSettingsViewModel.updateUserSettingsInServer(new AppPreferences(this).getAuthToken(), userSettings);
+            userSettingsViewModel.updateUserSettingsInServer userSettings);
         } else {
             vpSplashItems.setCurrentItem(vpSplashItems.getCurrentItem() + 1);
         }

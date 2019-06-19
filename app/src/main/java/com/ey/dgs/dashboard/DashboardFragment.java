@@ -33,8 +33,10 @@ import com.ey.dgs.dashboard.myaccount.MyAccountFragment;
 import com.ey.dgs.databinding.DashboardFragmentBinding;
 import com.ey.dgs.model.Account;
 import com.ey.dgs.model.User;
+import com.ey.dgs.model.UserSettings;
 import com.ey.dgs.notifications.settings.NotificationSettingsActivity;
 import com.ey.dgs.offers.OffersViewModel;
+import com.ey.dgs.usersettings.UserSettingsViewModel;
 import com.ey.dgs.utils.AppPreferences;
 import com.ey.dgs.utils.DialogHelper;
 import com.ey.dgs.utils.FragmentUtils;
@@ -44,6 +46,7 @@ import java.util.ArrayList;
 
 import static com.ey.dgs.utils.FragmentUtils.INDEX_MANAGE_ACCOUNTS;
 import static com.ey.dgs.utils.FragmentUtils.INDEX_MY_ACCOUNT;
+
 
 public class DashboardFragment extends Fragment implements View.OnClickListener, ViewPager.OnPageChangeListener, AdapterView.OnItemSelectedListener {
 
@@ -71,6 +74,8 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
     private boolean billingDetailsServiceCalled;
     AccountAdapter accountAdapter;
     OffersAdapter offersAdapter;
+    UserSettingsViewModel userSettingsViewModel;
+    private UserSettings userSettings;
 
     public static DashboardFragment newInstance() {
         return new DashboardFragment();
@@ -155,12 +160,19 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                     getBillingDetailsForAccount(accounts);
                     billingDetailsServiceCalled = true;
                 }*/
+                setServiceDisruptionPopup(this.accounts);
             }
         });
 
         offersViewModel.getOfferItems().observe(getViewLifecycleOwner(), offers -> {
             offersAdapter = new OffersAdapter(getActivity(), this, offers);
             rvOffers.setAdapter(offersAdapter);
+        });
+        userSettingsViewModel = ViewModelProviders.of(this).get(UserSettingsViewModel.class);
+        userSettingsViewModel.setContext(getActivity());
+        userSettingsViewModel.getUserSettingsFromLocalDB(1);
+        userSettingsViewModel.getUserSettings().observe(getViewLifecycleOwner(), userSettings -> {
+            this.userSettings = userSettings;
         });
     }
 
@@ -323,7 +335,19 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
             }
         }
         if(!TextUtils.isEmpty(names)) {
-            DialogHelper.showUserAlert(getActivity(), getString(R.string.service_disruption), names);
+            DialogHelper.showUserAlert(getActivity(), getString(R.string.service_disruption), names,
+                    new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    DialogHelper.hidePopup();
+                    closeAlert();
+                }
+            });
         }
+    }
+
+    private void closeAlert() {
+        userSettings.setOutageAlertAcknowledgementFlag(true);
+        userSettingsViewModel.updateUserSettingsInServer(userSettings);
     }
 }

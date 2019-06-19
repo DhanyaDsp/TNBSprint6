@@ -50,19 +50,14 @@ public class DialogHelper {
         }
     }
 
-    public static void showUserAlert(Context context, String title, String names) {
+    public static void showUserAlert(Context context, String title, String names, View.OnClickListener listener) {
         if (context != null) {
             dialog = new AppCompatDialog(context);
             dialog.setContentView(R.layout.popup_alert);
             AppCompatTextView tvTitle = dialog.getWindow().findViewById(R.id.popup_title);
             AppCompatTextView message = dialog.getWindow().findViewById(R.id.popup_message);
             Button btnClose = dialog.getWindow().findViewById(R.id.btn_close);
-            btnClose.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialog.dismiss();
-                }
-            });
+            btnClose.setOnClickListener(listener);
             tvTitle.setText(title);
             if (title == dialog.getContext().getString(R.string.service_restoration)) {
                 message.setText(dialog.getContext().getString(R.string.service_restoration_msg, names));

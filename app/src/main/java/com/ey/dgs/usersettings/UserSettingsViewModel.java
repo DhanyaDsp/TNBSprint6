@@ -11,6 +11,7 @@ import com.ey.dgs.model.Account;
 import com.ey.dgs.model.AccountSettings;
 import com.ey.dgs.model.User;
 import com.ey.dgs.model.UserSettings;
+import com.ey.dgs.utils.AppPreferences;
 import com.ey.dgs.utils.Utils;
 import com.ey.dgs.webservice.APICallback;
 import com.ey.dgs.webservice.ApiClient;
@@ -23,11 +24,13 @@ public class UserSettingsViewModel extends ViewModel implements APICallback, Dat
 
     private MutableLiveData<UserSettings> userSettingsData = new MutableLiveData<>();
     private MutableLiveData<Boolean> showProgress = new MutableLiveData<>();
+    private AppPreferences appPreferences;
 
     private Context context;
 
     public void setContext(Context ctx) {
         context = ctx;
+        appPreferences = new AppPreferences(ctx);
     }
 
     public MutableLiveData<UserSettings> getUserSettings() {
@@ -134,7 +137,7 @@ public class UserSettingsViewModel extends ViewModel implements APICallback, Dat
         DatabaseClient.getInstance(context).updateUserSettings(UserSettings.REQUEST_CODE_UPDATE_USER_SETTINGS, userSettings, this);
     }
 
-    public void updateUserSettingsInServer(String authToken, UserSettings userSettings) {
-        new ApiClient().updateUserSettingsInServer(authToken, userSettings, this);
+    public void updateUserSettingsInServer(UserSettings userSettings) {
+        new ApiClient().updateUserSettingsInServer(appPreferences.getAuthToken(), userSettings, this);
     }
 }
