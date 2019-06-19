@@ -2,37 +2,35 @@ package com.ey.dgs.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.AppCompatTextView;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Gallery;
-import android.widget.ImageView;
 
 import com.ey.dgs.R;
-import com.ey.dgs.databinding.DashboardFragmentBinding;
+import com.ey.dgs.model.chart.ChartData;
+import com.ey.dgs.utils.Utils;
 
 import java.util.ArrayList;
 
 public class DaysAdapter extends BaseAdapter {
     private Context mContext;
-    ArrayList<String> days = new ArrayList<>();
+    ArrayList<ChartData> chartDatum = new ArrayList<>();
     private LayoutInflater mInflater;
     private int selectedItem;
 
-    public DaysAdapter(Context context, ArrayList<String> days) {
+    public DaysAdapter(Context context, ArrayList<ChartData> chartDatum) {
         mContext = context;
-        this.days = days;
+        this.chartDatum = chartDatum;
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     public int getCount() {
-        return days.size();
+        return chartDatum.size();
     }
 
-    public String getItem(int position) {
-        return days.get(position);
+    public ChartData getItem(int position) {
+        return chartDatum.get(position);
     }
 
     public long getItemId(int position) {
@@ -52,13 +50,13 @@ public class DaysAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        String day = getItem(index);
+        ChartData chartData = getItem(index);
         if (selectedItem == index) {
             holder.tvDay.setTextColor(mContext.getResources().getColor(R.color.purple));
         } else {
             holder.tvDay.setTextColor(mContext.getResources().getColor(R.color.purple_50));
         }
-        holder.tvDay.setText(day);
+        holder.tvDay.setText(chartData.getTag());
 
         return convertView;
     }
