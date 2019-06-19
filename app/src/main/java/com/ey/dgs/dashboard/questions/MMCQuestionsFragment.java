@@ -126,7 +126,7 @@ public class MMCQuestionsFragment extends Fragment implements View.OnClickListen
                 if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
                     Log.i("Done button","Enter pressed");
                     Utils.hideKeyBoard(getActivity());
-                    strThreshold = thresholdAnswer.getText().toString();
+                    strThreshold = thresholdAnswer.getText().toString().replace(".","");
                     if (!TextUtils.isEmpty(strThreshold) && Integer.valueOf(strThreshold) > 0) {
                         float threshold = Float.parseFloat(strThreshold);
                         THRESHOLD_SET = true;
@@ -210,11 +210,8 @@ public class MMCQuestionsFragment extends Fragment implements View.OnClickListen
             AccountDetails[] accountDetailsArray = new AccountDetails[1];
             accountDetailsArray[0] = new AccountDetails(account.getAccountNumber(),
                     peopleInProperty, thresholdValue);
-            AccountDetailsRequest accountDetailsRequest =
-                    new AccountDetailsRequest("Admin@xyzmail.com", accountDetailsArray);
-
             showProgress(true);
-            questionsViewModel.updateAccountDetailsInServer(accountDetailsRequest);
+            questionsViewModel.updateAccountDetailsInServer(accountDetailsArray);
             questionsViewModel.getLoaderData().observe(getViewLifecycleOwner(), showProgress -> {
                 showProgress(showProgress);
             });

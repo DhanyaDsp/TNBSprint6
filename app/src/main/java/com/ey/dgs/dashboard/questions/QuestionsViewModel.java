@@ -61,7 +61,8 @@ public class QuestionsViewModel extends ViewModel implements APICallback, Databa
                 accountDetails, this);
     }
 
-    public void updateAccountDetailsInServer(AccountDetailsRequest accountDetailsRequest) {
+    public void updateAccountDetailsInServer(AccountDetails[] accountDetailsArray) {
+        AccountDetailsRequest accountDetailsRequest = new AccountDetailsRequest(appPreferences.getUser_name(), accountDetailsArray);
         new ApiClient().updateAccountDetails(appPreferences.getAuthToken(), accountDetailsRequest, this);
         setAccountDetails(accountDetailsRequest.getAccountDetails());
     }

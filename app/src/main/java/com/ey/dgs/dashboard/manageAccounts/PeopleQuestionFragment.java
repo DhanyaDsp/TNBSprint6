@@ -57,4 +57,8 @@ public class PeopleQuestionFragment extends Fragment {
     public void setPeopleInProperty(ArrayList<String> accountNumber, ArrayList<Integer> peopleInProperty) {
         ThresholdQuestionFragment.setValues(accountNumber, peopleInProperty);
     }
+
+    public void moveNextSlide(){
+        MMCManageAccountsFragment.moveNext();
+    }
 }

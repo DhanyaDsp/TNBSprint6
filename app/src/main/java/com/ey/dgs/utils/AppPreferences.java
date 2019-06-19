@@ -73,7 +73,7 @@ public class AppPreferences {
     }
 
     public String getUser_name() {
-        user_name = preferences.getString(user_name, null);
+        user_name = preferences.getString(USER_NAME, null);
         return user_name;
     }
 

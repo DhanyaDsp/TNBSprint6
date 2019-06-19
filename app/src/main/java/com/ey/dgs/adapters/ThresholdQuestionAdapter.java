@@ -111,13 +111,6 @@ public class ThresholdQuestionAdapter extends RecyclerView.Adapter<RecyclerView.
         private NextHolder(View itemView) {
             super(itemView);
             btnNext = itemView.findViewById(R.id.btnNext);
-            /*btnNext.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(thresholdValues[])
-                    ((ThresholdQuestionFragment) fragment).setThresholdValues(accountNumber, thresholdValues);
-                }
-            });*/
         }
     }
 

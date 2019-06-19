@@ -1,14 +1,18 @@
 package com.ey.dgs.utils;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.support.v7.app.AppCompatDialog;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatTextView;
+import android.view.Gravity;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
 
 import com.ey.dgs.R;
 import com.ey.dgs.model.Account;
+
 
 public class DialogHelper {
 
@@ -27,7 +31,7 @@ public class DialogHelper {
             AppCompatTextView tvMessage = dialog.getWindow().findViewById(R.id.successMessage);
             btnGoToAccount.setOnClickListener(listener);
             tvMessage.setText(dialog.getContext().getString(R.string.success_manage_consumption, selectedAccount.getNickName()));
-            tvAccountName.setText("RM "+threshold );
+            tvAccountName.setText("RM " + threshold);
             dialog.setCancelable(false);
             dialog.show();
         }
@@ -37,7 +41,7 @@ public class DialogHelper {
         if (context != null) {
             dialog = new AppCompatDialog(context);
             dialog.setContentView(R.layout.delete_all_popup);
-            AppCompatButton btnCancel= dialog.getWindow().findViewById(R.id.btnCancel);
+            AppCompatButton btnCancel = dialog.getWindow().findViewById(R.id.btnCancel);
             AppCompatButton btnDeleteAll = dialog.getWindow().findViewById(R.id.btnDeleteAll);
             btnCancel.setOnClickListener(cancelListener);
             btnDeleteAll.setOnClickListener(deleteListener);
@@ -46,15 +50,31 @@ public class DialogHelper {
         }
     }
 
-    public static void showUserAlert(Context context, View.OnClickListener cancelListener, View.OnClickListener deleteListener) {
+    public static void showUserAlert(Context context, String title, String names) {
         if (context != null) {
             dialog = new AppCompatDialog(context);
-            dialog.setContentView(R.layout.delete_all_popup);
-            AppCompatButton btnCancel= dialog.getWindow().findViewById(R.id.btnCancel);
-            AppCompatButton btnDeleteAll = dialog.getWindow().findViewById(R.id.btnDeleteAll);
-            btnCancel.setOnClickListener(cancelListener);
-            btnDeleteAll.setOnClickListener(deleteListener);
-            dialog.setCancelable(false);
+            dialog.setContentView(R.layout.popup_alert);
+            AppCompatTextView tvTitle = dialog.getWindow().findViewById(R.id.popup_title);
+            AppCompatTextView message = dialog.getWindow().findViewById(R.id.popup_message);
+            Button btnClose = dialog.getWindow().findViewById(R.id.btn_close);
+            btnClose.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
+            tvTitle.setText(title);
+            if (title == dialog.getContext().getString(R.string.service_restoration)) {
+                message.setText(dialog.getContext().getString(R.string.service_restoration_msg, names));
+            } else if (title == dialog.getContext().getString(R.string.service_disruption)) {
+                message.setText(dialog.getContext().getString(R.string.service_disruption_msg, names));
+            }
+            Window window = dialog.getWindow();
+            WindowManager.LayoutParams wlp = window.getAttributes();
+
+            wlp.gravity = Gravity.TOP;
+            wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+            window.setAttributes(wlp);
             dialog.show();
         }
     }

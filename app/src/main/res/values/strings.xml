@@ -53,6 +53,10 @@
     <string name="next">Next</string>
     <string name="submit">Submit</string>
     <string name="close">Close</string>
+    <string name="service_disruption">Service Disruption Alert</string>
+    <string name="service_disruption_msg">Account %1$s is currently experiencing service disruption. Apologies for the inconvenience caused.</string>
+    <string name="service_restoration">Service Restored</string>
+    <string name="service_restoration_msg">Power is restored at %1$s. Apologies for the inconvenience caused.</string>
     <string name="not_sure">I\'m not sure</string>
     <string name="pay_bills">Pay Bills</string>
     <string name="title_activity_question">QuestionActivity</string>

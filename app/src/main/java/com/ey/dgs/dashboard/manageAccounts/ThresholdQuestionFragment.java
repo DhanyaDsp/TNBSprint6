@@ -81,11 +81,8 @@ public class ThresholdQuestionFragment extends Fragment {
     }
 
     private void callAccountDetailsAPiService(AccountDetails[] accountDetails) {
-        AccountDetailsRequest accountDetailsRequest =
-                new AccountDetailsRequest("Admin@xyzmail.com", accountDetails);
-
         showProgress(true);
-        questionsViewModel.updateAccountDetailsInServer(accountDetailsRequest);
+        questionsViewModel.updateAccountDetailsInServer(accountDetails);
         questionsViewModel.getLoaderData().observe(getViewLifecycleOwner(), showProgress -> {
             showProgress(showProgress);
         });

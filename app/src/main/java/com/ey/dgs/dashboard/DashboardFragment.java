@@ -9,17 +9,14 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatImageView;
-import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -297,6 +294,36 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
         if (IS_THRESHOLD_SET) {
             dashboardViewModel.loadAccountsFromLocalDB(appPreferences.getUser_id());
             IS_THRESHOLD_SET = false;
+        }
+    }
+
+    private void setServiceDisruptionPopup(ArrayList<Account> accounts) {
+        ArrayList<String> accountWithServiceDisruption = new ArrayList<>();
+        String names ="";
+        for(Account account: accounts) {
+            if (account.isOutageAlertFlag()) {
+                accountWithServiceDisruption.add(account.getNickName());
+            }
+        }
+        if(accountWithServiceDisruption.size() > 0 ) {
+
+            if(accountWithServiceDisruption.size() == 1 ) {
+                names = accountWithServiceDisruption.get(0);
+            } else if (accountWithServiceDisruption.size() == 2) {
+                names = TextUtils.join(" and ", accountWithServiceDisruption);
+            } else {
+                String firstPart = TextUtils.join(", ", accountWithServiceDisruption);
+                String toReplace = ", ";
+                int start = firstPart.lastIndexOf(toReplace);
+                StringBuilder builder = new StringBuilder();
+                builder.append(firstPart.substring(0, start));
+                builder.append(" and ");
+                builder.append(firstPart.substring(start + toReplace.length()));
+                names = builder.toString();
+            }
+        }
+        if(!TextUtils.isEmpty(names)) {
+            DialogHelper.showUserAlert(getActivity(), getString(R.string.service_disruption), names);
         }
     }
 }
