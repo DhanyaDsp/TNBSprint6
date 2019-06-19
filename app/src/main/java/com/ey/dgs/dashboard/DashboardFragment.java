@@ -127,6 +127,12 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
         billingHistoryViewModel.setContext(getActivity());
         offersViewModel = ViewModelProviders.of(getActivity()).get(OffersViewModel.class);
         offersViewModel.setContext(getActivity());
+        userSettingsViewModel = ViewModelProviders.of(this).get(UserSettingsViewModel.class);
+        userSettingsViewModel.setContext(getActivity());
+        userSettingsViewModel.getUserSettingsFromLocalDB(1);
+        userSettingsViewModel.getUserSettings().observe(getViewLifecycleOwner(), userSettings -> {
+            this.userSettings = userSettings;
+        });
         showProgress(true);
         loginViewModel.getUserDetail().observe(getViewLifecycleOwner(), user -> {
             onUserDetailsLoaded(user);
@@ -160,19 +166,15 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                     getBillingDetailsForAccount(accounts);
                     billingDetailsServiceCalled = true;
                 }*/
-                setServiceDisruptionPopup(this.accounts);
+                setServiceRestorationPopup(this.accounts);
+               setServiceDisruptionPopup(this.accounts);
+
             }
         });
 
         offersViewModel.getOfferItems().observe(getViewLifecycleOwner(), offers -> {
             offersAdapter = new OffersAdapter(getActivity(), this, offers);
             rvOffers.setAdapter(offersAdapter);
-        });
-        userSettingsViewModel = ViewModelProviders.of(this).get(UserSettingsViewModel.class);
-        userSettingsViewModel.setContext(getActivity());
-        userSettingsViewModel.getUserSettingsFromLocalDB(1);
-        userSettingsViewModel.getUserSettings().observe(getViewLifecycleOwner(), userSettings -> {
-            this.userSettings = userSettings;
         });
     }
 
@@ -309,45 +311,68 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
         }
     }
 
+    private void setServiceRestorationPopup(ArrayList<Account> accounts) {
+        ArrayList<String> accountWithRestorationDisruption = new ArrayList<>();
+        String namesWithServiceRestoration = "";
+        for (Account account : accounts) {
+            if (account.isRestoreAlertFlag()) {
+                accountWithRestorationDisruption.add(account.getNickName());
+            }
+        }
+        String name = getNames(accountWithRestorationDisruption, namesWithServiceRestoration);
+            DialogHelper.showUserAlert(getActivity(), getString(R.string.service_restoration), name,
+                    new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            DialogHelper.hidePopup();
+                            userSettings.setRestoreAlertAcknowledgementFlag(true);
+                            updateUserSettingInServer();
+                        }
+                    });
+
+    }
     private void setServiceDisruptionPopup(ArrayList<Account> accounts) {
         ArrayList<String> accountWithServiceDisruption = new ArrayList<>();
-        String names ="";
-        for(Account account: accounts) {
+        String namesWithServiceDisruption = "";
+        for (Account account : accounts) {
             if (account.isOutageAlertFlag()) {
                 accountWithServiceDisruption.add(account.getNickName());
             }
         }
-        if(accountWithServiceDisruption.size() > 0 ) {
+        String name = getNames(accountWithServiceDisruption, namesWithServiceDisruption);
+            DialogHelper.showUserAlert(getActivity(), getString(R.string.service_disruption), name,
+                    new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    DialogHelper.hidePopup();
+                    userSettings.setOutageAlertAcknowledgementFlag(true);
+                    updateUserSettingInServer();
+                }
+            });
 
-            if(accountWithServiceDisruption.size() == 1 ) {
-                names = accountWithServiceDisruption.get(0);
-            } else if (accountWithServiceDisruption.size() == 2) {
-                names = TextUtils.join(" and ", accountWithServiceDisruption);
+    }
+
+    private String getNames(ArrayList<String> names, String name) {
+        if (names.size() > 0) {
+            if (names.size() == 1) {
+                name = names.get(0);
+            } else if (names.size() == 2) {
+                name = TextUtils.join(" and ", names);
             } else {
-                String firstPart = TextUtils.join(", ", accountWithServiceDisruption);
+                String firstPart = TextUtils.join(", ", names);
                 String toReplace = ", ";
                 int start = firstPart.lastIndexOf(toReplace);
                 StringBuilder builder = new StringBuilder();
                 builder.append(firstPart.substring(0, start));
                 builder.append(" and ");
                 builder.append(firstPart.substring(start + toReplace.length()));
-                names = builder.toString();
+                name = builder.toString();
             }
         }
-        if(!TextUtils.isEmpty(names)) {
-            DialogHelper.showUserAlert(getActivity(), getString(R.string.service_disruption), names,
-                    new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    DialogHelper.hidePopup();
-                    closeAlert();
-                }
-            });
-        }
+        return name;
     }
 
-    private void closeAlert() {
-        userSettings.setOutageAlertAcknowledgementFlag(true);
+    private void updateUserSettingInServer() {
         userSettingsViewModel.updateUserSettingsInServer(userSettings);
     }
 }

@@ -38,7 +38,7 @@ public class DialogHelper {
     }
 
     public static void showDeleteAll(Context context, View.OnClickListener cancelListener, View.OnClickListener deleteListener) {
-        if (context != null) {
+        if (context != null && dialog == null) {
             dialog = new AppCompatDialog(context);
             dialog.setContentView(R.layout.delete_all_popup);
             AppCompatButton btnCancel = dialog.getWindow().findViewById(R.id.btnCancel);
@@ -46,12 +46,14 @@ public class DialogHelper {
             btnCancel.setOnClickListener(cancelListener);
             btnDeleteAll.setOnClickListener(deleteListener);
             dialog.setCancelable(false);
-            dialog.show();
+            if (!dialog.isShowing()) {
+                dialog.show();
+            }
         }
     }
 
     public static void showUserAlert(Context context, String title, String names, View.OnClickListener listener) {
-        if (context != null) {
+        if (context != null && dialog == null) {
             dialog = new AppCompatDialog(context);
             dialog.setContentView(R.layout.popup_alert);
             AppCompatTextView tvTitle = dialog.getWindow().findViewById(R.id.popup_title);
@@ -70,13 +72,17 @@ public class DialogHelper {
             wlp.gravity = Gravity.TOP;
             wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
             window.setAttributes(wlp);
-            dialog.show();
+            dialog.setCancelable(false);
+            if (!dialog.isShowing()) {
+                dialog.show();
+            }
         }
     }
 
     public static void hidePopup() {
         if (dialog != null) {
             dialog.dismiss();
+            dialog = null;
         }
     }
 }
