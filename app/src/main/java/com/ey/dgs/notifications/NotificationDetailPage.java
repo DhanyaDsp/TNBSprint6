@@ -1,5 +1,7 @@
 package com.ey.dgs.notifications;
 
+import android.app.Activity;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -16,23 +18,32 @@ import android.widget.LinearLayout;
 import com.ey.dgs.R;
 import com.ey.dgs.model.Notification;
 
+import java.io.Serializable;
+
 public class NotificationDetailPage extends AppCompatActivity {
 
     private Notification notification;
     AppCompatTextView tvEnergyTips, tvHeader, tvMessage;
     LinearLayout llEnergyTips;
     AppCompatImageView ivBanner;
+    NotificationViewModel notificationViewModel;
+    private int position;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification_detail_page);
-
+        notificationViewModel = ViewModelProviders.of(this).get(NotificationViewModel.class);
         if (getIntent().getSerializableExtra("notification") != null) {
             notification = (Notification) getIntent().getSerializableExtra("notification");
+            position = getIntent().getIntExtra("position", -1);
             if (notification != null) {
                 initViews();
                 setData();
+                if (!notification.isRead()) {
+                    notification.setRead(true);
+                    notificationViewModel.updateNotificationInLocalDB(notification);
+                }
             }
         }
     }
@@ -85,5 +96,14 @@ public class NotificationDetailPage extends AppCompatActivity {
             ivBanner.setImageResource(R.drawable.service_banner);
         }
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent();
+        intent.putExtra("notification", (Serializable) notification);
+        intent.putExtra("position", position);
+        setResult(Activity.RESULT_OK, intent);
+        super.onBackPressed();
     }
 }

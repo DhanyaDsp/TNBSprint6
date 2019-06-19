@@ -138,4 +138,8 @@ public class NotificationViewModel extends ViewModel implements DatabaseCallback
     public void onError(Object object, int requestCode, int responseCode) {
 
     }
+
+    public void updateNotificationInLocalDB(Notification notification) {
+        DatabaseClient.getInstance(context).updateNotification(notification);
+    }
 }

@@ -3,6 +3,7 @@ package com.ey.dgs.views;
 import com.ey.dgs.R;
 import com.ey.dgs.adapters.chart.BarsAdapter;
 import com.ey.dgs.adapters.chart.LegendsAdapter;
+import com.ey.dgs.dashboard.myaccount.ConsumptionFragment;
 import com.ey.dgs.model.chart.ChartData;
 
 import android.animation.ObjectAnimator;
@@ -44,6 +45,7 @@ public class BarChart extends LinearLayout {
     float thresholdValue = 0f;
     String unit = "RM";
     private BarsAdapter barsAdapter;
+    private OnItemSelected itemSelectedListener;
 
     public BarChart(Context context) {
         super(context);
@@ -191,6 +193,18 @@ public class BarChart extends LinearLayout {
 
     boolean widthCreated = false;
 
+    public void setItemSelectedListener(OnItemSelected itemSelectedListener) {
+        this.itemSelectedListener = itemSelectedListener;
+    }
+
+    public OnItemSelected getItemSelectedListener() {
+        return itemSelectedListener;
+    }
+
+    public void onItemSelected(int position) {
+        itemSelectedListener.onItemSelected(position);
+    }
+
     class BarsViewListenerClass implements ViewTreeObserver.OnGlobalLayoutListener {
         @Override
         public void onGlobalLayout() {
@@ -227,5 +241,9 @@ public class BarChart extends LinearLayout {
 
     public void setBarsAdapter(BarsAdapter barsAdapter) {
         this.barsAdapter = barsAdapter;
+    }
+
+    public interface OnItemSelected {
+        public void onItemSelected(int position);
     }
 }

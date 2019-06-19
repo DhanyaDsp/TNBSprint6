@@ -116,6 +116,7 @@ public class BarsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             barsHolder.bar_line.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    barChart.onItemSelected(position);
                     toggleSelection(position);
                 }
             });

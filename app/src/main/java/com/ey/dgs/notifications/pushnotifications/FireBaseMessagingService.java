@@ -58,6 +58,7 @@ public class FireBaseMessagingService extends FirebaseMessagingService {
         Gson gson = new Gson();
         Notification notification = gson.fromJson(messageBody, Notification.class);
         notification.setDate(Utils.formatNotificationDate(new Date()));
+        notification.setId(System.currentTimeMillis());
         DatabaseClient.getInstance(getApplication()).addNotification(Notification.REQUEST_CODE_ADD_NOTIFICATIONS, notification, null);
 
         appPreferences = new AppPreferences(getApplicationContext());

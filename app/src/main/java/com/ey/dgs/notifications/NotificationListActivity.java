@@ -1,5 +1,6 @@
 package com.ey.dgs.notifications;
 
+import android.app.Activity;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.graphics.Canvas;
@@ -7,6 +8,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -32,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class NotificationListActivity extends AppCompatActivity implements SettingsMenuFragment.OnFragmentInteractionListener {
+    public static final int READ_NOTIFICATION = 100;
     RecyclerView rvNotifications;
     NotificationListAdapter notificationListAdapter;
     ArrayList<Notification> notifications = new ArrayList<>();
@@ -187,5 +190,20 @@ public class NotificationListActivity extends AppCompatActivity implements Setti
                         show();
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == READ_NOTIFICATION) {
+            if (resultCode == Activity.RESULT_OK) {
+                Notification notification = (Notification) data.getSerializableExtra("notification");
+                int position = data.getIntExtra("position", -1);
+                if (position != -1 && notification != null) {
+                    notifications.set(position, notification);
+                    notificationListAdapter.notifyDataSetChanged();
+                }
+            }
+        }
     }
 }
