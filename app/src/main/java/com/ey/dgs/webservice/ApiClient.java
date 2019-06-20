@@ -102,12 +102,12 @@ public class ApiClient {
                     if (loginResponse.isSuccess()) {
                         callback.onSuccess(REQUEST_CODE_LOGIN_USER, loginResponse, response.code());
                     } else {
-                        loginResponse.setMessage("Invalid Login");
+                        loginResponse.setMessage("Failed to login");
                         callback.onFailure(REQUEST_CODE_LOGIN_USER, loginResponse, response.code());
                     }
                 } else {
                     loginResponse = new LoginResponse();
-                    loginResponse.setMessage("Please try again!");
+                    loginResponse.setMessage("Failed to login!");
                     callback.onFailure(REQUEST_CODE_LOGIN_USER, loginResponse, response.code());
                 }
             }
@@ -115,7 +115,7 @@ public class ApiClient {
             @Override
             public void onFailure(Call<LoginResponse> call, Throwable t) {
                 LoginResponse loginResponse = new LoginResponse();
-                loginResponse.setMessage("Please try again!");
+                loginResponse.setMessage("Failed to login!");
                 callback.onFailure(REQUEST_CODE_LOGIN_USER, loginResponse, 0);
             }
         });
@@ -136,12 +136,12 @@ public class ApiClient {
                         userDetailResponse.getUser().setSplashScreenSeen(user.isSplashScreenSeen());
                         callback.onSuccess(REQUEST_CODE_GET_USER, userDetailResponse, response.code());
                     } else {
-                        userDetailResponse.setMessage("Please try again!");
+                        userDetailResponse.setMessage("Failed to load User Details!");
                         callback.onFailure(REQUEST_CODE_GET_USER, userDetailResponse.getMessage(), response.code());
                     }
                 } else {
                     userDetailResponse = new UserDetailResponse();
-                    userDetailResponse.setMessage("Please try again!");
+                    userDetailResponse.setMessage("Failed to load User Details!");
                     callback.onFailure(REQUEST_CODE_GET_USER, userDetailResponse.getMessage(), response.code());
                 }
             }
@@ -149,7 +149,7 @@ public class ApiClient {
             @Override
             public void onFailure(Call<UserDetailResponse> call, Throwable t) {
                 UserDetailResponse userDetailResponse = new UserDetailResponse();
-                userDetailResponse.setMessage("Please try again!");
+                userDetailResponse.setMessage("Failed to load User Details!");
                 callback.onFailure(REQUEST_CODE_GET_USER, userDetailResponse.getMessage(), 0);
             }
         });
@@ -195,12 +195,12 @@ public class ApiClient {
                         userSettingsResponse.getUserSettings().setUserName(user.getEmail());
                         callback.onSuccess(REQUEST_CODE_GET_USER_SETTINGS, userSettingsResponse, response.code());
                     } else {
-                        userSettingsResponse.setMessage("Please try again!");
+                        userSettingsResponse.setMessage("Failed to load User Settings!");
                         callback.onFailure(REQUEST_CODE_GET_USER_SETTINGS, userSettingsResponse.getMessage(), response.code());
                     }
                 } else {
                     userSettingsResponse = new UserSettingsResponse();
-                    userSettingsResponse.setMessage("Please try again!");
+                    userSettingsResponse.setMessage("Failed to load User Settings!");
                     callback.onFailure(REQUEST_CODE_GET_USER_SETTINGS, userSettingsResponse.getMessage(), response.code());
                 }
             }
@@ -208,68 +208,8 @@ public class ApiClient {
             @Override
             public void onFailure(Call<UserSettingsResponse> call, Throwable t) {
                 UserSettingsResponse userSettingsResponse = new UserSettingsResponse();
-                userSettingsResponse.setMessage("Please try again!");
+                userSettingsResponse.setMessage("Failed to load User Settings!");
                 callback.onFailure(REQUEST_CODE_GET_USER_SETTINGS, userSettingsResponse.getMessage(), 0);
-            }
-        });
-    }
-
-    public void getAccountDetails(String token, String userName, APICallback callback) {
-        ApiInterface apiService = ApiClient.getUserDetailsClient().create(ApiInterface.class);
-
-        Call<UserDetailResponse> call = apiService.getUserDetails(token, userName);
-        call.enqueue(new Callback<UserDetailResponse>() {
-            @Override
-            public void onResponse(Call<UserDetailResponse> call, Response<UserDetailResponse> response) {
-                UserDetailResponse userDetailResponse = response.body();
-                if (userDetailResponse != null) {
-                    if (userDetailResponse.getSuccess()) {
-                        callback.onSuccess(REQUEST_CODE_GET_USER, userDetailResponse, response.code());
-                    } else {
-                        userDetailResponse.setMessage("Please try again!");
-                        callback.onFailure(REQUEST_CODE_GET_USER, userDetailResponse.getMessage(), response.code());
-                    }
-                } else {
-                    userDetailResponse = new UserDetailResponse();
-                    userDetailResponse.setMessage("Please try again!");
-                    callback.onFailure(REQUEST_CODE_GET_USER, userDetailResponse.getMessage(), response.code());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<UserDetailResponse> call, Throwable t) {
-                UserDetailResponse userDetailResponse = new UserDetailResponse();
-                userDetailResponse.setMessage("Please try again!");
-                callback.onFailure(REQUEST_CODE_GET_USER, userDetailResponse.getMessage(), 0);
-            }
-        });
-    }
-
-    public void setPrimaryAccount(User user, Account account, String token, APICallback callback) {
-        SetPrimaryAccountRequest primaryAccountRequest = new SetPrimaryAccountRequest();
-        primaryAccountRequest.setUserName(user.getEmail());
-        primaryAccountRequest.setAccountNumber(account.getAccountNumber());
-        ApiInterface apiService = ApiClient.getRawTextClient().create(ApiInterface.class);
-
-        Call<PrimaryAccountResponse> call = apiService.setPrimaryAccount(token, primaryAccountRequest);
-        call.enqueue(new Callback<PrimaryAccountResponse>() {
-            @Override
-            public void onResponse(Call<PrimaryAccountResponse> call, Response<PrimaryAccountResponse> response) {
-                PrimaryAccountResponse primaryAccountResponse = response.body();
-                if (primaryAccountResponse != null) {
-                    if (primaryAccountResponse.isSuccess()) {
-                        callback.onSuccess(REQUEST_CODE_SET_PRIMARY_ACCOUNT, account, response.code());
-                    } else {
-                        callback.onFailure(REQUEST_CODE_SET_PRIMARY_ACCOUNT, "Failed to Set Primary Account", response.code());
-                    }
-                } else {
-                    callback.onFailure(REQUEST_CODE_SET_PRIMARY_ACCOUNT, "Failed to Set Primary Account", response.code());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<PrimaryAccountResponse> call, Throwable t) {
-                callback.onFailure(REQUEST_CODE_SET_PRIMARY_ACCOUNT, "Failed to Set Primary Account", 0);
             }
         });
     }
@@ -288,7 +228,7 @@ public class ApiClient {
                     callback.onSuccess(REQUEST_CODE_GET_ACCOUNT_DETAILS, accountSettingsResponse.getResult(), response.code());
                 } else {
                     accountSettingsResponse = new AccountSettingsResponse();
-                    accountSettingsResponse.setMessage("Please try again");
+                    accountSettingsResponse.setMessage("Failed to load Account Settings!");
                     callback.onFailure(REQUEST_CODE_GET_ACCOUNT_DETAILS, accountSettingsResponse.getMessage(), response.code());
                 }
 
@@ -297,7 +237,7 @@ public class ApiClient {
             @Override
             public void onFailure(Call<AccountSettingsResponse> call, Throwable t) {
                 AccountSettingsResponse accountSettingsResponse = new AccountSettingsResponse();
-                accountSettingsResponse.setMessage("Please try again");
+                accountSettingsResponse.setMessage("Failed to load Account Settings!");
                 callback.onFailure(REQUEST_CODE_GET_ACCOUNT_DETAILS, accountSettingsResponse.getMessage(), 0);
             }
         });
@@ -337,21 +277,25 @@ public class ApiClient {
                 APIResponse apiResponse = response.body();
                 if (apiResponse != null) {
                     if (apiResponse.isSuccess()) {
-                        callback.onSuccess(REQUEST_CODE_UPDATE_USER_SETTINGS, userSettings, response.code());
+                        if (callback != null)
+                            callback.onSuccess(REQUEST_CODE_UPDATE_USER_SETTINGS, userSettings, response.code());
                     } else {
                         apiResponse.setMessage("Failed to update User Settings");
-                        callback.onFailure(REQUEST_CODE_UPDATE_USER_SETTINGS, apiResponse.getMessage(), response.code());
+                        if (callback != null)
+                            callback.onFailure(REQUEST_CODE_UPDATE_USER_SETTINGS, apiResponse.getMessage(), response.code());
                     }
                 } else {
                     apiResponse = new APIResponse();
                     apiResponse.setMessage("Failed to update User Settings");
-                    callback.onFailure(REQUEST_CODE_UPDATE_USER_SETTINGS, apiResponse.getMessage(), response.code());
+                    if (callback != null)
+                        callback.onFailure(REQUEST_CODE_UPDATE_USER_SETTINGS, apiResponse.getMessage(), response.code());
                 }
             }
 
             @Override
             public void onFailure(Call<APIResponse> call, Throwable t) {
-                callback.onFailure(REQUEST_CODE_UPDATE_USER_SETTINGS, "Failed to update User Settings", 0);
+                if (callback != null)
+                    callback.onFailure(REQUEST_CODE_UPDATE_USER_SETTINGS, "Failed to update User Settings", 0);
             }
         });
     }
@@ -413,11 +357,13 @@ public class ApiClient {
                         account.setBillingDetails(billingDetailsResponse.getResult().getBillingDetails());
                         callback.onSuccess(REQUEST_CODE_GET_BILLING_HISTORY, billingDetailsResponse, response.code());
                     } else {
+                        billingDetailsResponse = new BillingDetailsResponse();
+                        billingDetailsResponse.setMessage("Failed to load Billing History!");
                         callback.onFailure(REQUEST_CODE_GET_BILLING_HISTORY, billingDetailsResponse.getMessage(), response.code());
                     }
                 } else {
                     billingDetailsResponse = new BillingDetailsResponse();
-                    billingDetailsResponse.setMessage("Please try again!");
+                    billingDetailsResponse.setMessage("Failed to load Billing History!");
                     callback.onFailure(REQUEST_CODE_GET_BILLING_HISTORY, billingDetailsResponse.getMessage(), response.code());
                 }
             }
@@ -425,7 +371,7 @@ public class ApiClient {
             @Override
             public void onFailure(Call<BillingDetailsResponse> call, Throwable t) {
                 BillingDetailsResponse billingDetailsResponse = new BillingDetailsResponse();
-                billingDetailsResponse.setMessage("Please try again!");
+                billingDetailsResponse.setMessage("Failed to load Billing History!");
                 callback.onFailure(REQUEST_CODE_GET_BILLING_HISTORY, billingDetailsResponse.getMessage(), 0);
             }
         });

@@ -34,7 +34,6 @@ import com.ey.dgs.utils.Utils;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
 
 public class AccountNotificationSettingsFragment extends Fragment {
 
@@ -53,7 +52,7 @@ public class AccountNotificationSettingsFragment extends Fragment {
     LoginViewModel loginViewModel;
     AppPreferences appPreferences;
     Activity activity;
-    private boolean isProgressing;
+    private boolean isActionBarBtnClicked;
     private boolean serverCalled;
     private ArrayList<NotificationSetting> notificationSettingsCopy;
     private AccountSettings editedAccountSettings;
@@ -82,6 +81,36 @@ public class AccountNotificationSettingsFragment extends Fragment {
         account = (Account) getArguments().getSerializable("account");
         appPreferences = new AppPreferences(getActivity());
         initViews();
+        return binding.getRoot();
+    }
+
+
+    private void initViews() {
+        if (mListener != null) {
+            mListener.onFragmentInteraction("My Account");
+        }
+        ((NotificationSettingsActivity) getActivity()).getSupportActionBar().setTitle(account.getNickName());
+        rvNotificationSettings = view.findViewById(R.id.rvNotificationSettings);
+        rvNotificationSettings.setHasFixedSize(true);
+        LinearLayoutManager rvLayoutManager = new LinearLayoutManager(getActivity());
+        rvNotificationSettings.setLayoutManager(rvLayoutManager);
+        DividerItemDecoration itemDecorator = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL);
+        rvNotificationSettings.addItemDecoration(itemDecorator);
+        rvNotificationSettings.setItemAnimator(new DefaultItemAnimator());
+        loader = view.findViewById(R.id.loader);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        NotificationSettingsViewModel mViewModel = ViewModelProviders.of(this).get(NotificationSettingsViewModel.class);
+        mViewModel.getNotificationSettings().observe(getViewLifecycleOwner(), notificationSettings -> {
+            if (notificationSettings != null) {
+                this.notificationSettings.clear();
+                this.notificationSettings.addAll(notificationSettings);
+                this.notificationSettingsCopy = notificationSettings;
+            }
+        });
         accountSettingsViewModel = ViewModelProviders.of(this).get(AccountSettingsViewModel.class);
         accountSettingsViewModel.setContext(getActivity());
         userSettingsViewModel = ViewModelProviders.of(this).get(UserSettingsViewModel.class);
@@ -104,14 +133,18 @@ public class AccountNotificationSettingsFragment extends Fragment {
                 serverCalled = true;
             } else {
                 this.accountSettings = accountSettings;
+                if (isActionBarBtnClicked) {
+                    this.accountSettings = editedAccountSettings;
+                }
                 notificationSettingsAdapter = new NotificationSettingsAdapter(rvNotificationSettings, this, getActivity(), notificationSettings);
                 notificationSettingsAdapter.setNotificationSettings(notificationSettingsCopy);
                 notificationSettingsAdapter.setAccountSettings(this.accountSettings);
-                if (!isProgressing) {
-                    rvNotificationSettings.setAdapter(notificationSettingsAdapter);
-                }
+                rvNotificationSettings.setAdapter(notificationSettingsAdapter);
                 showProgress(false);
                 if (!serverCalled) {
+                    if (!accountSettings.isAccountSettingsLoaded()) {
+                        showProgress(true);
+                    }
                     accountSettingsViewModel.getAccountSettingsFromServer(user.getEmail(), account.getAccountNumber());
                     serverCalled = true;
                 }
@@ -126,46 +159,17 @@ public class AccountNotificationSettingsFragment extends Fragment {
                     DashboardFragment.IS_THRESHOLD_SET = true;
                     MyDashboardFragment.IS_THRESHOLD_SET = true;
                     NotificationToggleFragment.IS_SETTINGS_UPDATED = true;
+                    isActionBarBtnClicked = false;
                     ((NotificationSettingsActivity) activity).onBackPressed();
                 }
             } else {
+                isActionBarBtnClicked = false;
                 Utils.showToast(getActivity(), "Failed to Update Settings");
             }
         });
         accountSettingsViewModel.getLoaderData().observe(getViewLifecycleOwner(), showProgress -> {
             showProgress(showProgress);
         });
-        return binding.getRoot();
-    }
-
-
-    private void initViews() {
-        if (mListener != null) {
-            mListener.onFragmentInteraction("My Account");
-        }
-        ((NotificationSettingsActivity) getActivity()).getSupportActionBar().setTitle(account.getNickName());
-        rvNotificationSettings = view.findViewById(R.id.rvNotificationSettings);
-        rvNotificationSettings.setHasFixedSize(true);
-        LinearLayoutManager rvLayoutManager = new LinearLayoutManager(getActivity());
-        rvNotificationSettings.setLayoutManager(rvLayoutManager);
-        DividerItemDecoration itemDecorator = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL);
-        rvNotificationSettings.addItemDecoration(itemDecorator);
-        rvNotificationSettings.setItemAnimator(new DefaultItemAnimator());
-        loader = view.findViewById(R.id.loader);
-        NotificationSettingsViewModel mViewModel = ViewModelProviders.of(this).get(NotificationSettingsViewModel.class);
-        mViewModel.getNotificationSettings().observe(getViewLifecycleOwner(), notificationSettings -> {
-            if (notificationSettings != null) {
-                this.notificationSettings.clear();
-                this.notificationSettings.addAll(notificationSettings);
-                this.notificationSettingsCopy = notificationSettings;
-            }
-        });
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
     }
 
     @Override
@@ -188,17 +192,17 @@ public class AccountNotificationSettingsFragment extends Fragment {
 
     public void updateAccountDetails() {
         Utils.hideKeyBoard(getActivity());
-        if (!isProgressing) {
-            isProgressing = true;
+        if (!isActionBarBtnClicked) {
+            isActionBarBtnClicked = true;
             editedAccountSettings = notificationSettingsAdapter.getAccountSettings();
             NotificationSettingsRequest notificationSettingsRequest = new NotificationSettingsRequest();
             notificationSettingsRequest.setUserName(user.getEmail());
             notificationSettingsRequest.setAccountNumber(account.getAccountNumber());
             Setting setting = new Setting();
-            setting.setServiceAvailabilityFlag(accountSettings.isServiceAvailabilityFlag());
-            setting.setPushNotificationFlag(accountSettings.isPushNotificationFlag());
-            setting.setSmsNotificationFlag(accountSettings.isSmsNotificationFlag());
-            setting.setEnergyConsumptionFlag(accountSettings.isEnergyConsumptionFlag());
+            setting.setServiceAvailabilityFlag(editedAccountSettings.isServiceAvailabilityFlag());
+            setting.setPushNotificationFlag(editedAccountSettings.isPushNotificationFlag());
+            setting.setSmsNotificationFlag(editedAccountSettings.isSmsNotificationFlag());
+            setting.setEnergyConsumptionFlag(editedAccountSettings.isEnergyConsumptionFlag());
             notificationSettingsRequest.setSetting(setting);
             showProgress(true);
             accountSettingsViewModel.updateAccountSettingsInServer(notificationSettingsRequest);
@@ -216,7 +220,6 @@ public class AccountNotificationSettingsFragment extends Fragment {
 
 
     public void showProgress(boolean isVisible) {
-        isProgressing = isVisible;
         if (isVisible) {
             loader.setVisibility(View.VISIBLE);
         } else {

@@ -487,7 +487,7 @@ public class DatabaseClient {
                 DatabaseClient.getInstance(mCtx).getAppDatabase()
                         .getAccountSettingsDao()
                         .delete(accountSettings.getAccountNumber());
-
+                accountSettings.setAccountSettingsLoaded(true);
                 DatabaseClient.getInstance(mCtx).getAppDatabase()
                         .getAccountSettingsDao()
                         .insert(accountSettings);
