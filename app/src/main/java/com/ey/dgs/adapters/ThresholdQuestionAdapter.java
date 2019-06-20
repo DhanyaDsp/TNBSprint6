@@ -24,6 +24,7 @@ public class ThresholdQuestionAdapter extends RecyclerView.Adapter<RecyclerView.
 
     private ArrayList<String> nicknames;
     private ArrayList<String> accountNumber;
+    ArrayList<String> userThreshold;
     private Fragment fragment;
     final int TYPE_ACCOUNT = 2;
     final int TYPE_NEXT = 3;
@@ -31,10 +32,12 @@ public class ThresholdQuestionAdapter extends RecyclerView.Adapter<RecyclerView.
 
     private String[] thresholdValues;
 
-    public ThresholdQuestionAdapter(Fragment fragment, ArrayList<String> nicknames, ArrayList<String> accountNumber) {
+    public ThresholdQuestionAdapter(Fragment fragment, ArrayList<String> nicknames, ArrayList<String> accountNumber,
+                                    ArrayList<String> userThreshold) {
         this.fragment = fragment;
         this.nicknames = nicknames;
         this.accountNumber = accountNumber;
+        this.userThreshold = userThreshold;
         thresholdValues = new String[nicknames.size()];
     }
 
@@ -59,8 +62,13 @@ public class ThresholdQuestionAdapter extends RecyclerView.Adapter<RecyclerView.
             ThresholdQuestionHolder holder = (ThresholdQuestionHolder) viewHolder;
             holder.tvNickname.setText(nicknames.get(i));
             holder.tvAccountNo.setText(accountNumber.get(i));
-            holder.myCustomEditTextListener.updatePosition(holder.getAdapterPosition());
-            holder.thresholdAnswer.setText(thresholdValues[holder.getAdapterPosition()]);
+            if(userThreshold.get(i).contains(".")) {
+                thresholdValues[i] = userThreshold.get(i).substring(0, userThreshold.get(i).indexOf("."));
+            } else {
+                thresholdValues[i] = userThreshold.get(i);
+            }
+            holder.myCustomEditTextListener.updatePosition(i);
+            holder.thresholdAnswer.setText(thresholdValues[i]);
         } else if (viewHolder.getItemViewType() == TYPE_NEXT) {
             NextHolder holder = (NextHolder) viewHolder;
             holder.btnNext.setText(R.string.submit);

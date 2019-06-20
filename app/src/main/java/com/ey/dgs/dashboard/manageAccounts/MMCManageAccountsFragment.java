@@ -18,18 +18,25 @@ public class MMCManageAccountsFragment extends Fragment{
 
     public static final String NICKNAMES = "nicknames";
     public static final String ACCOUNT_NUMBER = "accountNumber";
+    public static final String PEOPLEINPROPERTY = "peopleInProperty";
+    public static final String USERTHRESHOLD = "userThreshold";
     ArrayList<String> nicknames = new ArrayList<>();
     ArrayList<String> accountNumber = new ArrayList<>();
+    ArrayList<String> peopleInProperty = new ArrayList<>();
+    ArrayList<String> userThreshold = new ArrayList<>();
     private static ViewPager vpQuestions;
     private TabLayout tlDots;
     private AccountsQuestionsPagerAdapter adapter;
     View view;
 
-    public static MMCManageAccountsFragment newInstance(ArrayList<String> nicknames, ArrayList<String> accountNumber) {
+    public static MMCManageAccountsFragment newInstance(ArrayList<String> nicknames, ArrayList<String> accountNumber,
+                                                        ArrayList<String> peopleInProperty, ArrayList<String> userThreshold) {
         MMCManageAccountsFragment fragment = new MMCManageAccountsFragment();
         Bundle args = new Bundle();
         args.putStringArrayList(NICKNAMES, nicknames);
         args.putStringArrayList(ACCOUNT_NUMBER, accountNumber);
+        args.putStringArrayList(PEOPLEINPROPERTY, peopleInProperty);
+        args.putStringArrayList(USERTHRESHOLD, userThreshold);
         fragment.setArguments(args);
         return fragment;
     }
@@ -40,6 +47,8 @@ public class MMCManageAccountsFragment extends Fragment{
         if (getArguments() != null) {
             nicknames = getArguments().getStringArrayList(NICKNAMES);
             accountNumber = getArguments().getStringArrayList(ACCOUNT_NUMBER);
+            peopleInProperty = getArguments().getStringArrayList(PEOPLEINPROPERTY);
+            userThreshold = getArguments().getStringArrayList(USERTHRESHOLD);
         }
     }
 
@@ -54,8 +63,8 @@ public class MMCManageAccountsFragment extends Fragment{
         vpQuestions = view.findViewById(R.id.vpQuestionItems);
         tlDots = view.findViewById(R.id.tlDots);
         adapter = new AccountsQuestionsPagerAdapter(getChildFragmentManager());
-        adapter.addFrag(PeopleQuestionFragment.newInstance(nicknames, accountNumber));
-        adapter.addFrag(ThresholdQuestionFragment.newInstance(nicknames, accountNumber));
+        adapter.addFrag(PeopleQuestionFragment.newInstance(nicknames, accountNumber, peopleInProperty));
+        adapter.addFrag(ThresholdQuestionFragment.newInstance(nicknames, accountNumber, userThreshold));
         vpQuestions.setAdapter(adapter);
         tlDots.setupWithViewPager(vpQuestions, true);
     }

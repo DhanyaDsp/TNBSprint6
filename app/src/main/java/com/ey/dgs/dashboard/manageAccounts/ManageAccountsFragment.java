@@ -92,10 +92,38 @@ public class ManageAccountsFragment extends Fragment implements View.OnClickList
         this.context = activity;
     }
 
+    private ArrayList<String> getPeopleInProperty(ArrayList<String> accountNumbers) {
+        ArrayList<String> peopleInProperty = new ArrayList<>();
+        for(String accountNo: accountNumbers) {
+            for(Account account: accounts) {
+                if(accountNo == account.getAccountNumber()) {
+                    peopleInProperty.add(account.getPeopleInProperty());
+                }
+            }
+        }
+        return peopleInProperty;
+    }
+
+    private ArrayList<String> getThresholdValue(ArrayList<String> accountNumbers) {
+        ArrayList<String> thresholdValue = new ArrayList<>();
+        for(String accountNo: accountNumbers) {
+            for(Account account: accounts) {
+                if(accountNo == account.getAccountNumber()) {
+                    thresholdValue.add(account.getUserThreshold());
+                }
+            }
+        }
+        return  thresholdValue;
+    }
+
     public void openManageAccountsFragment(int index, ArrayList<String> nicknames, ArrayList<String> accountNumber) {
         if (index == INDEX_MANAGE_ACCOUNTS_QUESTIONS) {
+            getPeopleInProperty(accountNumber);
+            getThresholdValue(accountNumber);
             FragmentUtils.newInstance(((HomeActivity) getActivity()).getSupportFragmentManager())
-                    .addFragment(index, nicknames, accountNumber, MMCManageAccountsFragment.class.getName(), R.id.homeFlContainer);
+                    .addFragment(index, nicknames, accountNumber, getPeopleInProperty(accountNumber),
+                            getThresholdValue(accountNumber), MMCManageAccountsFragment.class.getName(),
+                            R.id.homeFlContainer);
         }
     }
 }

@@ -20,15 +20,18 @@ public class PeopleQuestionAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     private ArrayList<Integer> displayCounts = new ArrayList<>();
     private ArrayList<String> nicknames;
     private ArrayList<String> accountNumber;
+    private ArrayList<String> peopleInProperty;
     private Fragment fragment;
     final int TYPE_ACCOUNT = 4;
     final int TYPE_NEXT = 5;
     private Context context;
 
-    public PeopleQuestionAdapter(Fragment fragment, ArrayList<String> nicknames, ArrayList<String> accountNumber) {
+    public PeopleQuestionAdapter(Fragment fragment, ArrayList<String> nicknames, ArrayList<String> accountNumber,
+                                 ArrayList<String> peopleInProperty) {
         this.fragment = fragment;
         this.nicknames = nicknames;
         this.accountNumber = accountNumber;
+        this.peopleInProperty = peopleInProperty;
     }
 
     @NonNull
@@ -51,6 +54,7 @@ public class PeopleQuestionAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             PeopleQuestionHolder holder = (PeopleQuestionHolder) viewHolder;
             holder.tvNickname.setText(nicknames.get(position));
             holder.tvAccountNo.setText(accountNumber.get(position));
+            holder.numberDisplay.setText(peopleInProperty.get(position));
             displayCounts.add(position, 1);
             holder.decrease.setOnClickListener(new View.OnClickListener() {
                 @Override

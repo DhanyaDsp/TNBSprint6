@@ -18,16 +18,19 @@ public class PeopleQuestionFragment extends Fragment {
 
     ArrayList<String> nicknames = new ArrayList<>();
     ArrayList<String> accountNumber = new ArrayList<>();
+    ArrayList<String> peopleInProperty = new ArrayList<>();
     PeopleQuestionAdapter adapter;
     private LinearLayoutManager rvLayoutManager;
     RecyclerView rvQuestions;
     View view;
 
-    public static PeopleQuestionFragment newInstance(ArrayList<String> nicknames, ArrayList<String> accountNumber) {
+    public static PeopleQuestionFragment newInstance(ArrayList<String> nicknames, ArrayList<String> accountNumber,
+                                                     ArrayList<String> peopleInProperty) {
         PeopleQuestionFragment fragment = new PeopleQuestionFragment();
         Bundle args = new Bundle();
         args.putStringArrayList(MMCManageAccountsFragment.NICKNAMES, nicknames);
         args.putStringArrayList(MMCManageAccountsFragment.ACCOUNT_NUMBER, accountNumber);
+        args.putStringArrayList(MMCManageAccountsFragment.PEOPLEINPROPERTY, peopleInProperty);
         fragment.setArguments(args);
         return fragment;
     }
@@ -37,6 +40,7 @@ public class PeopleQuestionFragment extends Fragment {
         super.onCreate(savedInstanceState);
         nicknames = getArguments().getStringArrayList(MMCManageAccountsFragment.NICKNAMES);
         accountNumber = getArguments().getStringArrayList(MMCManageAccountsFragment.ACCOUNT_NUMBER);
+        peopleInProperty = getArguments().getStringArrayList(MMCManageAccountsFragment.PEOPLEINPROPERTY);
     }
 
     @Override
@@ -50,7 +54,7 @@ public class PeopleQuestionFragment extends Fragment {
         rvQuestions = view.findViewById(R.id.rvPeople);
         rvLayoutManager = new LinearLayoutManager(getActivity());
         rvQuestions.setLayoutManager(rvLayoutManager);
-        adapter = new PeopleQuestionAdapter(this, nicknames, accountNumber);
+        adapter = new PeopleQuestionAdapter(this, nicknames, accountNumber, peopleInProperty);
         rvQuestions.setAdapter(adapter);
     }
 
