@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import com.ey.dgs.R;
 import com.ey.dgs.adapters.NotificationListAdapter;
+import com.ey.dgs.model.Account;
 import com.ey.dgs.model.Notification;
 import com.ey.dgs.notifications.settings.NotificationSettingsActivity;
 import com.ey.dgs.notifications.settings.SettingsMenuFragment;
@@ -44,6 +45,7 @@ public class NotificationListActivity extends AppCompatActivity implements Setti
     boolean allNotifications;
     String accountNumber;
     private Drawable icon;
+    private Account account;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +56,7 @@ public class NotificationListActivity extends AppCompatActivity implements Setti
         allNotifications = getIntent().getBooleanExtra("allNotifications", false);
         if (!allNotifications) {
             accountNumber = getIntent().getStringExtra("accountNumber");
+            account = (Account) getIntent().getSerializableExtra("account");
         } else {
             accountNumber = "";
         }
@@ -84,6 +87,7 @@ public class NotificationListActivity extends AppCompatActivity implements Setti
             case R.id.action_notification_settings:
                 Intent intent = new Intent(NotificationListActivity.this, NotificationSettingsActivity.class);
                 intent.putExtra("allNotifications", allNotifications);
+                intent.putExtra("account", account);
                 startActivity(intent);
                 break;
         }

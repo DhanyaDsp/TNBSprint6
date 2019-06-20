@@ -32,6 +32,7 @@ import com.ey.dgs.utils.AppPreferences;
 import com.ey.dgs.utils.FragmentUtils;
 import com.ey.dgs.utils.Utils;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
 public class HomeActivity extends AppCompatActivity implements MyAccountFragment.OnFragmentInteractionListener, DashboardFragment.OnFragmentInteractionListener, MyDashboardFragment.OnFragmentInteractionListener, FragmentManager.OnBackStackChangedListener {
@@ -132,6 +133,7 @@ public class HomeActivity extends AppCompatActivity implements MyAccountFragment
             selectedAccount = ((MyAccountFragment) currentFragment).getAccount();
             if (selectedAccount != null) {
                 intent.putExtra("allNotifications", false);
+                intent.putExtra("account", (Serializable) selectedAccount);
                 intent.putExtra("accountNumber", selectedAccount.getAccountNumber());
             }
         } else {
@@ -199,6 +201,7 @@ public class HomeActivity extends AppCompatActivity implements MyAccountFragment
 
     private void moveToSettingsPage() {
         Intent intent = new Intent(HomeActivity.this, NotificationSettingsActivity.class);
+        intent.putExtra("allNotifications", true);
         startActivity(intent);
     }
 
@@ -214,7 +217,7 @@ public class HomeActivity extends AppCompatActivity implements MyAccountFragment
             if (fragment instanceof MyAccountFragment) {
                 setToolbarTitle("");
             }
-            if (fragment instanceof MMCManageAccountsFragment || fragment instanceof  MMCQuestionsFragment) {
+            if (fragment instanceof MMCManageAccountsFragment || fragment instanceof MMCQuestionsFragment) {
                 Utils.hideKeyBoard(this);
             }
             fm.popBackStack();
@@ -229,7 +232,7 @@ public class HomeActivity extends AppCompatActivity implements MyAccountFragment
 
     @Override
     public void onBackStackChanged() {
-         currentFragment = getSupportFragmentManager().findFragmentById(R.id.homeFlContainer);
+        currentFragment = getSupportFragmentManager().findFragmentById(R.id.homeFlContainer);
         if (currentFragment != null) {
             if (currentFragment instanceof DashboardFragment) {
                 ((DashboardFragment) currentFragment).onResume();
@@ -248,9 +251,10 @@ public class HomeActivity extends AppCompatActivity implements MyAccountFragment
         }
     }
 
-    public Fragment getCurrentFragment(){
+    public Fragment getCurrentFragment() {
         return getSupportFragmentManager().findFragmentById(R.id.homeFlContainer);
     }
+
     @Override
     protected void onResume() {
         super.onResume();
