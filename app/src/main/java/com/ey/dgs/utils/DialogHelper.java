@@ -17,6 +17,7 @@ import com.ey.dgs.model.Account;
 public class DialogHelper {
 
     private static AppCompatDialog dialog;
+    private static AppCompatDialog dialog2;
 
     public void DialogHelper() {
 
@@ -53,7 +54,7 @@ public class DialogHelper {
     }
 
     public static void showUserAlert(Context context, String title, String names, View.OnClickListener listener) {
-        if (context != null && dialog == null) {
+        if ((context != null && dialog == null)){
             dialog = new AppCompatDialog(context);
             dialog.setContentView(R.layout.popup_alert);
             AppCompatTextView tvTitle = dialog.getWindow().findViewById(R.id.popup_title);
@@ -79,10 +80,40 @@ public class DialogHelper {
         }
     }
 
+    public static void showUserAlert2(Context context, String title, String names, View.OnClickListener listener) {
+        if ((context != null && dialog2 == null)){
+            dialog2 = new AppCompatDialog(context);
+            dialog2.setContentView(R.layout.popup_alert);
+            AppCompatTextView tvTitle = dialog2.getWindow().findViewById(R.id.popup_title);
+            AppCompatTextView message = dialog2.getWindow().findViewById(R.id.popup_message);
+            Button btnClose = dialog2.getWindow().findViewById(R.id.btn_close);
+            btnClose.setOnClickListener(listener);
+            tvTitle.setText(title);
+            message.setText(dialog2.getContext().getString(R.string.service_disruption_msg, names));
+            Window window = dialog2.getWindow();
+            WindowManager.LayoutParams wlp = window.getAttributes();
+
+            wlp.gravity = Gravity.TOP;
+            wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+            window.setAttributes(wlp);
+            dialog2.setCancelable(false);
+            if (!dialog2.isShowing()) {
+                dialog2.show();
+            }
+        }
+    }
+
     public static void hidePopup() {
         if (dialog != null) {
             dialog.dismiss();
             dialog = null;
+        }
+    }
+
+    public static void hidePopup2() {
+        if (dialog2 != null) {
+            dialog2.dismiss();
+            dialog2 = null;
         }
     }
 }

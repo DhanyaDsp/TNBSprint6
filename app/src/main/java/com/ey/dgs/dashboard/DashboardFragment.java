@@ -76,6 +76,8 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
     OffersAdapter offersAdapter;
     UserSettingsViewModel userSettingsViewModel;
     private UserSettings userSettings;
+    private static boolean showDisruptionAlert= false;
+    private static boolean showRestorationAlert= false;
 
     public static DashboardFragment newInstance() {
         return new DashboardFragment();
@@ -132,6 +134,14 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
         userSettingsViewModel.getUserSettingsFromLocalDB(1);
         userSettingsViewModel.getUserSettings().observe(getViewLifecycleOwner(), userSettings -> {
             this.userSettings = userSettings;
+            if(userSettings != null) {
+                if (userSettings.isRestoreAlertAcknowledgementFlag()) {
+                    showRestorationAlert = true;
+                }
+                if (userSettings.isOutageAlertAcknowledgementFlag()) {
+                    showDisruptionAlert = true;
+                }
+            }
         });
         showProgress(true);
         loginViewModel.getUserDetail().observe(getViewLifecycleOwner(), user -> {
@@ -166,8 +176,12 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                     getBillingDetailsForAccount(accounts);
                     billingDetailsServiceCalled = true;
                 }*/
-                setServiceRestorationPopup(this.accounts);
-               setServiceDisruptionPopup(this.accounts);
+               if(!showRestorationAlert) {
+                   setServiceRestorationPopup(this.accounts);
+               }
+                if(!showDisruptionAlert) {
+                    setServiceDisruptionPopup(this.accounts);
+                }
 
             }
         });
@@ -320,16 +334,17 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
             }
         }
         String name = getNames(accountWithRestorationDisruption, namesWithServiceRestoration);
+        if(!TextUtils.isEmpty(name)) {
             DialogHelper.showUserAlert(getActivity(), getString(R.string.service_restoration), name,
-                    new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            DialogHelper.hidePopup();
-                            userSettings.setRestoreAlertAcknowledgementFlag(true);
-                            updateUserSettingInServer();
-                        }
-                    });
-
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        DialogHelper.hidePopup();
+                        userSettings.setRestoreAlertAcknowledgementFlag(true);
+                        updateUserSettingInServer();
+                    }
+                });
+        }
     }
     private void setServiceDisruptionPopup(ArrayList<Account> accounts) {
         ArrayList<String> accountWithServiceDisruption = new ArrayList<>();
@@ -340,16 +355,17 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
             }
         }
         String name = getNames(accountWithServiceDisruption, namesWithServiceDisruption);
-            DialogHelper.showUserAlert(getActivity(), getString(R.string.service_disruption), name,
-                    new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    DialogHelper.hidePopup();
-                    userSettings.setOutageAlertAcknowledgementFlag(true);
-                    updateUserSettingInServer();
-                }
+        if(!TextUtils.isEmpty(name)) {
+            DialogHelper.showUserAlert2(getActivity(), getString(R.string.service_disruption), name,
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        DialogHelper.hidePopup2();
+                        userSettings.setOutageAlertAcknowledgementFlag(true);
+                        updateUserSettingInServer();
+                    }
             });
-
+        }
     }
 
     private String getNames(ArrayList<String> names, String name) {
