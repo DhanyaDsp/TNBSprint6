@@ -166,7 +166,7 @@ public class ConsumptionFragment extends Fragment implements View.OnClickListene
 
         barChart = tmpBarChart;
         barChart.setItemSelectedListener(this);
-        if (!TextUtils.isEmpty(chartPeriod) && chartPeriod.equalsIgnoreCase(BillingHistory.MONTHLY)) {
+        if (!TextUtils.isEmpty(chartPeriod) && chartPeriod.equalsIgnoreCase(BillingHistory.DAILY)) {
             daysAdapter = new DaysAdapter(getActivity(), this.chartDatum);
             glDays.setAdapter(daysAdapter);
         }
@@ -229,7 +229,7 @@ public class ConsumptionFragment extends Fragment implements View.OnClickListene
     private void getBillingHistory(String period) {
         showProgress(true);
         this.chartPeriod = period;
-        if (chartPeriod.equalsIgnoreCase(BillingHistory.MONTHLY)) {
+        if (chartPeriod.equalsIgnoreCase(BillingHistory.DAILY)) {
             llDays.setVisibility(View.VISIBLE);
         } else {
             llDays.setVisibility(View.GONE);

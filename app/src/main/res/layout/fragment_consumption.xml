@@ -118,7 +118,7 @@
                     android:layout_width="250dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="@dimen/large_padding"
+                    android:layout_marginTop="@dimen/medium_padding"
                     android:layout_marginBottom="@dimen/large_padding"
                     android:background="@drawable/bg_add_account"
                     android:fontFamily="@font/museosans_500"

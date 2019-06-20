@@ -107,12 +107,14 @@ public class AccountNotificationSettingsFragment extends Fragment {
                 notificationSettingsAdapter = new NotificationSettingsAdapter(rvNotificationSettings, this, getActivity(), notificationSettings);
                 notificationSettingsAdapter.setNotificationSettings(notificationSettingsCopy);
                 notificationSettingsAdapter.setAccountSettings(this.accountSettings);
-                rvNotificationSettings.setAdapter(notificationSettingsAdapter);
+                if (!isProgressing) {
+                    rvNotificationSettings.setAdapter(notificationSettingsAdapter);
+                }
                 showProgress(false);
-                /*if (!serverCalled) {
+                if (!serverCalled) {
                     accountSettingsViewModel.getAccountSettingsFromServer(user.getEmail(), account.getAccountNumber());
                     serverCalled = true;
-                }*/
+                }
             }
         });
         accountSettingsViewModel.getIsAccountSettingsUpdated().observe(getViewLifecycleOwner(), isUserUpdated -> {
@@ -187,6 +189,7 @@ public class AccountNotificationSettingsFragment extends Fragment {
     public void updateAccountDetails() {
         Utils.hideKeyBoard(getActivity());
         if (!isProgressing) {
+            isProgressing = true;
             editedAccountSettings = notificationSettingsAdapter.getAccountSettings();
             NotificationSettingsRequest notificationSettingsRequest = new NotificationSettingsRequest();
             notificationSettingsRequest.setUserName(user.getEmail());
@@ -197,7 +200,6 @@ public class AccountNotificationSettingsFragment extends Fragment {
             setting.setSmsNotificationFlag(accountSettings.isSmsNotificationFlag());
             setting.setEnergyConsumptionFlag(accountSettings.isEnergyConsumptionFlag());
             notificationSettingsRequest.setSetting(setting);
-            isProgressing = true;
             showProgress(true);
             accountSettingsViewModel.updateAccountSettingsInServer(notificationSettingsRequest);
 
