@@ -135,10 +135,10 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
         userSettingsViewModel.getUserSettings().observe(getViewLifecycleOwner(), userSettings -> {
             this.userSettings = userSettings;
             if(userSettings != null) {
-                if (userSettings.isRestoreAlertAcknowledgementFlag()) {
+                if (!userSettings.isRestoreAlertAcknowledgementFlag()) {
                     showRestorationAlert = true;
                 }
-                if (userSettings.isOutageAlertAcknowledgementFlag()) {
+                if (!userSettings.isOutageAlertAcknowledgementFlag()) {
                     showDisruptionAlert = true;
                 }
             }
@@ -176,10 +176,10 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                     getBillingDetailsForAccount(accounts);
                     billingDetailsServiceCalled = true;
                 }*/
-               if(!showRestorationAlert) {
+               if(showRestorationAlert) {
                    setServiceRestorationPopup(this.accounts);
                }
-                if(!showDisruptionAlert) {
+                if(showDisruptionAlert) {
                     setServiceDisruptionPopup(this.accounts);
                 }
 
