@@ -95,6 +95,7 @@ public class ConsumptionFragment extends Fragment implements View.OnClickListene
         billingHistoryViewModel = ViewModelProviders.of(this).get(BillingHistoryViewModel.class);
         billingHistoryViewModel.loadBillingHistoryFromLocalDB(account.getAccountNumber());
         billingHistoryViewModel.setContext(getActivity());
+        billingHistoryViewModel.getLoaderData().observe(getViewLifecycleOwner(), this::showProgress);
         loginViewModel.getUserDetail().observe(getViewLifecycleOwner(), user -> {
             this.user = user;
             billingHistoryViewModel.getBillingHistory().observe(getViewLifecycleOwner(), billingHistory -> {
@@ -105,7 +106,6 @@ public class ConsumptionFragment extends Fragment implements View.OnClickListene
                     Gson gson = new Gson();
                     this.billingDetails = gson.fromJson(billingHistory.getBillingDetails(), BillingDetails[].class);
                     setChartData(billingDetails);
-                    showProgress(false);
                 }
             });
         });
@@ -227,7 +227,6 @@ public class ConsumptionFragment extends Fragment implements View.OnClickListene
     }
 
     private void getBillingHistory(String period) {
-        showProgress(true);
         this.chartPeriod = period;
         if (chartPeriod.equalsIgnoreCase(BillingHistory.DAILY)) {
             llDays.setVisibility(View.VISIBLE);

@@ -19,6 +19,7 @@ public class AccountSettings extends Account implements Serializable {
     private boolean pushNotificationFlag;
     private boolean smsNotificationFlag;
     private boolean energyConsumptionFlag;
+    private boolean isAccountSettingsLoaded;
     private String message;
 
     @Ignore
@@ -72,5 +73,13 @@ public class AccountSettings extends Account implements Serializable {
 
     public void setEnergyConsumptionFlag(boolean energyConsumptionFlag) {
         this.energyConsumptionFlag = energyConsumptionFlag;
+    }
+
+    public boolean isAccountSettingsLoaded() {
+        return isAccountSettingsLoaded;
+    }
+
+    public void setAccountSettingsLoaded(boolean accountSettingsLoaded) {
+        isAccountSettingsLoaded = accountSettingsLoaded;
     }
 }

@@ -26,6 +26,7 @@ public class BillingHistoryViewModel extends ViewModel implements DatabaseCallba
     private MutableLiveData<ArrayList<BillingHistory>> billingHistories = new MutableLiveData<>();
     private MutableLiveData<ArrayList<String>> daysList = new MutableLiveData<>();
     private MutableLiveData<BillingHistory> billingHistory = new MutableLiveData<>();
+    private MutableLiveData<Boolean> loaderData = new MutableLiveData<>();
     private Context context;
     private AppPreferences appPreferences;
 
@@ -39,6 +40,14 @@ public class BillingHistoryViewModel extends ViewModel implements DatabaseCallba
 
     private void setBillingHistory(BillingHistory billingHistory) {
         this.billingHistory.postValue(billingHistory);
+    }
+
+    public MutableLiveData<Boolean> getLoaderData() {
+        return loaderData;
+    }
+
+    public void setLoaderData(Boolean show) {
+        this.loaderData.postValue(show);
     }
 
     private void setDays(ArrayList<String> days) {
@@ -68,6 +77,7 @@ public class BillingHistoryViewModel extends ViewModel implements DatabaseCallba
     }
 
     public void getBillingHistoryFromServer(User user, String period, Account account) {
+        setLoaderData(true);
         new ApiClient().getBillingHistoryFromServer(appPreferences.getAuthToken(), account, period, user.getEmail(), this);
     }
 
@@ -114,6 +124,7 @@ public class BillingHistoryViewModel extends ViewModel implements DatabaseCallba
 
     @Override
     public void onSuccess(int requestCode, Object obj, int code) {
+        setLoaderData(false);
         if (requestCode == ApiClient.REQUEST_CODE_GET_BILLING_HISTORY) {
             BillingDetailsResponse billingDetailsResponse = (BillingDetailsResponse) obj;
             BillingDetails[] billingDetails = billingDetailsResponse.getResult().getBillingDetails();
@@ -134,6 +145,7 @@ public class BillingHistoryViewModel extends ViewModel implements DatabaseCallba
 
     @Override
     public void onFailure(int requestCode, Object obj, int code) {
+        setLoaderData(false);
         Utils.showToast(context, (String) obj);
     }
 

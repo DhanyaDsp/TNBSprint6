@@ -202,7 +202,9 @@ public class BarChart extends LinearLayout {
     }
 
     public void onItemSelected(int position) {
-        itemSelectedListener.onItemSelected(position);
+        if (itemSelectedListener != null) {
+            itemSelectedListener.onItemSelected(position);
+        }
     }
 
     class BarsViewListenerClass implements ViewTreeObserver.OnGlobalLayoutListener {

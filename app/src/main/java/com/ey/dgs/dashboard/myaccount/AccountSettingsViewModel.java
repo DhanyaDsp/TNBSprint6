@@ -114,11 +114,10 @@ public class AccountSettingsViewModel extends ViewModel implements DatabaseCallb
         if (requestCode == AccountSettings.REQUEST_CODE_UPDATE_ACCOUNT_SETTINGS) {
             Utils.showToast(context, "Account Details Updated");
             setAccountSettingsUpdated(true);
-        }else if (requestCode == UserSettings.REQUEST_CODE_TOGGLE_PUSH) {
+        } else if (requestCode == UserSettings.REQUEST_CODE_TOGGLE_PUSH) {
             Utils.showToast(context, "User Settings Updated");
             setAccountSettingsUpdated(true);
-        }
-        else if (requestCode == UserSettings.REQUEST_CODE_UPDATE_USER_SETTINGS) {
+        } else if (requestCode == UserSettings.REQUEST_CODE_UPDATE_USER_SETTINGS) {
         }
     }
 
@@ -147,6 +146,7 @@ public class AccountSettingsViewModel extends ViewModel implements DatabaseCallb
             accountSettings.setPushNotificationFlag(notificationSettingsRequest.getSetting().getPushNotificationFlag());
             accountSettings.setServiceAvailabilityFlag(notificationSettingsRequest.getSetting().getServiceAvailabilityFlag());
             accountSettings.setEnergyConsumptionFlag(notificationSettingsRequest.getSetting().isEnergyConsumptionFlag());
+            accountSettings.setAccountSettingsLoaded(true);
             updateAccountSettingsInLocalDB(accountSettings);
         } else if (requestCode == ApiClient.REQUEST_CODE_GET_ACCOUNT_DETAILS) {
             AccountSettings accountSettings = (AccountSettings) obj;
