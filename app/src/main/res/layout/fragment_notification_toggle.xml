@@ -60,9 +60,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
-                    android:checked="@={userSettings.pushNotificationFlag}"
-                    android:onCheckedChanged="@{(view,isChecked)-> fragment.togglePushNotification(view,isChecked)}"
-                    android:theme="@style/SwitchCompatTheme" />
+                   android:theme="@style/SwitchCompatTheme" />
 
             </RelativeLayout>
 
@@ -86,8 +84,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
-                    android:checked="@={userSettings.smsNotificationFlag}"
-                    android:onCheckedChanged="@{(view,isChecked)-> fragment.toggleSMSNotification(view,isChecked)}"
                     android:theme="@style/SwitchCompatTheme" />
 
             </RelativeLayout>

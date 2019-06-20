@@ -90,7 +90,7 @@ public class NotificationSettingsActivity extends AppCompatActivity implements S
         if (currentFragment instanceof SettingsMenuFragment) {
             finish();
         } else if (currentFragment instanceof NotificationToggleFragment) {
-            ((NotificationToggleFragment) currentFragment).updateUserSettings();
+            onBackPressed();
             setActionBarTitle("More");
         } else if (currentFragment instanceof AccountNotificationSettingsFragment) {
             ((AccountNotificationSettingsFragment) currentFragment).updateAccountDetails();

@@ -37,7 +37,7 @@ import com.ey.dgs.utils.Utils;
 
 import java.util.ArrayList;
 
-public class NotificationToggleFragment extends Fragment implements CompoundButton.OnCheckedChangeListener {
+public class NotificationToggleFragment extends Fragment {
 
     public static boolean IS_SETTINGS_UPDATED = false;
     private View view;
@@ -56,6 +56,8 @@ public class NotificationToggleFragment extends Fragment implements CompoundButt
     AppCompatTextView tvLabel;
     SwitchCompat scPush, scSMS;
     private boolean isProgressing;
+    boolean firstPushCall = false;
+    boolean firstSMSCall = false;
 
     public NotificationToggleFragment() {
     }
@@ -85,9 +87,7 @@ public class NotificationToggleFragment extends Fragment implements CompoundButt
             mListener.onFragmentInteraction("Notifications");
         }
         scPush = view.findViewById(R.id.scPush);
-        scSMS = view.findViewById(R.id.scSMS);/*
-        scPush.setOnCheckedChangeListener(this);
-        scSMS.setOnCheckedChangeListener(this);*/
+        scSMS = view.findViewById(R.id.scSMS);
         tvLabel = view.findViewById(R.id.tvLabel);
         rvAccounts = view.findViewById(R.id.rvAccounts);
         rvAccounts.setHasFixedSize(true);
@@ -118,6 +118,7 @@ public class NotificationToggleFragment extends Fragment implements CompoundButt
                 this.userSettings = userSettings;
                 editedUserSettings = userSettings;
                 binding.setUserSettings(userSettings);
+                updateUI(userSettings);
             }
         });
         mViewModel = ViewModelProviders.of(this).get(DashboardViewModel.class);
@@ -130,19 +131,40 @@ public class NotificationToggleFragment extends Fragment implements CompoundButt
         accountSettingsViewModel.getIsAccountSettingsUpdated().observe(getViewLifecycleOwner(), isUserUpdated -> {
             isProgressing = false;
             if (isUserUpdated) {
-                Utils.showToast(getActivity(), "User Settings Updated");
-                getActivity().onBackPressed();
+                Utils.showToast(getActivity(), "User Settings Updated!");
             } else {
+                Utils.showToast(getActivity(), "User Settings failed to update!");
             }
         });
     }
 
-    public void togglePushNotification(View view, boolean isChecked) {
-        editedUserSettings.setPushNotificationFlag(isChecked);
+    private void updateUI(UserSettings userSettings) {
+        scPush.setOnCheckedChangeListener(null);
+        scSMS.setOnCheckedChangeListener(null);
+        scPush.setChecked(userSettings.isPushNotificationFlag());
+        scSMS.setChecked(userSettings.isSmsNotificationFlag());
+        scPush.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                togglePushNotification(isChecked);
+            }
+        });
+        scSMS.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                toggleSMSNotification(isChecked);
+            }
+        });
     }
 
-    public void toggleSMSNotification(View view, boolean isChecked) {
+    public void togglePushNotification(boolean isChecked) {
+        editedUserSettings.setPushNotificationFlag(isChecked);
+        updateUserSettings();
+    }
+
+    public void toggleSMSNotification(boolean isChecked) {
         editedUserSettings.setSmsNotificationFlag(isChecked);
+        updateUserSettings();
     }
 
     public void updateUserSettings() {
@@ -191,22 +213,10 @@ public class NotificationToggleFragment extends Fragment implements CompoundButt
         mListener = null;
     }
 
-    @Override
-    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        switch (buttonView.getId()) {
-            case R.id.scPush:
-                togglePushNotification(buttonView, isChecked);
-                break;
-            case R.id.scSMS:
-                toggleSMSNotification(buttonView, isChecked);
-                break;
-            default:
-                break;
-        }
-    }
-
     public void onRefresh() {
         if (IS_SETTINGS_UPDATED) {
+            firstPushCall = false;
+            firstSMSCall = false;
             subscribe();
             IS_SETTINGS_UPDATED = false;
         }
