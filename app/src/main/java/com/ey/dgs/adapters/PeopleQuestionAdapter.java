@@ -59,7 +59,7 @@ public class PeopleQuestionAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             holder.decrease.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (displayCounts.get(position) > 1) {
+                    if (displayCounts.get(position) > 0) {
                         int number = displayCounts.get(position);
                         number = number - 1;
                         holder.numberDisplay.setText("" + number);

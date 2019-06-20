@@ -92,7 +92,6 @@ public class MMCQuestionsFragment extends Fragment implements View.OnClickListen
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        /*rootView = inflater.inflate(R.layout.mmcquestions_fragment, container, false);*/
         binding = DataBindingUtil.inflate(inflater, R.layout.mmcquestions_fragment, container, false);
         rootView = binding.getRoot();
         initViews();
@@ -239,7 +238,7 @@ public class MMCQuestionsFragment extends Fragment implements View.OnClickListen
     }
 
     public void decreaseInteger() {
-        if(displayCount > 1) {
+        if(displayCount > 0) {
             displayCount = displayCount - 1;
             display(displayCount);
         }
