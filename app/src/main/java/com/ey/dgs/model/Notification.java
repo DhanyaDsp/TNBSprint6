@@ -20,21 +20,22 @@ public class Notification implements Serializable {
     public static String UPOAM = "UPOAM";//Outage Acknowledgement Notification
     public static String IRT = "IRT";//Inform Restoration Time
 
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     @NonNull
-    private int id;
+    private long id;
     private String header;
     private String notificationType;
     private String accountNumber;
     private String message;
     private String energyTip;
     private String date;
+    private boolean isRead;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -84,5 +85,13 @@ public class Notification implements Serializable {
 
     public void setAccountNumber(String accountNumber) {
         this.accountNumber = accountNumber;
+    }
+
+    public boolean isRead() {
+        return isRead;
+    }
+
+    public void setRead(boolean read) {
+        isRead = read;
     }
 }

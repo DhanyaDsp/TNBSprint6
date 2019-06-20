@@ -824,6 +824,25 @@ public class DatabaseClient {
         updateSingleAccountThreshold st = new updateSingleAccountThreshold();
         st.execute();
     }
+
+    public void updateNotification(Notification notification) {
+        class UpdateNotificationTask extends AsyncTask<Void, Void, Void> {
+
+            @Override
+            protected Void doInBackground(Void... voids) {
+                DatabaseClient.getInstance(mCtx).getAppDatabase().notificationDao().update(notification);
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+            }
+        }
+
+        UpdateNotificationTask st = new UpdateNotificationTask();
+        st.execute();
+    }
 }
 
 

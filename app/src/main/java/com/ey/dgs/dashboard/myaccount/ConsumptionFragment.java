@@ -37,7 +37,7 @@ import static com.ey.dgs.model.BillingHistory.MONTHLY;
 import static com.ey.dgs.model.BillingHistory.WEEKLY;
 import static com.ey.dgs.utils.FragmentUtils.INDEX_QUESTIONS_FRAGMENT;
 
-public class ConsumptionFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemSelectedListener {
+public class ConsumptionFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemSelectedListener, BarChart.OnItemSelected {
 
 
     private View view;
@@ -54,9 +54,9 @@ public class ConsumptionFragment extends Fragment implements View.OnClickListene
     View loader;
     Gallery glDays;
     DaysAdapter daysAdapter;
-    private ArrayList<String> days;
     private ArrayList<ChartData> chartDatum;
-    private String chartPeriod = BillingHistory.MONTHLY;
+    private String chartPeriod = BillingHistory.DAILY;
+    LinearLayout llAmount;
 
     public ConsumptionFragment() {
     }
@@ -99,7 +99,7 @@ public class ConsumptionFragment extends Fragment implements View.OnClickListene
             this.user = user;
             billingHistoryViewModel.getBillingHistory().observe(getViewLifecycleOwner(), billingHistory -> {
                 if (billingHistory == null) {
-                    billingHistoryViewModel.getBillingHistoryFromServer(user, BillingHistory.DAILY, account);
+                    getBillingHistory(chartPeriod);
                 } else {
                     this.billingHistory = billingHistory;
                     Gson gson = new Gson();
@@ -165,7 +165,7 @@ public class ConsumptionFragment extends Fragment implements View.OnClickListene
                 .setSelectionRequired(true); //.updateData(); // .invalidate();
 
         barChart = tmpBarChart;
-
+        barChart.setItemSelectedListener(this);
         if (!TextUtils.isEmpty(chartPeriod) && chartPeriod.equalsIgnoreCase(BillingHistory.MONTHLY)) {
             daysAdapter = new DaysAdapter(getActivity(), this.chartDatum);
             glDays.setAdapter(daysAdapter);
@@ -190,6 +190,7 @@ public class ConsumptionFragment extends Fragment implements View.OnClickListene
         llDays = view.findViewById(R.id.llDays);
         glDays = view.findViewById(R.id.glDays);
         glDays.setOnItemSelectedListener(this);
+        llAmount = view.findViewById(R.id.llAmount);
     }
 
     @Override
@@ -201,7 +202,6 @@ public class ConsumptionFragment extends Fragment implements View.OnClickListene
                 btnMonthly.setSelected(false);
                 btnYearly.setSelected(false);
                 getBillingHistory(DAILY);
-                llDays.setVisibility(View.VISIBLE);
                 break;
 
             case R.id.btnMonthly:
@@ -209,7 +209,6 @@ public class ConsumptionFragment extends Fragment implements View.OnClickListene
                 btnMonthly.setSelected(true);
                 btnYearly.setSelected(false);
                 getBillingHistory(MONTHLY);
-                llDays.setVisibility(View.GONE);
                 break;
 
             case R.id.btnWeekly:
@@ -217,7 +216,6 @@ public class ConsumptionFragment extends Fragment implements View.OnClickListene
                 btnMonthly.setSelected(false);
                 btnYearly.setSelected(true);
                 getBillingHistory(WEEKLY);
-                llDays.setVisibility(View.GONE);
                 break;
 
             case R.id.btnManageConsumption:
@@ -231,6 +229,16 @@ public class ConsumptionFragment extends Fragment implements View.OnClickListene
     private void getBillingHistory(String period) {
         showProgress(true);
         this.chartPeriod = period;
+        if (chartPeriod.equalsIgnoreCase(BillingHistory.MONTHLY)) {
+            llDays.setVisibility(View.VISIBLE);
+        } else {
+            llDays.setVisibility(View.GONE);
+        }
+        if (chartPeriod.equalsIgnoreCase(BillingHistory.DAILY)) {
+            llAmount.setVisibility(View.GONE);
+        } else {
+            llAmount.setVisibility(View.VISIBLE);
+        }
         billingHistoryViewModel.getBillingHistoryFromServer(user, period, account);
     }
 
@@ -250,8 +258,9 @@ public class ConsumptionFragment extends Fragment implements View.OnClickListene
                 for (ChartData chartData : chartDatum) {
                     chartData.setIsSelected(false);
                 }
-                chartDatum.get(position).setIsSelected(true);
-                barChart.getBarsAdapter().notifyDataSetChanged();
+                //chartDatum.get(position).setIsSelected(true);
+                barChart.getBarsAdapter().toggleSelection(position);
+                //barChart.getBarsAdapter().notifyDataSetChanged();
             }
         } catch (NullPointerException e) {
         }
@@ -272,5 +281,11 @@ public class ConsumptionFragment extends Fragment implements View.OnClickListene
                     .addFragment(INDEX_QUESTIONS_FRAGMENT, billingHistory, MMCQuestionsFragment.class.getName(),
                             R.id.homeFlContainer);
         }
+    }
+
+    @Override
+    public void onItemSelected(int position) {
+        glDays.setSelection(position);
+        daysAdapter.notifyDataSetChanged();
     }
 }
