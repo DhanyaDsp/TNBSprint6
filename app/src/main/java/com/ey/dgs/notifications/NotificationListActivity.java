@@ -83,6 +83,7 @@ public class NotificationListActivity extends AppCompatActivity implements Setti
                 break;
             case R.id.action_notification_settings:
                 Intent intent = new Intent(NotificationListActivity.this, NotificationSettingsActivity.class);
+                intent.putExtra("allNotifications", allNotifications);
                 startActivity(intent);
                 break;
         }

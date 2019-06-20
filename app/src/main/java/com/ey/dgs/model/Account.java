@@ -21,7 +21,7 @@ public class Account implements Serializable {
     private String accountNumber;
     private String nickName;
     private String lastBilledDate;
-    private String lastBilledAmount;
+    private Float lastBilledAmount;
     private String billingCycleStartDate;
     private String billingCycleEndDate;
     private String name;
@@ -80,11 +80,11 @@ public class Account implements Serializable {
         this.lastBilledDate = lastBilledDate;
     }
 
-    public String getLastBilledAmount() {
+    public Float getLastBilledAmount() {
         return lastBilledAmount;
     }
 
-    public void setLastBilledAmount(String lastBilledAmount) {
+    public void setLastBilledAmount(Float lastBilledAmount) {
         this.lastBilledAmount = lastBilledAmount;
     }
 

@@ -17,7 +17,7 @@ import com.ey.dgs.utils.FragmentUtils;
 
 public class NotificationSettingsActivity extends AppCompatActivity implements SettingsMenuFragment.OnFragmentInteractionListener, NotificationToggleFragment.OnFragmentInteractionListener, AccountNotificationSettingsFragment.OnFragmentInteractionListener, FragmentManager.OnBackStackChangedListener {
 
-    boolean isComingFromPopup, isAddThreshold;
+    boolean isComingFromPopup, isAddThreshold, allNotifications;
     Account account;
     AccountSettingsViewModel accountSettingsViewModel;
     private View loader;
@@ -28,6 +28,7 @@ public class NotificationSettingsActivity extends AppCompatActivity implements S
         setContentView(R.layout.activity_notification_settings);
         isComingFromPopup = getIntent().getBooleanExtra("isComingFromPopup", false);
         isAddThreshold = getIntent().getBooleanExtra("isAddThreshold", false);
+        allNotifications = getIntent().getBooleanExtra("allNotifications", false);
         account = (Account) getIntent().getSerializableExtra("account");
         accountSettingsViewModel = ViewModelProviders.of(this).get(AccountSettingsViewModel.class);
         initViews();
@@ -61,6 +62,11 @@ public class NotificationSettingsActivity extends AppCompatActivity implements S
             FragmentUtils.newInstance(getSupportFragmentManager()).
                     replaceFragment(FragmentUtils.INDEX_NOTIFICATION_SETTINGS_FRAGMENT, account, NotificationToggleFragment.class.getName(), R.id.flNotificationContainer);
 
+        } else if (!allNotifications) {
+            /*FragmentUtils.newInstance(getSupportFragmentManager()).
+                    addFragment(FragmentUtils.INDEX_SETTINGS_FRAGMENT, null, SettingsMenuFragment.class.getName(), R.id.flNotificationContainer);*/
+            FragmentUtils.newInstance(getSupportFragmentManager()).
+                    replaceFragment(FragmentUtils.INDEX_NOTIFICATION_SETTINGS_FRAGMENT, account, AccountNotificationSettingsFragment.class.getName(), R.id.flNotificationContainer);
         } else {
             FragmentUtils.newInstance(getSupportFragmentManager()).
                     addFragment(FragmentUtils.INDEX_SETTINGS_FRAGMENT, account, SettingsMenuFragment.class.getName(), R.id.flNotificationContainer);
