@@ -62,11 +62,7 @@ public class DialogHelper {
             Button btnClose = dialog.getWindow().findViewById(R.id.btn_close);
             btnClose.setOnClickListener(listener);
             tvTitle.setText(title);
-            if (title == dialog.getContext().getString(R.string.service_restoration)) {
-                message.setText(dialog.getContext().getString(R.string.service_restoration_msg, names));
-            } else if (title == dialog.getContext().getString(R.string.service_disruption)) {
-                message.setText(dialog.getContext().getString(R.string.service_disruption_msg, names));
-            }
+            message.setText(dialog.getContext().getString(R.string.service_restoration_msg, names));
             Window window = dialog.getWindow();
             WindowManager.LayoutParams wlp = window.getAttributes();
 
@@ -110,7 +106,7 @@ public class DialogHelper {
         }
     }
 
-    public static void hidePopup2() {
+    public static void hidePopupForDialog2() {
         if (dialog2 != null) {
             dialog2.dismiss();
             dialog2 = null;

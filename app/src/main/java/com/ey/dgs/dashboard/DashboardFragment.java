@@ -360,7 +360,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        DialogHelper.hidePopup2();
+                        DialogHelper.hidePopupForDialog2();
                         userSettings.setOutageAlertAcknowledgementFlag(true);
                         updateUserSettingInServer();
                     }
