@@ -63,7 +63,7 @@ public class FireBaseMessagingService extends FirebaseMessagingService {
 
         appPreferences = new AppPreferences(getApplicationContext());
         AccountSettings accountSettings = DatabaseClient.getInstance(getApplicationContext()).getAppDatabase().getAccountSettingsDao().getAccountSettings(notification.getAccountNumber());
-        if (appPreferences.isLoginned() && accountSettings.isPushNotificationFlag()) {
+        if (appPreferences.isLoginned() && accountSettings != null && accountSettings.isPushNotificationFlag()) {
             new NotificationHelper(getApplicationContext()).createNotification(title, notification, notification.getMessage());
         }
     }

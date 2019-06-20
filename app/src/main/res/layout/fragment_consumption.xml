@@ -185,7 +185,6 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="@dimen/small_padding"
                                 android:fontFamily="@font/museosans_500"
-                                android:text="@{account.lastBilledAmount}"
                                 android:textColor="@android:color/black"
                                 android:textSize="@dimen/text_size_large" />
 

@@ -87,5 +87,6 @@
     <string name="weekly">Weekly</string>
     <string name="push_notifications">Push Notifications</string>
     <string name="sms">SMS</string>
+    <string name="billamount_format">%+.2f $</string>
     <string name="notification_global_toggle_heading">Select how you wish to receive your</string>
 </resources>

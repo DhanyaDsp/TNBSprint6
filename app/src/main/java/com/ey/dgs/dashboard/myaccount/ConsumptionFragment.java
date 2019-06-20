@@ -5,6 +5,7 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.AppCompatTextView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -55,8 +56,9 @@ public class ConsumptionFragment extends Fragment implements View.OnClickListene
     Gallery glDays;
     DaysAdapter daysAdapter;
     private ArrayList<ChartData> chartDatum;
-    private String chartPeriod = BillingHistory.DAILY;
+    private String chartPeriod = BillingHistory.MONTHLY;
     LinearLayout llAmount;
+    AppCompatTextView tvDueAmount;
 
     public ConsumptionFragment() {
     }
@@ -85,8 +87,13 @@ public class ConsumptionFragment extends Fragment implements View.OnClickListene
         binding.setAccount(account);
         view = binding.getRoot();
         initViews();
+        setData();
         subscribe();
         return view;
+    }
+
+    private void setData() {
+        tvDueAmount.setText("RM " + account.getLastBilledAmount() + "0");
     }
 
     private void subscribe() {
@@ -176,6 +183,7 @@ public class ConsumptionFragment extends Fragment implements View.OnClickListene
         loader = view.findViewById(R.id.loader);
         llTabs = view.findViewById(R.id.llTabs);
         llTabs.setClipToOutline(true);
+        tvDueAmount = view.findViewById(R.id.tvDueAmount);
         barChart = view.findViewById(R.id.bar_chart);
         barChart.setSelectionRequired(true);
         btnDaily = view.findViewById(R.id.btnDaily);
@@ -186,7 +194,7 @@ public class ConsumptionFragment extends Fragment implements View.OnClickListene
         btnDaily.setOnClickListener(this);
         btnMonthly.setOnClickListener(this);
         btnYearly.setOnClickListener(this);
-        btnDaily.setSelected(true);
+        btnMonthly.setSelected(true);
         llDays = view.findViewById(R.id.llDays);
         glDays = view.findViewById(R.id.glDays);
         glDays.setOnItemSelectedListener(this);
@@ -284,7 +292,9 @@ public class ConsumptionFragment extends Fragment implements View.OnClickListene
 
     @Override
     public void onItemSelected(int position) {
-        glDays.setSelection(position);
-        daysAdapter.notifyDataSetChanged();
+        if (glDays != null && daysAdapter != null) {
+            glDays.setSelection(position);
+            daysAdapter.notifyDataSetChanged();
+        }
     }
 }
