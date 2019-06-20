@@ -26,10 +26,12 @@ public class NotificationSettingsActivity extends AppCompatActivity implements S
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification_settings);
-        isComingFromPopup = getIntent().getBooleanExtra("isComingFromPopup", false);
-        isAddThreshold = getIntent().getBooleanExtra("isAddThreshold", false);
         allNotifications = getIntent().getBooleanExtra("allNotifications", false);
-        account = (Account) getIntent().getSerializableExtra("account");
+        if (allNotifications) {
+
+        } else {
+            account = (Account) getIntent().getSerializableExtra("account");
+        }
         accountSettingsViewModel = ViewModelProviders.of(this).get(AccountSettingsViewModel.class);
         initViews();
         getSupportFragmentManager().addOnBackStackChangedListener(this);

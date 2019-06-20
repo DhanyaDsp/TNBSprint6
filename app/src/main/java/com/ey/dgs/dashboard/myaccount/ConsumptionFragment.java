@@ -164,6 +164,13 @@ public class ConsumptionFragment extends Fragment implements View.OnClickListene
         tmpBarChart.setId(R.id.bar_chart);
         ((ViewGroup) view.findViewById(R.id.rlChart)).addView(tmpBarChart);
 
+       /* float thresholdLineValue;
+        if (TextUtils.isEmpty(account.getUserThreshold())) {
+            thresholdLineValue = Float.parseFloat(account.getUserThreshold());
+            if (thresholdLineValue<=0){
+                thresholdLineValue = Float.parseFloat(account.get());
+            }
+        }*/
         tmpBarChart.setData(chartDatum)
                 .setTitle("")
                 .setBarUnit("RM")
