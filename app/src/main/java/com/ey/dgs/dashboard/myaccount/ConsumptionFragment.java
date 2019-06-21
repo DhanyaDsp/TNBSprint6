@@ -1,6 +1,8 @@
 package com.ey.dgs.dashboard.myaccount;
 
+import android.app.Activity;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -17,6 +19,7 @@ import android.widget.LinearLayout;
 import com.ey.dgs.R;
 import com.ey.dgs.adapters.DaysAdapter;
 import com.ey.dgs.authentication.LoginViewModel;
+import com.ey.dgs.dashboard.DashboardFragment;
 import com.ey.dgs.dashboard.billing.BillingHistoryViewModel;
 import com.ey.dgs.dashboard.questions.MMCQuestionsFragment;
 import com.ey.dgs.databinding.FragmentConsumptionBinding;
@@ -93,21 +96,22 @@ public class ConsumptionFragment extends Fragment implements View.OnClickListene
     }
 
     private void setData() {
-        tvDueAmount.setText("RM " + account.getLastBilledAmount() + "0");
+        tvDueAmount.setText(String.format("%.2f", account.getLastBilledAmount()));
     }
 
     private void subscribe() {
         loginViewModel = ViewModelProviders.of(this).get(LoginViewModel.class);
         loginViewModel.getUserDetail(1);
         billingHistoryViewModel = ViewModelProviders.of(this).get(BillingHistoryViewModel.class);
-        billingHistoryViewModel.loadBillingHistoryFromLocalDB(account.getAccountNumber());
+        //billingHistoryViewModel.loadBillingHistoryFromLocalDB(account.getAccountNumber());
         billingHistoryViewModel.setContext(getActivity());
         billingHistoryViewModel.getLoaderData().observe(getViewLifecycleOwner(), this::showProgress);
         loginViewModel.getUserDetail().observe(getViewLifecycleOwner(), user -> {
             this.user = user;
+            getBillingHistory(chartPeriod);
             billingHistoryViewModel.getBillingHistory().observe(getViewLifecycleOwner(), billingHistory -> {
                 if (billingHistory == null) {
-                    getBillingHistory(chartPeriod);
+
                 } else {
                     this.billingHistory = billingHistory;
                     Gson gson = new Gson();
@@ -291,8 +295,10 @@ public class ConsumptionFragment extends Fragment implements View.OnClickListene
             /*Intent intent = new Intent(getActivity(), QuestionActivity.class);
             intent.putExtra("billingHistory",  billingHistory);
             getActivity().startActivity(intent);*/
-            FragmentUtils.newInstance((getActivity()).getSupportFragmentManager())
-                    .addFragment(INDEX_QUESTIONS_FRAGMENT, billingHistory, MMCQuestionsFragment.class.getName(),
+            Fragment fragment = getParentFragment();
+
+            FragmentUtils.newInstance(getActivity().getSupportFragmentManager())
+                    .addFragment(INDEX_QUESTIONS_FRAGMENT, billingHistory, DashboardFragment.class.getName(), fragment,
                             R.id.homeFlContainer);
         }
     }
@@ -303,5 +309,10 @@ public class ConsumptionFragment extends Fragment implements View.OnClickListene
             glDays.setSelection(position);
             daysAdapter.notifyDataSetChanged();
         }
+    }
+
+    public void refresh(Account account) {
+        this.account = account;
+        setChartData(billingDetails);
     }
 }

@@ -29,11 +29,11 @@ import com.ey.dgs.notifications.NotificationListActivity;
 import com.ey.dgs.notifications.pushnotifications.AzureRegistrationIntentService;
 import com.ey.dgs.notifications.settings.NotificationSettingsActivity;
 import com.ey.dgs.utils.AppPreferences;
+import com.ey.dgs.utils.Constants;
 import com.ey.dgs.utils.FragmentUtils;
 import com.ey.dgs.utils.Utils;
 
 import java.io.Serializable;
-import java.util.Arrays;
 
 public class HomeActivity extends AppCompatActivity implements MyAccountFragment.OnFragmentInteractionListener, DashboardFragment.OnFragmentInteractionListener, MyDashboardFragment.OnFragmentInteractionListener, FragmentManager.OnBackStackChangedListener {
 
@@ -162,7 +162,7 @@ public class HomeActivity extends AppCompatActivity implements MyAccountFragment
             switch (item.getItemId()) {
                 case R.id.navigation_dashboard:
                     FragmentUtils.newInstance(getSupportFragmentManager())
-                            .addFragment(INDEX_DASHBOARD, null, DashboardFragment.class.getName(), R.id.homeFlContainer);
+                            .addFragment(INDEX_DASHBOARD, null, DashboardFragment.class.getName(), null, R.id.homeFlContainer);
 
                   /*  if (!user.isPrimaryAccountSet()) {
                         FragmentUtils.newInstance(getSupportFragmentManager())
@@ -201,7 +201,7 @@ public class HomeActivity extends AppCompatActivity implements MyAccountFragment
 
     private void moveToSettingsPage() {
         Intent intent = new Intent(HomeActivity.this, NotificationSettingsActivity.class);
-        intent.putExtra("allNotifications", true);
+        intent.putExtra("from", Constants.IS_FROM_MORE);
         startActivity(intent);
     }
 

@@ -3,6 +3,7 @@ package com.ey.dgs.dashboard.questions;
 import android.app.Activity;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -25,6 +26,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ey.dgs.R;
+import com.ey.dgs.dashboard.DashboardFragment;
 import com.ey.dgs.databinding.MmcquestionsFragmentBinding;
 import com.ey.dgs.model.Account;
 import com.ey.dgs.model.AccountDetails;
@@ -42,8 +44,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 
-public class MMCQuestionsFragment extends Fragment implements View.OnClickListener{
+public class MMCQuestionsFragment extends Fragment implements View.OnClickListener {
 
+    public static final int REQUEST_CODE_MMC = 101;
     public static boolean THRESHOLD_SET = false;
     private View rootView;
     private int displayCount;
@@ -123,9 +126,9 @@ public class MMCQuestionsFragment extends Fragment implements View.OnClickListen
         thresholdAnswer.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
-                    Log.i("Done button","Enter pressed");
+                    Log.i("Done button", "Enter pressed");
                     Utils.hideKeyBoard(getActivity());
-                    strThreshold = thresholdAnswer.getText().toString().replace(".","");
+                    strThreshold = thresholdAnswer.getText().toString().replace(".", "");
                     if (!TextUtils.isEmpty(strThreshold) && Integer.valueOf(strThreshold) > 0) {
                         float threshold = Float.parseFloat(strThreshold);
                         THRESHOLD_SET = true;
@@ -152,6 +155,9 @@ public class MMCQuestionsFragment extends Fragment implements View.OnClickListen
         questionsViewModel.getAccount().observe(getViewLifecycleOwner(), account -> {
             setDynamicData(account);
         });
+        questionsViewModel.getAccountData().observe(getViewLifecycleOwner(), accountData -> {
+            DashboardFragment.IS_THRESHOLD_SET = true;
+        });
     }
 
     private void setDynamicData(Account account) {
@@ -165,7 +171,14 @@ public class MMCQuestionsFragment extends Fragment implements View.OnClickListen
             loader.setVisibility(View.VISIBLE);
         } else {
             loader.setVisibility(View.GONE);
-            if(questionsViewModel.isSuccess()) {
+            account.setUserThreshold(thresholdValue);
+            account.setPeopleInProperty(peopleInProperty);
+            if (questionsViewModel.isSuccess()) {
+                getTargetFragment().onActivityResult(
+                        getTargetRequestCode(),
+                        Activity.RESULT_OK,
+                        new Intent().putExtra("account", (Serializable) account)
+                );
                 showSuccessPopup();
             }
         }
@@ -190,7 +203,7 @@ public class MMCQuestionsFragment extends Fragment implements View.OnClickListen
     }
 
     private void setViewForQuestion2() {
-        if(!onQuestion2) {
+        if (!onQuestion2) {
             layoutQuestion1.setVisibility(View.GONE);
             onQuestion2 = true;
             layoutQuestion2.setVisibility(View.VISIBLE);
@@ -204,18 +217,16 @@ public class MMCQuestionsFragment extends Fragment implements View.OnClickListen
 
     private void callAccountDetailsAPiService() {
         peopleInProperty = numberDisplay.getText().toString().trim();
-        thresholdValue = thresholdAnswer.getText().toString().trim().replace(".","");
-        if(!TextUtils.isEmpty(thresholdValue) && Integer.valueOf(thresholdValue) > 0) {
+        thresholdValue = thresholdAnswer.getText().toString().trim().replace(".", "");
+        if (!TextUtils.isEmpty(thresholdValue) && Integer.valueOf(thresholdValue) > 0) {
             AccountDetails[] accountDetailsArray = new AccountDetails[1];
-            accountDetailsArray[0] = new AccountDetails(account.getAccountNumber(),
-                    peopleInProperty, thresholdValue);
+            accountDetailsArray[0] = new AccountDetails(account.getAccountNumber(), peopleInProperty, thresholdValue);
             showProgress(true);
             questionsViewModel.updateAccountDetailsInServer(accountDetailsArray);
             questionsViewModel.getLoaderData().observe(getViewLifecycleOwner(), showProgress -> {
                 showProgress(showProgress);
             });
-        }
-        else {
+        } else {
             Utils.showToast(getActivity(), "Please enter value");
         }
     }
@@ -231,14 +242,14 @@ public class MMCQuestionsFragment extends Fragment implements View.OnClickListen
     }
 
     public void increaseInteger() {
-        if(displayCount < 10) {
+        if (displayCount < 10) {
             displayCount = displayCount + 1;
             display(displayCount);
         }
     }
 
     public void decreaseInteger() {
-        if(displayCount > 0) {
+        if (displayCount > 0) {
             displayCount = displayCount - 1;
             display(displayCount);
         }
@@ -267,7 +278,7 @@ public class MMCQuestionsFragment extends Fragment implements View.OnClickListen
         tmpBarChart.setLayoutParams(tmpLayParams);
         tmpBarChart.setId(R.id.bar_chart);
         ((ViewGroup) rootView.findViewById(R.id.rlChart)).addView(tmpBarChart);
-        if (!THRESHOLD_SET ) {
+        if (!THRESHOLD_SET) {
             tmpBarChart.setData(chartDatum)
                     .setTitle("")
                     .setBarUnit("RM")

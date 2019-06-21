@@ -162,7 +162,6 @@ public class BarChart extends LinearLayout {
             }
         }
         largestVal += largestVal * 0.1f;
-        largestVal = largestVal;
         return largestVal;
     }
 

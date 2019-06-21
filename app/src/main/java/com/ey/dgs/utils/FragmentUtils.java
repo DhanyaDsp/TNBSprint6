@@ -9,6 +9,7 @@ import com.ey.dgs.dashboard.DashboardFragment;
 import com.ey.dgs.dashboard.MyDashboardFragment;
 import com.ey.dgs.dashboard.manageAccounts.MMCManageAccountsFragment;
 import com.ey.dgs.dashboard.manageAccounts.ManageAccountsFragment;
+import com.ey.dgs.dashboard.myaccount.ConsumptionFragment;
 import com.ey.dgs.dashboard.myaccount.MyAccountFragment;
 import com.ey.dgs.dashboard.questions.MMCQuestionsFragment;
 import com.ey.dgs.model.Account;
@@ -48,6 +49,10 @@ public class FragmentUtils {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         Fragment newFragment = null;
         switch (index) {
+            case 6:
+                newFragment = NotificationToggleFragment.newInstance();
+                fragmentTransaction.replace(viewId, newFragment, fragmentTag).commitAllowingStateLoss();
+                break;
             case 7:
                 newFragment = AccountNotificationSettingsFragment.newInstance((Account) object);
                 fragmentTransaction.replace(viewId, newFragment, fragmentTag).commitAllowingStateLoss();
@@ -61,7 +66,7 @@ public class FragmentUtils {
         }
     }
 
-    public void addFragment(int index, Object object, String fragmentTag, int viewId) {
+    public void addFragment(int index, Object object, String fragmentTag, Fragment fragment, int viewId) {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         Fragment newFragment = null;
         switch (index) {
@@ -91,6 +96,7 @@ public class FragmentUtils {
                 break;
             case 8:
                 newFragment = MMCQuestionsFragment.newInstance((BillingHistory) object);
+                newFragment.setTargetFragment(fragment, MMCQuestionsFragment.REQUEST_CODE_MMC);
                 fragmentTransaction.add(viewId, newFragment, fragmentTag).addToBackStack(fragmentTag).commit();
                 break;
             case 9:

@@ -8,12 +8,14 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.AppCompatTextView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.ey.dgs.R;
 import com.ey.dgs.adapters.MyAccountTabsAdapter;
+import com.ey.dgs.dashboard.questions.MMCQuestionsFragment;
 import com.ey.dgs.databinding.FragmentMyAccountBinding;
 import com.ey.dgs.model.Account;
 import com.ey.dgs.model.User;
@@ -120,5 +122,15 @@ public class MyAccountFragment extends Fragment {
             tab.setCustomView(accountTabsAdapter.getTabView(i));
         }
 
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == MMCQuestionsFragment.REQUEST_CODE_MMC && resultCode == Activity.RESULT_OK) {
+            Account account = (Account) data.getSerializableExtra("account");
+            ((ConsumptionFragment) accountTabsAdapter.getItem(0)).refresh(account);
+
+        }
     }
 }

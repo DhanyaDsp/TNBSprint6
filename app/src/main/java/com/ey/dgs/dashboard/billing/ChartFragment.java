@@ -75,7 +75,7 @@ public class ChartFragment extends Fragment {
             public void onClick(View v) {
                 if (account != null) {
                     FragmentUtils.newInstance(getFragmentManager())
-                            .addFragment(FragmentUtils.INDEX_MY_DASHBOARD_FRAGMENT, account, MyDashboardFragment.class.getName(), R.id.homeFlContainer);
+                            .addFragment(FragmentUtils.INDEX_MY_DASHBOARD_FRAGMENT, account, MyDashboardFragment.class.getName(), ChartFragment.this, R.id.homeFlContainer);
                 }
             }
         });
