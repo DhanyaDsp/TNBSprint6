@@ -16,6 +16,7 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class Utils {
     public static void showToast(Context context, String message) {
@@ -141,4 +142,9 @@ public class Utils {
         String outputDate = targetFormat.format(sourceDate);
         return outputDate;
     }
+
+    public static String formatThreshold(float value) {
+        return String.format("%.2f", value);
+    }
+
 }

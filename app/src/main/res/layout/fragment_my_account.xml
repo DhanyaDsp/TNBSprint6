@@ -37,7 +37,7 @@
             app:tabTextAppearance="@style/tab_text"
             app:tabTextColor="@color/light_white_50" />
 
-        <android.support.v4.view.ViewPager
+        <com.ey.dgs.utils.CustomViewPager
             android:id="@+id/vpAccountTabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />

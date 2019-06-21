@@ -5,6 +5,7 @@ import com.ey.dgs.adapters.chart.BarsAdapter;
 import com.ey.dgs.adapters.chart.LegendsAdapter;
 import com.ey.dgs.dashboard.myaccount.ConsumptionFragment;
 import com.ey.dgs.model.chart.ChartData;
+import com.ey.dgs.utils.Utils;
 
 import android.animation.ObjectAnimator;
 import android.content.Context;
@@ -131,7 +132,7 @@ public class BarChart extends LinearLayout {
 
         if (isThresholdRequired) {
             thresholdHolder.setVisibility(View.VISIBLE);
-            thresholdText.setText(unit + " " + this.thresholdValue);
+            thresholdText.setText(unit + " " + Utils.formatThreshold(thresholdValue));
             thresholdHolder.getViewTreeObserver().addOnGlobalLayoutListener(new ThresholdViewListenerClass());
             /*float yVal = getThresholdY(this.thresholdValue) - 100;
             final ObjectAnimator oa = ObjectAnimator.ofFloat(this.thresholdHolder, "y", yVal);
@@ -162,7 +163,10 @@ public class BarChart extends LinearLayout {
             }
         }
         largestVal += largestVal * 0.1f;
-        return largestVal;
+        if (thresholdValue >= largestVal) {
+            largestVal = thresholdValue + (thresholdValue * 0.1f);
+        }
+        return largestVal + 20f;
     }
 
     private float getThresholdY(float thresholdValue) {
@@ -204,6 +208,14 @@ public class BarChart extends LinearLayout {
         if (itemSelectedListener != null) {
             itemSelectedListener.onItemSelected(position);
         }
+    }
+
+    public void setThresholdValue(Float thresholdValue) {
+        this.thresholdValue = thresholdValue;
+    }
+
+    public Float getThresholdValue() {
+        return thresholdValue;
     }
 
     class BarsViewListenerClass implements ViewTreeObserver.OnGlobalLayoutListener {

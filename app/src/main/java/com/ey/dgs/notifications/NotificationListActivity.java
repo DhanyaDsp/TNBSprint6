@@ -208,10 +208,18 @@ public class NotificationListActivity extends AppCompatActivity implements Setti
         if (requestCode == READ_NOTIFICATION) {
             if (resultCode == Activity.RESULT_OK) {
                 Notification notification = (Notification) data.getSerializableExtra("notification");
-                int position = data.getIntExtra("position", -1);
+                /*int position = data.getIntExtra("position", -1);
                 if (position != -1 && notification != null) {
                     notifications.set(position, notification);
                     notificationListAdapter.notifyDataSetChanged();
+                }*/
+                if (notification != null) {
+                    for (Notification noti : notifications) {
+                        if (notification.getId() == noti.getId()) {
+                            noti.setRead(true);
+                            notificationListAdapter.notifyDataSetChanged();
+                        }
+                    }
                 }
             }
         }

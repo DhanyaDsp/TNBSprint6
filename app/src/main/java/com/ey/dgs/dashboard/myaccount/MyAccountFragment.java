@@ -7,8 +7,6 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.AppCompatTextView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,9 +16,8 @@ import com.ey.dgs.adapters.MyAccountTabsAdapter;
 import com.ey.dgs.dashboard.questions.MMCQuestionsFragment;
 import com.ey.dgs.databinding.FragmentMyAccountBinding;
 import com.ey.dgs.model.Account;
-import com.ey.dgs.model.User;
 import com.ey.dgs.notifications.settings.NotificationSettingsActivity;
-import com.ey.dgs.views.BarChart;
+import com.ey.dgs.utils.CustomViewPager;
 
 import java.io.Serializable;
 
@@ -30,7 +27,7 @@ public class MyAccountFragment extends Fragment {
     private Account account;
     private View view;
     private MyAccountTabsAdapter accountTabsAdapter;
-    private ViewPager vpAccountTabs;
+    private CustomViewPager vpAccountTabs;
 
     public MyAccountFragment() {
     }
@@ -70,6 +67,7 @@ public class MyAccountFragment extends Fragment {
 
     private void setupViewPager() {
         vpAccountTabs = view.findViewById(R.id.vpAccountTabs);
+        vpAccountTabs.setPagingEnabled(false);
         accountTabsAdapter = new MyAccountTabsAdapter(getChildFragmentManager(), getActivity());
         accountTabsAdapter.addFrag(ConsumptionFragment.newInstance(account), "Consumptions");
         accountTabsAdapter.addFrag(EnergyInsightFragment.newInstance(), "Energy Insights");
@@ -121,16 +119,22 @@ public class MyAccountFragment extends Fragment {
             TabLayout.Tab tab = tabLayout.getTabAt(i);
             tab.setCustomView(accountTabsAdapter.getTabView(i));
         }
-
+        ((ViewGroup) tabLayout.getChildAt(0)).getChildAt(1).setClickable(false);
     }
 
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == MMCQuestionsFragment.REQUEST_CODE_MMC && resultCode == Activity.RESULT_OK) {
+        if (requestCode == MMCQuestionsFragment.REQUEST_CODE_UPDATE_SINGLE_ACCOUNT_MMC && resultCode == Activity.RESULT_OK) {
             Account account = (Account) data.getSerializableExtra("account");
             ((ConsumptionFragment) accountTabsAdapter.getItem(0)).refresh(account);
-
+            Fragment targetFragment = getTargetFragment();
+            if (targetFragment != null) {
+                targetFragment.onActivityResult(
+                        getTargetRequestCode(),
+                        Activity.RESULT_OK,
+                        new Intent().putExtra("account", (Serializable) account));
+            }
         }
     }
 }

@@ -19,6 +19,7 @@ import com.ey.dgs.adapters.DaysAdapter;
 import com.ey.dgs.authentication.LoginViewModel;
 import com.ey.dgs.dashboard.DashboardFragment;
 import com.ey.dgs.dashboard.billing.BillingHistoryViewModel;
+import com.ey.dgs.dashboard.questions.MMCQuestionsFragment;
 import com.ey.dgs.databinding.FragmentConsumptionBinding;
 import com.ey.dgs.model.Account;
 import com.ey.dgs.model.BillingDetails;
@@ -156,10 +157,18 @@ public class ConsumptionFragment extends Fragment implements View.OnClickListene
         }
         chartData = new ChartData();
         chartData.setTag(Utils.formatCurrentDate(new Date()));
+        if (chartPeriod.equalsIgnoreCase(MONTHLY)) {
+            chartData.setVal(Float.parseFloat(account.getCurrentMonthConsumption()));
+        } else if (chartPeriod.equalsIgnoreCase(DAILY)) {
+            chartData.setVal(Float.parseFloat(account.getCurrentDayConsumption()));
+        } else if (chartPeriod.equalsIgnoreCase(WEEKLY)) {
+            chartData.setVal(Float.parseFloat(account.getCurrentWeekConsumption()));
+        }
         chartData.setVal(Float.parseFloat(account.getCurrentMonthConsumption()));
         chartDatum.add(chartData);
 
         barChart = view.findViewById(R.id.bar_chart);
+        barChart.setThresholdValue(Float.valueOf(account.getUserThreshold()));
         ViewGroup.LayoutParams tmpLayParams = barChart.getLayoutParams();
         ((ViewGroup) barChart.getParent()).removeView(barChart);
 
@@ -175,6 +184,7 @@ public class ConsumptionFragment extends Fragment implements View.OnClickListene
                 thresholdLineValue = Float.parseFloat(account.get());
             }
         }*/
+        tmpBarChart.setThresholdValue(Float.valueOf(account.getUserThreshold()));
         tmpBarChart.setData(chartDatum)
                 .setTitle("")
                 .setBarUnit("RM")
