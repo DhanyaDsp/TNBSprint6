@@ -20,23 +20,27 @@ public class MMCManageAccountsFragment extends Fragment{
     public static final String ACCOUNT_NUMBER = "accountNumber";
     public static final String PEOPLEINPROPERTY = "peopleInProperty";
     public static final String USERTHRESHOLD = "userThreshold";
+    public static final String AVGTHRESHOLD = "avgThreshold";
     ArrayList<String> nicknames = new ArrayList<>();
     ArrayList<String> accountNumber = new ArrayList<>();
     ArrayList<String> peopleInProperty = new ArrayList<>();
     ArrayList<String> userThreshold = new ArrayList<>();
+    ArrayList<String> avgThreshold = new ArrayList<>();
     private static ViewPager vpQuestions;
     private TabLayout tlDots;
     private AccountsQuestionsPagerAdapter adapter;
     View view;
 
     public static MMCManageAccountsFragment newInstance(ArrayList<String> nicknames, ArrayList<String> accountNumber,
-                                                        ArrayList<String> peopleInProperty, ArrayList<String> userThreshold) {
+                                                        ArrayList<String> peopleInProperty, ArrayList<String> userThreshold,
+                                                        ArrayList<String> avgThreshold) {
         MMCManageAccountsFragment fragment = new MMCManageAccountsFragment();
         Bundle args = new Bundle();
         args.putStringArrayList(NICKNAMES, nicknames);
         args.putStringArrayList(ACCOUNT_NUMBER, accountNumber);
         args.putStringArrayList(PEOPLEINPROPERTY, peopleInProperty);
         args.putStringArrayList(USERTHRESHOLD, userThreshold);
+        args.putStringArrayList(AVGTHRESHOLD, avgThreshold);
         fragment.setArguments(args);
         return fragment;
     }
@@ -49,6 +53,7 @@ public class MMCManageAccountsFragment extends Fragment{
             accountNumber = getArguments().getStringArrayList(ACCOUNT_NUMBER);
             peopleInProperty = getArguments().getStringArrayList(PEOPLEINPROPERTY);
             userThreshold = getArguments().getStringArrayList(USERTHRESHOLD);
+            avgThreshold = getArguments().getStringArrayList(AVGTHRESHOLD);
         }
     }
 
@@ -64,7 +69,7 @@ public class MMCManageAccountsFragment extends Fragment{
         tlDots = view.findViewById(R.id.tlDots);
         adapter = new AccountsQuestionsPagerAdapter(getChildFragmentManager());
         adapter.addFrag(PeopleQuestionFragment.newInstance(nicknames, accountNumber, peopleInProperty));
-        adapter.addFrag(ThresholdQuestionFragment.newInstance(nicknames, accountNumber, userThreshold));
+        adapter.addFrag(ThresholdQuestionFragment.newInstance(nicknames, accountNumber, userThreshold, avgThreshold));
         vpQuestions.setAdapter(adapter);
         tlDots.setupWithViewPager(vpQuestions, true);
     }

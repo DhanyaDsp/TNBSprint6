@@ -112,11 +112,13 @@ public class FragmentUtils {
     }
 
     public void addFragment(int index, ArrayList<String> nicknames, ArrayList<String> accountNumber,
-                            ArrayList<String> peopleInProperty, ArrayList<String> userThreshold, String fragmentTag, int viewId) {
+                            ArrayList<String> peopleInProperty, ArrayList<String> userThreshold,
+                            ArrayList<String> avgThreshold, String fragmentTag, int viewId) {
         if (index == INDEX_MANAGE_ACCOUNTS_QUESTIONS) {
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             Fragment newFragment = null;
-            newFragment = MMCManageAccountsFragment.newInstance(nicknames, accountNumber, peopleInProperty, userThreshold);
+            newFragment = MMCManageAccountsFragment.newInstance(nicknames, accountNumber, peopleInProperty, userThreshold,
+                    avgThreshold);
             fragmentManager.popBackStack();
             fragmentManager.popBackStack();
             fragmentTransaction.replace(viewId, newFragment, fragmentTag).addToBackStack(fragmentTag).commit();

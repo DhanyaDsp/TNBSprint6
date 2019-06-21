@@ -184,7 +184,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                    showRestorationAlert = false;
                }
 
-                if (showDisruptionAlert) {
+                if (showDisruptionAlert && IN_DASHBOARD) {
                     setServiceDisruptionPopup(this.accounts);
                     showDisruptionAlert = false;
                 }

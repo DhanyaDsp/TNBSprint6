@@ -23,6 +23,7 @@ public class ThresholdQuestionFragment extends Fragment {
     ArrayList<String> nicknames = new ArrayList<>();
     ArrayList<String> accountNumber = new ArrayList<>();
     ArrayList<String> userThreshold = new ArrayList<>();
+    ArrayList<String> avgThreshold = new ArrayList<>();
     private static AccountDetails accountDetailsArray[];
     private static ArrayList<String> accNumberFromQuestion;
     ThresholdQuestionAdapter adapter;
@@ -33,12 +34,13 @@ public class ThresholdQuestionFragment extends Fragment {
     private QuestionsViewModel questionsViewModel;
 
     public static ThresholdQuestionFragment newInstance(ArrayList<String> nicknames, ArrayList<String> accountNumber,
-                                                        ArrayList<String> userThreshold) {
+                                                        ArrayList<String> userThreshold, ArrayList<String> avgThreshold) {
         ThresholdQuestionFragment fragment = new ThresholdQuestionFragment();
         Bundle args = new Bundle();
         args.putStringArrayList(MMCManageAccountsFragment.NICKNAMES, nicknames);
         args.putStringArrayList(MMCManageAccountsFragment.ACCOUNT_NUMBER, accountNumber);
         args.putStringArrayList(MMCManageAccountsFragment.USERTHRESHOLD, userThreshold);
+        args.putStringArrayList(MMCManageAccountsFragment.AVGTHRESHOLD, avgThreshold);
         fragment.setArguments(args);
         return fragment;
     }
@@ -50,6 +52,7 @@ public class ThresholdQuestionFragment extends Fragment {
             nicknames = getArguments().getStringArrayList(MMCManageAccountsFragment.NICKNAMES);
             accountNumber = getArguments().getStringArrayList(MMCManageAccountsFragment.ACCOUNT_NUMBER);
             userThreshold = getArguments().getStringArrayList(MMCManageAccountsFragment.USERTHRESHOLD);
+            avgThreshold = getArguments().getStringArrayList(MMCManageAccountsFragment.AVGTHRESHOLD);
         }
     }
 
@@ -66,7 +69,7 @@ public class ThresholdQuestionFragment extends Fragment {
         rvQuestions = view.findViewById(R.id.rvThreshold);
         rvLayoutManager = new LinearLayoutManager(getActivity());
         rvQuestions.setLayoutManager(rvLayoutManager);
-        adapter = new ThresholdQuestionAdapter(this, nicknames, accountNumber, userThreshold);
+        adapter = new ThresholdQuestionAdapter(this, nicknames, accountNumber, userThreshold, avgThreshold);
         rvQuestions.setAdapter(adapter);
     }
 

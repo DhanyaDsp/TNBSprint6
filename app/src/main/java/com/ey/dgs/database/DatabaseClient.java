@@ -759,7 +759,7 @@ public class DatabaseClient {
                             .accountDao()
                             .updateDetail(account.getAccountNumber(), account.getLastBilledDate(), account.getLastBilledAmount(),
                                     account.getBillingCycleStartDate(), account.getBillingCycleEndDate(),
-                                    account.getUserThreshold(), account.getUserThreshold(),
+                                    account.getUserThreshold(), account.getAverageThreshold(),
                                     account.getCurrentDayConsumption(), account.getCurrentWeekConsumption(),
                                     account.getCurrentDayConsumption(), account.getPeopleInProperty());
                 }

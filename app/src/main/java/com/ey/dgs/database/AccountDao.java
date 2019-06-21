@@ -40,8 +40,8 @@ public interface AccountDao {
     @Query("SELECT * FROM Account WHERE user_id=:user_id ORDER BY nickName")
     List<Account> getUserAccounts(int user_id);
 
-    @Query("UPDATE Account SET lastBilledDate=:lastBilledDate,lastBilledAmount=:lastBilledAmount,billingCycleStartDate=:billingCycleStartDate,billingCycleEndDate=:billingCycleEndDate,userThreshold=:userThreshold,userThreshold=:userThreshold1,currentDayConsumption=:currentDayConsumption,currentMonthConsumption=:currentMonthConsumption,currentWeekConsumption=:currentWeekConsumption,peopleInProperty=:peopleInProperty WHERE accountNumber=:accountNumber")
-    void updateDetail(String accountNumber, String lastBilledDate, Float lastBilledAmount, String billingCycleStartDate, String billingCycleEndDate, String userThreshold, String userThreshold1, String currentMonthConsumption, String currentWeekConsumption, String currentDayConsumption, String peopleInProperty);
+    @Query("UPDATE Account SET lastBilledDate=:lastBilledDate,lastBilledAmount=:lastBilledAmount,billingCycleStartDate=:billingCycleStartDate,billingCycleEndDate=:billingCycleEndDate,userThreshold=:userThreshold,averageThreshold=:avgThreshold,currentDayConsumption=:currentDayConsumption,currentMonthConsumption=:currentMonthConsumption,currentWeekConsumption=:currentWeekConsumption,peopleInProperty=:peopleInProperty WHERE accountNumber=:accountNumber")
+    void updateDetail(String accountNumber, String lastBilledDate, Float lastBilledAmount, String billingCycleStartDate, String billingCycleEndDate, String userThreshold, String avgThreshold, String currentMonthConsumption, String currentWeekConsumption, String currentDayConsumption, String peopleInProperty);
 
     @Query("UPDATE Account SET userThreshold=:userThreshold, peopleInProperty=:peopleInProperty WHERE accountNumber=:accountNumber")
     void updateAccountDetail(String accountNumber,String userThreshold, String peopleInProperty);

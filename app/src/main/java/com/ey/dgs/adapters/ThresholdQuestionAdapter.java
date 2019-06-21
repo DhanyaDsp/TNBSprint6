@@ -16,6 +16,7 @@ import android.widget.Button;
 
 import com.ey.dgs.R;
 import com.ey.dgs.dashboard.manageAccounts.ThresholdQuestionFragment;
+import com.ey.dgs.model.Account;
 import com.ey.dgs.utils.Utils;
 
 import java.util.ArrayList;
@@ -24,7 +25,8 @@ public class ThresholdQuestionAdapter extends RecyclerView.Adapter<RecyclerView.
 
     private ArrayList<String> nicknames;
     private ArrayList<String> accountNumber;
-    ArrayList<String> userThreshold;
+    private ArrayList<String> userThreshold;
+    private ArrayList<String> avgThreshold;
     private Fragment fragment;
     final int TYPE_ACCOUNT = 2;
     final int TYPE_NEXT = 3;
@@ -33,11 +35,12 @@ public class ThresholdQuestionAdapter extends RecyclerView.Adapter<RecyclerView.
     private String[] thresholdValues;
 
     public ThresholdQuestionAdapter(Fragment fragment, ArrayList<String> nicknames, ArrayList<String> accountNumber,
-                                    ArrayList<String> userThreshold) {
+                                    ArrayList<String> userThreshold, ArrayList<String> avgThreshold) {
         this.fragment = fragment;
         this.nicknames = nicknames;
         this.accountNumber = accountNumber;
         this.userThreshold = userThreshold;
+        this.avgThreshold = avgThreshold;
         thresholdValues = new String[nicknames.size()];
     }
 
@@ -67,8 +70,14 @@ public class ThresholdQuestionAdapter extends RecyclerView.Adapter<RecyclerView.
             } else {
                 thresholdValues[i] = userThreshold.get(i);
             }
+
             holder.myCustomEditTextListener.updatePosition(i);
-            holder.thresholdAnswer.setText(thresholdValues[i]);
+            if(Integer.parseInt(thresholdValues[i]) < 1) {
+                holder.thresholdAnswer.setText(avgThreshold.get(i));
+            } else {
+                holder.thresholdAnswer.setText(thresholdValues[i]);
+            }
+
         } else if (viewHolder.getItemViewType() == TYPE_NEXT) {
             NextHolder holder = (NextHolder) viewHolder;
             holder.btnNext.setText(R.string.submit);

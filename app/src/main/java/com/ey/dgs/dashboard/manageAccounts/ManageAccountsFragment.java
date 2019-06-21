@@ -116,14 +116,26 @@ public class ManageAccountsFragment extends Fragment implements View.OnClickList
         return  thresholdValue;
     }
 
+    private ArrayList<String> getAvgThresholdValue(ArrayList<String> accountNumbers) {
+        ArrayList<String> avgThresholdValue = new ArrayList<>();
+        for(String accountNo: accountNumbers) {
+            for(Account account: accounts) {
+                if(accountNo == account.getAccountNumber()) {
+                    avgThresholdValue.add(account.getAverageThreshold());
+                }
+            }
+        }
+        return avgThresholdValue;
+    }
+
     public void openManageAccountsFragment(int index, ArrayList<String> nicknames, ArrayList<String> accountNumber) {
         if (index == INDEX_MANAGE_ACCOUNTS_QUESTIONS) {
             getPeopleInProperty(accountNumber);
             getThresholdValue(accountNumber);
             FragmentUtils.newInstance(((HomeActivity) getActivity()).getSupportFragmentManager())
                     .addFragment(index, nicknames, accountNumber, getPeopleInProperty(accountNumber),
-                            getThresholdValue(accountNumber), MMCManageAccountsFragment.class.getName(),
-                            R.id.homeFlContainer);
+                            getThresholdValue(accountNumber), getAvgThresholdValue(accountNumber),
+                            MMCManageAccountsFragment.class.getName(), R.id.homeFlContainer);
         }
     }
 }

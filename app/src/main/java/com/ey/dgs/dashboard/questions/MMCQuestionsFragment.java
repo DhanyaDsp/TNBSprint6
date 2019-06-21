@@ -159,8 +159,6 @@ public class MMCQuestionsFragment extends Fragment implements View.OnClickListen
         questionsViewModel.getAccountData().observe(getViewLifecycleOwner(), accountData -> {
             DashboardFragment.IS_THRESHOLD_SET = true;
         });
-        /*if(!TextUtils.isEmpty(numberDisplay.getText().toString().trim()))
-        displayCount = Integer.parseInt(numberDisplay.getText().toString().trim());*/
     }
 
     private void setDynamicData(Account account) {
@@ -213,6 +211,11 @@ public class MMCQuestionsFragment extends Fragment implements View.OnClickListen
             Gson gson = new Gson();
             this.billingDetails = gson.fromJson(billingHistory.getBillingDetails(), BillingDetails[].class);
             setChartData(billingDetails);
+            if(layoutQuestion2.getVisibility() == View.VISIBLE) {
+                if(Integer.parseInt(thresholdAnswer.getText().toString().trim().replace(".", "")) < 1) {
+                    thresholdAnswer.setText(account.getAverageThreshold());
+                }
+            }
         } else {
             callAccountDetailsAPiService();
         }
