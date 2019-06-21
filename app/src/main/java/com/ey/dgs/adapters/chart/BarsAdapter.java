@@ -108,7 +108,7 @@ public class BarsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             barsHolder.highLightedValue.setVisibility(View.INVISIBLE);
         }
 
-        barsHolder.highLightedValue.setText("RM " + chartDatum.get(position).getVal());
+        barsHolder.highLightedValue.setText("RM " + Utils.formatThreshold(chartDatum.get(position).getVal()));
         barsHolder.bar_line_structure.setBackground(context.getResources().getDrawable(
                 isSelected ? R.drawable.bg_chart_bar_selected : R.drawable.bg_chart_bar_default));
 

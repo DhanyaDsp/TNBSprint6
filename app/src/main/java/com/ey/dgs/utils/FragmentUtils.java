@@ -9,7 +9,6 @@ import com.ey.dgs.dashboard.DashboardFragment;
 import com.ey.dgs.dashboard.MyDashboardFragment;
 import com.ey.dgs.dashboard.manageAccounts.MMCManageAccountsFragment;
 import com.ey.dgs.dashboard.manageAccounts.ManageAccountsFragment;
-import com.ey.dgs.dashboard.myaccount.ConsumptionFragment;
 import com.ey.dgs.dashboard.myaccount.MyAccountFragment;
 import com.ey.dgs.dashboard.questions.MMCQuestionsFragment;
 import com.ey.dgs.model.Account;
@@ -96,7 +95,7 @@ public class FragmentUtils {
                 break;
             case 8:
                 newFragment = MMCQuestionsFragment.newInstance((BillingHistory) object);
-                newFragment.setTargetFragment(fragment, MMCQuestionsFragment.REQUEST_CODE_MMC);
+                newFragment.setTargetFragment(fragment, MMCQuestionsFragment.REQUEST_CODE_UPDATE_SINGLE_ACCOUNT_MMC);
                 fragmentTransaction.add(viewId, newFragment, fragmentTag).addToBackStack(fragmentTag).commit();
                 break;
             case 9:

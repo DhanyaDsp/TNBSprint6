@@ -32,6 +32,7 @@ public class Account implements Serializable {
     private boolean isAccount;
     private boolean isPrimaryAccount;
     private boolean isThreshold;
+    private String averageThreshold;
     private String userThreshold;
     private String currentMonthConsumption;
     private String currentWeekConsumption;
@@ -264,5 +265,13 @@ public class Account implements Serializable {
 
     public void setRestoreAlertFlag(boolean restoreAlertFlag) {
         this.restoreAlertFlag = restoreAlertFlag;
+    }
+
+    public String getAverageThreshold() {
+        return averageThreshold;
+    }
+
+    public void setAverageThreshold(String averageThreshold) {
+        this.averageThreshold = averageThreshold;
     }
 }

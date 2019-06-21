@@ -30,6 +30,7 @@ import com.ey.dgs.authentication.LoginViewModel;
 import com.ey.dgs.dashboard.billing.BillingHistoryViewModel;
 import com.ey.dgs.dashboard.manageAccounts.ManageAccountsFragment;
 import com.ey.dgs.dashboard.myaccount.MyAccountFragment;
+import com.ey.dgs.dashboard.questions.MMCQuestionsFragment;
 import com.ey.dgs.databinding.DashboardFragmentBinding;
 import com.ey.dgs.model.Account;
 import com.ey.dgs.model.User;
@@ -76,8 +77,8 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
     OffersAdapter offersAdapter;
     UserSettingsViewModel userSettingsViewModel;
     private UserSettings userSettings;
-    private static boolean showDisruptionAlert= false;
-    private static boolean showRestorationAlert= false;
+    private static boolean showDisruptionAlert = false;
+    private static boolean showRestorationAlert = false;
 
     public static DashboardFragment newInstance() {
         return new DashboardFragment();
@@ -134,7 +135,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
         userSettingsViewModel.getUserSettingsFromLocalDB(1);
         userSettingsViewModel.getUserSettings().observe(getViewLifecycleOwner(), userSettings -> {
             this.userSettings = userSettings;
-            if(userSettings != null) {
+            if (userSettings != null) {
                 if (!userSettings.isRestoreAlertAcknowledgementFlag()) {
                     showRestorationAlert = true;
                 }
@@ -176,10 +177,10 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                     getBillingDetailsForAccount(accounts);
                     billingDetailsServiceCalled = true;
                 }*/
-               if(showRestorationAlert) {
-                   setServiceRestorationPopup(this.accounts);
-               }
-                if(showDisruptionAlert) {
+                if (showRestorationAlert) {
+                    setServiceRestorationPopup(this.accounts);
+                }
+                if (showDisruptionAlert) {
                     setServiceDisruptionPopup(this.accounts);
                 }
 
@@ -334,18 +335,19 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
             }
         }
         String name = getNames(accountWithRestorationDisruption, namesWithServiceRestoration);
-        if(!TextUtils.isEmpty(name)) {
+        if (!TextUtils.isEmpty(name)) {
             DialogHelper.showUserAlert(getActivity(), getString(R.string.service_restoration), name,
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        DialogHelper.hidePopup();
-                        userSettings.setRestoreAlertAcknowledgementFlag(true);
-                        updateUserSettingInServer();
-                    }
-                });
+                    new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            DialogHelper.hidePopup();
+                            userSettings.setRestoreAlertAcknowledgementFlag(true);
+                            updateUserSettingInServer();
+                        }
+                    });
         }
     }
+
     private void setServiceDisruptionPopup(ArrayList<Account> accounts) {
         ArrayList<String> accountWithServiceDisruption = new ArrayList<>();
         String namesWithServiceDisruption = "";
@@ -355,16 +357,16 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
             }
         }
         String name = getNames(accountWithServiceDisruption, namesWithServiceDisruption);
-        if(!TextUtils.isEmpty(name)) {
+        if (!TextUtils.isEmpty(name)) {
             DialogHelper.showUserAlert2(getActivity(), getString(R.string.service_disruption), name,
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        DialogHelper.hidePopupForDialog2();
-                        userSettings.setOutageAlertAcknowledgementFlag(true);
-                        updateUserSettingInServer();
-                    }
-            });
+                    new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            DialogHelper.hidePopupForDialog2();
+                            userSettings.setOutageAlertAcknowledgementFlag(true);
+                            updateUserSettingInServer();
+                        }
+                    });
         }
     }
 
@@ -390,5 +392,13 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
 
     private void updateUserSettingInServer() {
         userSettingsViewModel.updateUserSettingsInServer(userSettings);
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == MMCQuestionsFragment.REQUEST_CODE_UPDATE_SINGLE_ACCOUNT_MMC && resultCode == Activity.RESULT_OK) {
+            subscribe();
+        }
     }
 }

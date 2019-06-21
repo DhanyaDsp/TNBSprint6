@@ -47,7 +47,7 @@ import java.util.Date;
 
 public class MMCQuestionsFragment extends Fragment implements View.OnClickListener {
 
-    public static final int REQUEST_CODE_MMC = 101;
+    public static final int REQUEST_CODE_UPDATE_SINGLE_ACCOUNT_MMC = 101;
     public static boolean THRESHOLD_SET = false;
     private View rootView;
     private int displayCount;
