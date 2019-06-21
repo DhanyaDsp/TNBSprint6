@@ -42,6 +42,7 @@ import com.google.gson.Gson;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 
 
 public class MMCQuestionsFragment extends Fragment implements View.OnClickListener {
@@ -271,6 +272,12 @@ public class MMCQuestionsFragment extends Fragment implements View.OnClickListen
             chartData.setVal(billingDetail.getBilledValue());
             chartDatum.add(chartData);
         }
+
+        chartData = new ChartData();
+        chartData.setTag(Utils.formatCurrentDate(new Date()));
+        chartData.setVal(Float.parseFloat(account.getCurrentMonthConsumption()));
+        chartDatum.add(chartData);
+
         ViewGroup.LayoutParams tmpLayParams = barChart.getLayoutParams();
         ((ViewGroup) barChart.getParent()).removeView(barChart);
 

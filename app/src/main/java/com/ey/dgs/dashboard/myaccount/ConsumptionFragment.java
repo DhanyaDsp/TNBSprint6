@@ -1,8 +1,6 @@
 package com.ey.dgs.dashboard.myaccount;
 
-import android.app.Activity;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -21,7 +19,6 @@ import com.ey.dgs.adapters.DaysAdapter;
 import com.ey.dgs.authentication.LoginViewModel;
 import com.ey.dgs.dashboard.DashboardFragment;
 import com.ey.dgs.dashboard.billing.BillingHistoryViewModel;
-import com.ey.dgs.dashboard.questions.MMCQuestionsFragment;
 import com.ey.dgs.databinding.FragmentConsumptionBinding;
 import com.ey.dgs.model.Account;
 import com.ey.dgs.model.BillingDetails;
@@ -49,7 +46,7 @@ public class ConsumptionFragment extends Fragment implements View.OnClickListene
     Account account;
     private BillingHistoryViewModel billingHistoryViewModel;
     private LoginViewModel loginViewModel;
-    private BillingHistory billingHistory;
+    private BillingHistory billingHistory, billingHistoryForQuestions;
     LinearLayout llDays;
     private BillingDetails[] billingDetails;
     User user;
@@ -114,6 +111,9 @@ public class ConsumptionFragment extends Fragment implements View.OnClickListene
 
                 } else {
                     this.billingHistory = billingHistory;
+                    if(MONTHLY.equals(chartPeriod)) {
+                        this.billingHistoryForQuestions = billingHistory;
+                    }
                     Gson gson = new Gson();
                     this.billingDetails = gson.fromJson(billingHistory.getBillingDetails(), BillingDetails[].class);
                     setChartData(billingDetails);
@@ -290,15 +290,12 @@ public class ConsumptionFragment extends Fragment implements View.OnClickListene
     }
 
     private void showQuestionsFragment() {
-        if (billingHistory != null) {
-            billingHistory.setAccount(account);
-            /*Intent intent = new Intent(getActivity(), QuestionActivity.class);
-            intent.putExtra("billingHistory",  billingHistory);
-            getActivity().startActivity(intent);*/
+        if (billingHistoryForQuestions != null) {
+            billingHistoryForQuestions.setAccount(account);
             Fragment fragment = getParentFragment();
 
             FragmentUtils.newInstance(getActivity().getSupportFragmentManager())
-                    .addFragment(INDEX_QUESTIONS_FRAGMENT, billingHistory, DashboardFragment.class.getName(), fragment,
+                    .addFragment(INDEX_QUESTIONS_FRAGMENT, billingHistoryForQuestions, DashboardFragment.class.getName(), fragment,
                             R.id.homeFlContainer);
         }
     }
