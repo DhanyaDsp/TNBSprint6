@@ -52,6 +52,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
 
     private static final int REQUEST_CODE_SET_THRESHOLD = 101;
     public static boolean IS_THRESHOLD_SET = false;
+    public static boolean IN_DASHBOARD = false;
     private View rootView;
     private RecyclerView rvAccounts, rvOffers;
     private LinearLayoutManager rvLayoutManager;
@@ -176,11 +177,13 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                     getBillingDetailsForAccount(accounts);
                     billingDetailsServiceCalled = true;
                 }*/
-               if(showRestorationAlert) {
+               if(showRestorationAlert && IN_DASHBOARD) {
                    setServiceRestorationPopup(this.accounts);
+                   showRestorationAlert = false;
                }
-                if(showDisruptionAlert) {
+                if(showDisruptionAlert && IN_DASHBOARD) {
                     setServiceDisruptionPopup(this.accounts);
+                    showDisruptionAlert = false;
                 }
 
             }
@@ -323,6 +326,13 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
             dashboardViewModel.loadAccountsFromLocalDB(appPreferences.getUser_id());
             IS_THRESHOLD_SET = false;
         }
+        IN_DASHBOARD = true;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        IN_DASHBOARD = false;
     }
 
     private void setServiceRestorationPopup(ArrayList<Account> accounts) {

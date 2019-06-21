@@ -159,6 +159,8 @@ public class MMCQuestionsFragment extends Fragment implements View.OnClickListen
         questionsViewModel.getAccountData().observe(getViewLifecycleOwner(), accountData -> {
             DashboardFragment.IS_THRESHOLD_SET = true;
         });
+        /*if(!TextUtils.isEmpty(numberDisplay.getText().toString().trim()))
+        displayCount = Integer.parseInt(numberDisplay.getText().toString().trim());*/
     }
 
     private void setDynamicData(Account account) {
@@ -243,6 +245,7 @@ public class MMCQuestionsFragment extends Fragment implements View.OnClickListen
     }
 
     public void increaseInteger() {
+        displayCount = Integer.parseInt(numberDisplay.getText().toString().trim());
         if (displayCount < 10) {
             displayCount = displayCount + 1;
             display(displayCount);
@@ -250,6 +253,7 @@ public class MMCQuestionsFragment extends Fragment implements View.OnClickListen
     }
 
     public void decreaseInteger() {
+        displayCount = Integer.parseInt(numberDisplay.getText().toString().trim());
         if (displayCount > 0) {
             displayCount = displayCount - 1;
             display(displayCount);
