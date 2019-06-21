@@ -38,7 +38,8 @@
                 android:fontFamily="@font/museosans_500"
                 android:padding="@dimen/medium_padding"
                 android:text="@string/notification_global_toggle_heading"
-                android:textColor="@color/blue1" />
+                android:textColor="@color/blue1"
+                android:textSize="@dimen/text_size_medium" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -60,7 +61,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
-                   android:theme="@style/SwitchCompatTheme" />
+                    android:theme="@style/SwitchCompatTheme" />
 
             </RelativeLayout>
 
@@ -105,7 +106,8 @@
                 android:fontFamily="@font/museosans_500"
                 android:padding="@dimen/medium_padding"
                 android:text="@string/notification_toggle_heading"
-                android:textColor="@color/blue1" />
+                android:textColor="@color/blue1"
+                android:textSize="@dimen/text_size_medium" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rvAccounts"
