@@ -119,7 +119,7 @@ public class MyAccountFragment extends Fragment {
             TabLayout.Tab tab = tabLayout.getTabAt(i);
             tab.setCustomView(accountTabsAdapter.getTabView(i));
         }
-        ((ViewGroup) tabLayout.getChildAt(0)).getChildAt(1).setClickable(false);
+        //((ViewGroup) tabLayout.getChildAt(0)).getChildAt(1).setClickable(false);
     }
 
 
