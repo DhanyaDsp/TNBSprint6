@@ -36,7 +36,7 @@
     <string name="title_activity_notification_list">NotificationListActivity</string>
     <string name="notifications">Notifications</string>
     <string name="title_activity_notification_settings">NotificationSettings</string>
-    <string name="notification_toggle_heading">Set notifications for account below</string>
+    <string name="notification_toggle_heading">Set notifications for accounts below</string>
     <string name="notification_sms_heading">SMS notifications are only activated for important messages like billing payment and service disruption</string>
     <string name="title_activity_notification_detail_page">NotificationDetailPage</string>
     <string name="here_is_a_tip">Here\'s a tip!</string>
@@ -88,5 +88,5 @@
     <string name="push_notifications">Push Notifications</string>
     <string name="sms">SMS</string>
     <string name="billamount_format">%+.2f $</string>
-    <string name="notification_global_toggle_heading">Select how you wish to receive your</string>
+    <string name="notification_global_toggle_heading">Select how you wish to receive your notifications</string>
 </resources>
