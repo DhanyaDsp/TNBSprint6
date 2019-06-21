@@ -93,7 +93,7 @@ public class LoginFragment extends Fragment implements APICallback {
                 this.userSettings = userSettings;
                 onUserSettingsLoaded();
             } else {
-                userSettingsViewModel.getUserSettingsFromServer(appPreferences.getAuthToken(), user);
+                //userSettingsViewModel.getUserSettingsFromServer(appPreferences.getAuthToken(), user);
             }
         });
     }
@@ -180,7 +180,8 @@ public class LoginFragment extends Fragment implements APICallback {
                 }
             }
             appPreferences.setAuthToken(loginResponse.getToken());
-            userSettingsViewModel.getUserSettingsFromLocalDB(user.getUserId());
+            //userSettingsViewModel.getUserSettingsFromLocalDB(user.getUserId());
+            userSettingsViewModel.getUserSettingsFromServer(appPreferences.getAuthToken(), user);
         }
     }
 
