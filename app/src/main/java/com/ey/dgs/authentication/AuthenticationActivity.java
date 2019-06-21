@@ -14,7 +14,7 @@ public class AuthenticationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_authentication);
        /* Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);*/
-        FragmentUtils.newInstance(getSupportFragmentManager()).addFragment(FragmentUtils.INDEX_LOGIN, null, LoginFragment.class.getName(), R.id.flContainer);
+        FragmentUtils.newInstance(getSupportFragmentManager()).addFragment(FragmentUtils.INDEX_LOGIN, null, LoginFragment.class.getName(), null, R.id.flContainer);
     }
 
 }

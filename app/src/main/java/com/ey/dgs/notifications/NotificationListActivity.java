@@ -29,6 +29,7 @@ import com.ey.dgs.model.Notification;
 import com.ey.dgs.notifications.settings.NotificationSettingsActivity;
 import com.ey.dgs.notifications.settings.SettingsMenuFragment;
 import com.ey.dgs.utils.AppPreferences;
+import com.ey.dgs.utils.Constants;
 import com.ey.dgs.utils.DialogHelper;
 
 import java.util.ArrayList;
@@ -86,8 +87,12 @@ public class NotificationListActivity extends AppCompatActivity implements Setti
                 break;
             case R.id.action_notification_settings:
                 Intent intent = new Intent(NotificationListActivity.this, NotificationSettingsActivity.class);
-                intent.putExtra("allNotifications", allNotifications);
-                intent.putExtra("account", account);
+                if (allNotifications) {
+                    intent.putExtra("from", Constants.IS_FROM_DASHBOARD);
+                } else {
+                    intent.putExtra("from", Constants.IS_FROM_ACCOUNT);
+                    intent.putExtra("account", account);
+                }
                 startActivity(intent);
                 break;
         }

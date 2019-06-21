@@ -339,7 +339,8 @@ public class ApiClient {
         call.enqueue(new Callback<BillingDetailsResponse>() {
             @Override
             public void onResponse(Call<BillingDetailsResponse> call, Response<BillingDetailsResponse> response) {
-                BillingDetailsResponse billingDetailsResponse = new BillingDetailsResponse();
+                BillingDetailsResponse billingDetailsResponse = response.body();
+               /* BillingDetailsResponse billingDetailsResponse = new BillingDetailsResponse();
                 Gson gson = new Gson();
                 if (period.equalsIgnoreCase(BillingHistory.DAILY)) {
                     billingDetailsResponse = gson.fromJson(MockResponse.MOCK_BILLING_RESPONSE_DAILY,
@@ -350,7 +351,7 @@ public class ApiClient {
                 } else if (period.equalsIgnoreCase(BillingHistory.MONTHLY)) {
                     billingDetailsResponse = gson.fromJson(MockResponse.MOCK_BILLING_RESPONSE_MONTHLY,
                             BillingDetailsResponse.class);
-                }
+                }*/
 
                 if (billingDetailsResponse != null) {
                     if (billingDetailsResponse.isSuccess()) {

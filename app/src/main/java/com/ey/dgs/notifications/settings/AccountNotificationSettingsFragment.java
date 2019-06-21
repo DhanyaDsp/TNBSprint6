@@ -227,11 +227,6 @@ public class AccountNotificationSettingsFragment extends Fragment {
         }
     }
 
-    public boolean isThresholdOrSubscribe() {
-        return ((NotificationSettingsActivity) getActivity()).isAddThreshold
-                || ((NotificationSettingsActivity) getActivity()).isComingFromPopup;
-    }
-
 
 }
 

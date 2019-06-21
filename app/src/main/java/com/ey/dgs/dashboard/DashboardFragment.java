@@ -235,14 +235,14 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
         if (index == INDEX_MY_ACCOUNT) {
             dashboardViewModel.setSelectedAccount((Account) obj);
             FragmentUtils.newInstance(((HomeActivity) getActivity()).getSupportFragmentManager())
-                    .addFragment(index, obj, MyAccountFragment.class.getName(), R.id.homeFlContainer);
+                    .addFragment(index, obj, MyAccountFragment.class.getName(), this, R.id.homeFlContainer);
         }
     }
 
     public void openManageAccountsFragment(int index) {
         if (index == INDEX_MANAGE_ACCOUNTS) {
             FragmentUtils.newInstance(((HomeActivity) getActivity()).getSupportFragmentManager())
-                    .addFragment(index, null, ManageAccountsFragment.class.getName(), R.id.homeFlContainer);
+                    .addFragment(index, null, ManageAccountsFragment.class.getName(), this, R.id.homeFlContainer);
         }
     }
 
@@ -273,7 +273,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
             intent.putExtra("account", (Serializable) selectedAccount);
             getActivity().startActivity(intent);*/
             FragmentUtils.newInstance(getFragmentManager())
-                    .addFragment(FragmentUtils.INDEX_MY_DASHBOARD_FRAGMENT, selectedAccount, MyDashboardFragment.class.getName(), R.id.homeFlContainer);
+                    .addFragment(FragmentUtils.INDEX_MY_DASHBOARD_FRAGMENT, selectedAccount, MyDashboardFragment.class.getName(), this, R.id.homeFlContainer);
 
         }
     }

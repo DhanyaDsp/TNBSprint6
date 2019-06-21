@@ -1,6 +1,5 @@
 package com.ey.dgs.dashboard.questions;
 
-import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -54,7 +53,7 @@ public class QuestionActivity extends AppCompatActivity implements MyDashboardFr
 
     private void showQuestionsFragment() {
         FragmentUtils.newInstance(getSupportFragmentManager())
-                .addFragment(INDEX_QUESTIONS_FRAGMENT, billingHistory, MMCQuestionsFragment.class.getName(), R.id.flQuestions);
+                .addFragment(INDEX_QUESTIONS_FRAGMENT, billingHistory, MMCQuestionsFragment.class.getName(), null, R.id.flQuestions);
     }
 
     @Override

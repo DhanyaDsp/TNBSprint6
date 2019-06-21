@@ -243,7 +243,7 @@ public class MyDashboardFragment extends Fragment implements View.OnClickListene
         if (billingHistory != null) {
             billingHistory.setAccount(selectedAccount);
             FragmentUtils.newInstance(getFragmentManager()).addFragment(FragmentUtils.INDEX_QUESTIONS_FRAGMENT,
-                    billingHistory, MMCQuestionsFragment.class.getName(), R.id.homeFlContainer);
+                    billingHistory, MMCQuestionsFragment.class.getName(), this, R.id.homeFlContainer);
         } else {
             Utils.showToast(getActivity(), "Billing History not yet loaded");
         }

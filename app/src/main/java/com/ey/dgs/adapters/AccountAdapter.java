@@ -65,7 +65,7 @@ public class AccountAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 AccountHolder accountHolder = (AccountHolder) holder;
                 accountHolder.tvAcountID.setText(account.getAccountNumber());
                 accountHolder.tvAccountName.setText(account.getNickName());
-                accountHolder.tvLastBilledAmount.setText("RM " + account.getLastBilledAmount()+"0");
+                accountHolder.tvLastBilledAmount.setText("RM " + String.format("%.2f", account.getLastBilledAmount()));
                 accountHolder.tvDate.setText(Utils.formatAccountDate(account.getLastBilledDate()));
 
                 if (account.isHasConsumptionReached()) {
