@@ -275,7 +275,7 @@ public class MMCQuestionsFragment extends Fragment implements View.OnClickListen
         for (int i = 0; i < billingDetails.length; i++) {
             BillingDetails billingDetail = billingDetails[i];
             chartData = new ChartData();
-            chartData.setTag(Utils.formatAccountDate(billingDetail.getBilledDate()));
+            chartData.setTag(Utils.formatMonthOnly(billingDetail.getBilledDate()));
             chartData.setVal(billingDetail.getBilledValue());
             chartDatum.add(chartData);
         }
@@ -292,6 +292,7 @@ public class MMCQuestionsFragment extends Fragment implements View.OnClickListen
         tmpBarChart.setLayoutParams(tmpLayParams);
         tmpBarChart.setId(R.id.bar_chart);
         ((ViewGroup) rootView.findViewById(R.id.rlChart)).addView(tmpBarChart);
+        tmpBarChart.setPeriod(BillingHistory.MONTHLY);
         if (!THRESHOLD_SET) {
             tmpBarChart.setData(chartDatum)
                     .setTitle("")
