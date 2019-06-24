@@ -31,7 +31,6 @@ public class BarsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     int parentLayoutWidth;
     int parentLayoutHeight;
     boolean isSelectionRequired;
-    float highlightTextViewHeight = 50f;
     float largestValWithBuffer = 0f;
 
     public BarsAdapter(BarChart barChart, Context context, ArrayList<ChartData> chartDatum,
@@ -124,9 +123,9 @@ public class BarsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         ViewGroup.LayoutParams layoutParams = barsHolder.bar_line_structure.getLayoutParams();
         layoutParams.height = Math.round(getBarHeight(chartDatum.get(position)));
-        //barsHolder.bar_line_structure.setLayoutParams(layoutParams);
         barsHolder.bar_line.getLayoutParams().height = parentLayoutHeight;
         barsHolder.bar_line.getLayoutParams().width = parentLayoutWidth / 7;
+        barsHolder.bar_line_structure.setLayoutParams(layoutParams);
         /*final Account account = this.accounts.get(position);
         switch (holder.getItemViewType()) {
             case TYPE_ACCOUNT:

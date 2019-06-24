@@ -69,13 +69,13 @@
                 android:layout_alignParentTop="true"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
+                android:gravity="center_vertical"
                 android:orientation="vertical">
 
                 <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/thresholdText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
                     android:fontFamily="@font/museosans_500"
                     android:text=""
                     android:textColor="#FECC39"
@@ -83,10 +83,10 @@
 
                 <ImageView
                     android:layout_width="match_parent"
-                    android:layout_height="5dp"
-                    android:layout_marginBottom="2dp"
+                    android:layout_height="2dp"
                     android:background="@drawable/bg_dotted"
-                    android:layerType="software" />
+                    android:layerType="software"
+                    android:scaleType="fitXY" />
 
             </LinearLayout>
 

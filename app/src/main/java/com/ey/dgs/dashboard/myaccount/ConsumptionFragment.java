@@ -3,11 +3,13 @@ package com.ey.dgs.dashboard.myaccount;
 import android.arch.lifecycle.ViewModelProviders;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatTextView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -106,20 +108,22 @@ public class ConsumptionFragment extends Fragment implements View.OnClickListene
         billingHistoryViewModel.getLoaderData().observe(getViewLifecycleOwner(), this::showProgress);
         loginViewModel.getUserDetail().observe(getViewLifecycleOwner(), user -> {
             this.user = user;
-            getBillingHistory(chartPeriod);
-            billingHistoryViewModel.getBillingHistory().observe(getViewLifecycleOwner(), billingHistory -> {
-                if (billingHistory == null) {
+            if (user != null) {
+                getBillingHistory(chartPeriod);
+                billingHistoryViewModel.getBillingHistory().observe(getViewLifecycleOwner(), billingHistory -> {
+                    if (billingHistory == null) {
 
-                } else {
-                    this.billingHistory = billingHistory;
-                    if(MONTHLY.equals(chartPeriod)) {
-                        this.billingHistoryForQuestions = billingHistory;
+                    } else {
+                        this.billingHistory = billingHistory;
+                        if (MONTHLY.equals(chartPeriod)) {
+                            this.billingHistoryForQuestions = billingHistory;
+                        }
+                        Gson gson = new Gson();
+                        this.billingDetails = gson.fromJson(billingHistory.getBillingDetails(), BillingDetails[].class);
+                        setChartData(billingDetails);
                     }
-                    Gson gson = new Gson();
-                    this.billingDetails = gson.fromJson(billingHistory.getBillingDetails(), BillingDetails[].class);
-                    setChartData(billingDetails);
-                }
-            });
+                });
+            }
         });
     }
 
@@ -151,30 +155,31 @@ public class ConsumptionFragment extends Fragment implements View.OnClickListene
         for (int i = 0; i < billingDetails.length; i++) {
             BillingDetails billingDetail = billingDetails[i];
             chartData = new ChartData();
-            chartData.setTag(Utils.formatAccountDate(billingDetail.getBilledDate()));
+            if (chartPeriod.equalsIgnoreCase(MONTHLY)) {
+                chartData.setTag(Utils.formatMonthOnly(billingDetail.getBilledDate()));
+            } else {
+                chartData.setTag(Utils.formatAccountDate(billingDetail.getBilledDate()));
+            }
             chartData.setVal(billingDetail.getBilledValue());
             chartDatum.add(chartData);
         }
         chartData = new ChartData();
-        chartData.setTag(Utils.formatCurrentDate(new Date()));
+        chartData.setTag(Utils.formatMonthOnly(new Date()));
         if (chartPeriod.equalsIgnoreCase(MONTHLY)) {
             chartData.setVal(Float.parseFloat(account.getCurrentMonthConsumption()));
-        } else if (chartPeriod.equalsIgnoreCase(DAILY)) {
-            chartData.setVal(Float.parseFloat(account.getCurrentDayConsumption()));
-        } else if (chartPeriod.equalsIgnoreCase(WEEKLY)) {
-            chartData.setVal(Float.parseFloat(account.getCurrentWeekConsumption()));
+            chartDatum.add(chartData);
         }
-        chartData.setVal(Float.parseFloat(account.getCurrentMonthConsumption()));
-        chartDatum.add(chartData);
 
         barChart = view.findViewById(R.id.bar_chart);
         barChart.setThresholdValue(Float.valueOf(account.getUserThreshold()));
+        barChart.setPeriod(chartPeriod);
         ViewGroup.LayoutParams tmpLayParams = barChart.getLayoutParams();
         ((ViewGroup) barChart.getParent()).removeView(barChart);
 
         BarChart tmpBarChart = new BarChart(getActivity());
         tmpBarChart.setLayoutParams(tmpLayParams);
         tmpBarChart.setId(R.id.bar_chart);
+        tmpBarChart.setPeriod(chartPeriod);
         ((ViewGroup) view.findViewById(R.id.rlChart)).addView(tmpBarChart);
 
        /* float thresholdLineValue;
@@ -313,8 +318,20 @@ public class ConsumptionFragment extends Fragment implements View.OnClickListene
     @Override
     public void onItemSelected(int position) {
         if (glDays != null && daysAdapter != null) {
-            glDays.setSelection(position);
-            daysAdapter.notifyDataSetChanged();
+            glDays.setSelection(position, true);
+            //glDays.onSingleTapUp(null);
+            //daysAdapter.selectItem(position);
+            /*MotionEvent e1 = MotionEvent.obtain(
+                    SystemClock.uptimeMillis(),
+                    SystemClock.uptimeMillis(),
+                    MotionEvent.ACTION_DOWN, 89.333336f, 265.33334f, 0);
+            MotionEvent e2 = MotionEvent.obtain(
+                    SystemClock.uptimeMillis(),
+                    SystemClock.uptimeMillis(),
+                    MotionEvent.ACTION_UP, 300.0f, 238.00003f, 0);
+
+            glDays.onFling(e1, e2, -800, 0);*/
+            //daysAdapter.notifyDataSetChanged();
         }
     }
 

@@ -14,6 +14,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
@@ -26,6 +27,8 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+
+import static com.ey.dgs.model.BillingHistory.MONTHLY;
 
 
 /**
@@ -47,6 +50,7 @@ public class BarChart extends LinearLayout {
     String unit = "RM";
     private BarsAdapter barsAdapter;
     private OnItemSelected itemSelectedListener;
+    private String period;
 
     public BarChart(Context context) {
         super(context);
@@ -163,10 +167,10 @@ public class BarChart extends LinearLayout {
             }
         }
         largestVal += largestVal * 0.1f;
-        if (thresholdValue >= largestVal) {
+        if (!TextUtils.isEmpty(period) && period.equalsIgnoreCase(MONTHLY) && thresholdValue >= largestVal) {
             largestVal = thresholdValue + (thresholdValue * 0.1f);
         }
-        return largestVal + 20f;
+        return largestVal;
     }
 
     private float getThresholdY(float thresholdValue) {
@@ -216,6 +220,14 @@ public class BarChart extends LinearLayout {
 
     public Float getThresholdValue() {
         return thresholdValue;
+    }
+
+    public void setPeriod(String period) {
+        this.period = period;
+    }
+
+    public String getPeriod() {
+        return period;
     }
 
     class BarsViewListenerClass implements ViewTreeObserver.OnGlobalLayoutListener {
