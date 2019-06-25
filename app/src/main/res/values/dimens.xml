@@ -31,5 +31,7 @@
     <dimen name="splash_icon_size">100dp</dimen>
     <dimen name="dimen138">138dp</dimen>
     <dimen name="account_chart_height">300dp</dimen>
+    <dimen name="divider_size_vert">10px</dimen>
+    <dimen name="divider_gap_vert">10px</dimen>
 
 </resources>

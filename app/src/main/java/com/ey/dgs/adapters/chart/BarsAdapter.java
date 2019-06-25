@@ -46,13 +46,15 @@ public class BarsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public class BarsHolder extends RecyclerView.ViewHolder {
         LinearLayout bar_line;
-        View bar_line_structure;
+        View bar_line_structure, lineStart, lineEnd;
         AppCompatTextView highLightedValue;
 
         public BarsHolder(View v) {
             super(v);
             bar_line = v.findViewById(R.id.bar_line);
             bar_line_structure = v.findViewById(R.id.bar_line_structure);
+            lineStart = v.findViewById(R.id.lineStart);
+            lineEnd = v.findViewById(R.id.lineEnd);
             highLightedValue = v.findViewById(R.id.highLightedValue);
         }
     }
@@ -122,10 +124,14 @@ public class BarsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
 
         ViewGroup.LayoutParams layoutParams = barsHolder.bar_line_structure.getLayoutParams();
+        ViewGroup.LayoutParams lineParams = barsHolder.lineStart.getLayoutParams();
         layoutParams.height = Math.round(getBarHeight(chartDatum.get(position)));
+        lineParams.height = parentLayoutHeight;
         barsHolder.bar_line.getLayoutParams().height = parentLayoutHeight;
         barsHolder.bar_line.getLayoutParams().width = parentLayoutWidth / 7;
         barsHolder.bar_line_structure.setLayoutParams(layoutParams);
+        //barsHolder.lineStart.setLayoutParams(lineParams);
+        //barsHolder.lineEnd.setLayoutParams(lineParams);
         /*final Account account = this.accounts.get(position);
         switch (holder.getItemViewType()) {
             case TYPE_ACCOUNT:

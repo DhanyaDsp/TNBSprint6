@@ -70,6 +70,7 @@ public class BarChart extends LinearLayout {
 
     public BarChart setTitle(String titleText) {
         this.titleText.setText(titleText);
+        invalidate();
         return this;
     }
 

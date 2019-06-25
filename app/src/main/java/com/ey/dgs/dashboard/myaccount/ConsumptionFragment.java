@@ -164,6 +164,7 @@ public class ConsumptionFragment extends Fragment implements View.OnClickListene
             chartDatum.add(chartData);
         }
         chartData = new ChartData();
+        chartData.setIsSelected(true);
         chartData.setTag(Utils.formatMonthOnly(new Date()));
         if (chartPeriod.equalsIgnoreCase(MONTHLY)) {
             chartData.setVal(Float.parseFloat(account.getCurrentMonthConsumption()));
@@ -191,7 +192,7 @@ public class ConsumptionFragment extends Fragment implements View.OnClickListene
         }*/
         tmpBarChart.setThresholdValue(Float.valueOf(account.getUserThreshold()));
         tmpBarChart.setData(chartDatum)
-                .setTitle("")
+                .setTitle("Suren")
                 .setBarUnit("RM")
                 .setThreshold(chartPeriod.equalsIgnoreCase(BillingHistory.MONTHLY), Float.parseFloat(account.getUserThreshold()))
                 //.setThreshold(selectedAccount.isThreshold(), Float.parseFloat(energyConsumptions.getUserThreshold()))
@@ -317,8 +318,9 @@ public class ConsumptionFragment extends Fragment implements View.OnClickListene
 
     @Override
     public void onItemSelected(int position) {
-        if (glDays != null && daysAdapter != null) {
+        if (glDays != null) {
             glDays.setSelection(position, true);
+            barChart.setTitle("" + chartDatum.get(position).getTag());
             //glDays.onSingleTapUp(null);
             //daysAdapter.selectItem(position);
             /*MotionEvent e1 = MotionEvent.obtain(
