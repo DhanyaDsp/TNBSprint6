@@ -97,4 +97,9 @@ public class MmcQuestionsViewModel extends ViewModel implements APICallback {
     public void onProgress(int requestCode, boolean isLoading) {
 
     }
+
+    @Override
+    public void onOffline(int requestCode, boolean isLoading) {
+
+    }
 }

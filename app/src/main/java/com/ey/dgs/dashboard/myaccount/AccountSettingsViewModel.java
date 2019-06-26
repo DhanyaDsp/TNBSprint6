@@ -5,6 +5,7 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.content.Context;
 
+import com.ey.dgs.base.BaseViewModel;
 import com.ey.dgs.database.DatabaseCallback;
 import com.ey.dgs.database.DatabaseClient;
 import com.ey.dgs.model.Account;
@@ -19,7 +20,7 @@ import com.ey.dgs.webservice.ApiClient;
 
 import java.util.ArrayList;
 
-public class AccountSettingsViewModel extends ViewModel implements DatabaseCallback, APICallback {
+public class AccountSettingsViewModel extends BaseViewModel implements DatabaseCallback, APICallback {
 
     private MutableLiveData<AccountSettings> accountSettingsData = new MutableLiveData<>();
     private MutableLiveData<EnergyConsumptions> energyConsumptionData = new MutableLiveData<>();
@@ -171,10 +172,18 @@ public class AccountSettingsViewModel extends ViewModel implements DatabaseCallb
             setLoader(false);
             Utils.showToast(context, (String) obj);
         }
+        if (code == 401) {
+            setSessionExpiredData(true);
+        }
     }
 
     @Override
     public void onProgress(int requestCode, boolean isLoading) {
+
+    }
+
+    @Override
+    public void onOffline(int requestCode, boolean isLoading) {
 
     }
 

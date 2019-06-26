@@ -45,4 +45,8 @@ public interface AccountDao {
 
     @Query("UPDATE Account SET userThreshold=:userThreshold, peopleInProperty=:peopleInProperty WHERE accountNumber=:accountNumber")
     void updateAccountDetail(String accountNumber,String userThreshold, String peopleInProperty);
+
+    @Query("UPDATE Account SET isUserThresholdSet=:isUserThresholdSet,hasConsumptionReached=:hasConsumptionReached,outageAlertFlag=:outageAlertFlag,restoreAlertFlag=:restoreAlertFlag WHERE accountNumber=:accountNumber")
+    void updateAccountFromUserSettings(String accountNumber, boolean isUserThresholdSet, boolean hasConsumptionReached, boolean outageAlertFlag, boolean restoreAlertFlag);
+
 }

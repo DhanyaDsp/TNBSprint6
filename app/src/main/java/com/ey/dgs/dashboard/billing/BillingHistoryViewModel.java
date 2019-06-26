@@ -6,6 +6,7 @@ import android.arch.lifecycle.ViewModel;
 import android.content.Context;
 
 import com.ey.dgs.api_response.BillingDetailsResponse;
+import com.ey.dgs.base.BaseViewModel;
 import com.ey.dgs.database.DatabaseCallback;
 import com.ey.dgs.database.DatabaseClient;
 import com.ey.dgs.model.Account;
@@ -21,12 +22,13 @@ import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 
-public class BillingHistoryViewModel extends ViewModel implements DatabaseCallback, APICallback {
+public class BillingHistoryViewModel extends BaseViewModel implements DatabaseCallback, APICallback {
 
     private MutableLiveData<ArrayList<BillingHistory>> billingHistories = new MutableLiveData<>();
     private MutableLiveData<ArrayList<String>> daysList = new MutableLiveData<>();
     private MutableLiveData<BillingHistory> billingHistory = new MutableLiveData<>();
     private MutableLiveData<Boolean> loaderData = new MutableLiveData<>();
+    private MutableLiveData<Boolean> offlineData = new MutableLiveData<>();
     private Context context;
     private AppPreferences appPreferences;
 
@@ -81,9 +83,13 @@ public class BillingHistoryViewModel extends ViewModel implements DatabaseCallba
         new ApiClient().getBillingHistoryFromServer(appPreferences.getAuthToken(), account, period, user.getEmail(), this);
     }
 
-    /*public void addBillingHistoriesToLocalDB(List<BillingHistory> billingHistories) {
-        DatabaseClient.getInstance(context).addBillingHistories(BillingHistory.REQUEST_CODE_ADD_BILLING_HISTORY, billingHistories, this);
-    }*/
+    public MutableLiveData<Boolean> getOfflineData() {
+        return offlineData;
+    }
+
+    public void setOfflineData(Boolean isOffline) {
+        this.offlineData.postValue(isOffline);
+    }
 
     public void addBillingHistoryToLocalDB(BillingHistory billingHistory) {
         DatabaseClient.getInstance(context).addBillingHistory(BillingHistory.REQUEST_CODE_ADD_BILLING_HISTORY, billingHistory, this);
@@ -98,7 +104,7 @@ public class BillingHistoryViewModel extends ViewModel implements DatabaseCallba
         if (requestCode == BillingHistory.REQUEST_CODE_ADD_BILLING_HISTORY) {
             if (object != null) {
                 if (object instanceof BillingHistory) {
-                    setBillingHistory((BillingHistory) object);
+                    //setBillingHistory((BillingHistory) object);
                 }
             }
         }
@@ -124,7 +130,6 @@ public class BillingHistoryViewModel extends ViewModel implements DatabaseCallba
 
     @Override
     public void onSuccess(int requestCode, Object obj, int code) {
-        setLoaderData(false);
         if (requestCode == ApiClient.REQUEST_CODE_GET_BILLING_HISTORY) {
             BillingDetailsResponse billingDetailsResponse = (BillingDetailsResponse) obj;
             BillingDetails[] billingDetails = billingDetailsResponse.getResult().getBillingDetails();
@@ -139,7 +144,9 @@ public class BillingHistoryViewModel extends ViewModel implements DatabaseCallba
             }
             billingHistory.setBillingDetails(billingDetailsJsonArray.toString());
             addBillingHistoryToLocalDB((billingHistory));
+            setBillingHistory(billingHistory);
         }
+        setLoaderData(false);
     }
 
 
@@ -147,10 +154,18 @@ public class BillingHistoryViewModel extends ViewModel implements DatabaseCallba
     public void onFailure(int requestCode, Object obj, int code) {
         setLoaderData(false);
         Utils.showToast(context, (String) obj);
+        if (code == 401) {
+            setSessionExpiredData(true);
+        }
     }
 
     @Override
     public void onProgress(int requestCode, boolean isLoading) {
 
+    }
+
+    @Override
+    public void onOffline(int requestCode, boolean isLoading) {
+        setOfflineData(true);
     }
 }

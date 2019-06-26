@@ -179,10 +179,10 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                     billingDetailsServiceCalled = true;
                 }*/
 
-               if(showRestorationAlert && IN_DASHBOARD) {
-                   setServiceRestorationPopup(this.accounts);
-                   showRestorationAlert = false;
-               }
+                if (showRestorationAlert && IN_DASHBOARD) {
+                    setServiceRestorationPopup(this.accounts);
+                    showRestorationAlert = false;
+                }
 
                 if (showDisruptionAlert && IN_DASHBOARD) {
                     setServiceDisruptionPopup(this.accounts);
@@ -195,6 +195,11 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
         offersViewModel.getOfferItems().observe(getViewLifecycleOwner(), offers -> {
             offersAdapter = new OffersAdapter(getActivity(), this, offers);
             rvOffers.setAdapter(offersAdapter);
+        });
+        dashboardViewModel.getSessionExpiredData().observe(getViewLifecycleOwner(), isSessionExpired -> {
+            if (isSessionExpired) {
+                ((HomeActivity) getActivity()).showSessionExpiredView(isSessionExpired);
+            }
         });
     }
 
@@ -325,6 +330,9 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
     @Override
     public void onResume() {
         super.onResume();
+        if (user != null) {
+            dashboardViewModel.refreshUserSettingsFromServer(appPreferences.getAuthToken(), user);
+        }
         if (IS_THRESHOLD_SET) {
             dashboardViewModel.loadAccountsFromLocalDB(appPreferences.getUser_id());
             IS_THRESHOLD_SET = false;

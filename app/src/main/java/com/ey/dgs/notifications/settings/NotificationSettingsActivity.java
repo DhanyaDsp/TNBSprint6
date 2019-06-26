@@ -1,27 +1,32 @@
 package com.ey.dgs.notifications.settings;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 
 import com.ey.dgs.HomeActivity;
 import com.ey.dgs.R;
+import com.ey.dgs.authentication.AuthenticationActivity;
 import com.ey.dgs.dashboard.myaccount.AccountSettingsViewModel;
 import com.ey.dgs.model.Account;
 import com.ey.dgs.utils.Constants;
 import com.ey.dgs.utils.FragmentUtils;
 
-public class NotificationSettingsActivity extends AppCompatActivity implements SettingsMenuFragment.OnFragmentInteractionListener, NotificationToggleFragment.OnFragmentInteractionListener, AccountNotificationSettingsFragment.OnFragmentInteractionListener, FragmentManager.OnBackStackChangedListener {
+public class NotificationSettingsActivity extends AppCompatActivity implements SettingsMenuFragment.OnFragmentInteractionListener, NotificationToggleFragment.OnFragmentInteractionListener, AccountNotificationSettingsFragment.OnFragmentInteractionListener, FragmentManager.OnBackStackChangedListener, View.OnClickListener {
 
     int from;
     Account account;
     AccountSettingsViewModel accountSettingsViewModel;
-    private View loader;
+    private View loader, sessionExpiredView;
+    private boolean isSessionExpired;
+    AppCompatButton btnBackToLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +74,9 @@ public class NotificationSettingsActivity extends AppCompatActivity implements S
         getSupportActionBar().setTitle("More");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         loader = findViewById(R.id.loader);
+        sessionExpiredView = findViewById(R.id.sessionExpiredView);
+        btnBackToLogin = sessionExpiredView.findViewById(R.id.btnBackToLogin);
+        btnBackToLogin.setOnClickListener(this);
     }
 
     @Override
@@ -82,31 +90,35 @@ public class NotificationSettingsActivity extends AppCompatActivity implements S
     }
 
     public void onActionBarBackBtnPressed() {
-        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.flNotificationContainer);
-        if (currentFragment instanceof SettingsMenuFragment) {
-            finish();
-        } else if (currentFragment instanceof NotificationToggleFragment) {
-            onBackPressed();
-            setActionBarTitle("More");
-        } else if (currentFragment instanceof AccountNotificationSettingsFragment) {
-            ((AccountNotificationSettingsFragment) currentFragment).updateAccountDetails();
-            setActionBarTitle("Notifications");
+        if (!isSessionExpired) {
+            Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.flNotificationContainer);
+            if (currentFragment instanceof SettingsMenuFragment) {
+                finish();
+            } else if (currentFragment instanceof NotificationToggleFragment) {
+                onBackPressed();
+                setActionBarTitle("More");
+            } else if (currentFragment instanceof AccountNotificationSettingsFragment) {
+                ((AccountNotificationSettingsFragment) currentFragment).updateAccountDetails();
+                setActionBarTitle("Notifications");
+            }
         }
     }
 
     @Override
     public void onBackPressed() {
-        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.flNotificationContainer);
-        if (currentFragment != null) {
-            if (currentFragment instanceof SettingsMenuFragment) {
-                HomeActivity.IS_COMING_FROM_MORE = true;
-                finish();
-            } else if (currentFragment instanceof NotificationToggleFragment) {
-                super.onBackPressed();
-                setActionBarTitle("More");
-            } else if (currentFragment instanceof AccountNotificationSettingsFragment) {
-                super.onBackPressed();
-                setActionBarTitle("Notifications");
+        if (!isSessionExpired) {
+            Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.flNotificationContainer);
+            if (currentFragment != null) {
+                if (currentFragment instanceof SettingsMenuFragment) {
+                    HomeActivity.IS_COMING_FROM_MORE = true;
+                    finish();
+                } else if (currentFragment instanceof NotificationToggleFragment) {
+                    super.onBackPressed();
+                    setActionBarTitle("More");
+                } else if (currentFragment instanceof AccountNotificationSettingsFragment) {
+                    super.onBackPressed();
+                    setActionBarTitle("Notifications");
+                }
             }
         }
     }
@@ -127,11 +139,41 @@ public class NotificationSettingsActivity extends AppCompatActivity implements S
         }
     }
 
+    public void showSessionExpiredView(boolean show) {
+        isSessionExpired = show;
+        if (show) {
+            sessionExpiredView.setVisibility(View.VISIBLE);
+        } else {
+            sessionExpiredView.setVisibility(View.GONE);
+        }
+    }
+
+    private void logout() {
+        finish();
+        moveToLoginPage();
+    }
+
+    private void moveToLoginPage() {
+        Intent intent = new Intent(this, AuthenticationActivity.class);
+        this.startActivity(intent);
+    }
+
     @Override
     public void onBackStackChanged() {
         Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.flNotificationContainer);
         if (currentFragment instanceof NotificationToggleFragment) {
             ((NotificationToggleFragment) currentFragment).onRefresh();
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btnBackToLogin:
+                logout();
+                break;
+            default:
+                break;
         }
     }
 }

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_login"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    tools:context=".dashboard.myaccount.breakdown.BreakdownQuestionsFragment">
+
+    <android.support.v7.widget.AppCompatTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/large_padding"
+        android:fontFamily="@font/museosans_500"
+        android:text="@string/view_energy_breakdown"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_medium" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/medium_padding"
+        android:fontFamily="@font/museosans_500"
+        android:text="User"
+        android:textColor="@color/yellow1"
+        android:textSize="@dimen/text_size_medium" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/medium_padding"
+        android:fontFamily="@font/museosans_500"
+        android:text="@string/breakdown_question"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_medium" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvQuestions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/medium_padding"
+        android:layout_marginTop="@dimen/medium_padding"
+        android:layout_marginRight="@dimen/medium_padding" />
+
+</LinearLayout>

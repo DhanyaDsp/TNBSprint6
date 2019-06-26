@@ -1,8 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".dashboard.myaccount.EnergyInsightFragment">
+    android:background="@drawable/bg_login"
+    android:clickable="true"
+    tools:context=".dashboard.myaccount.breakdown.EnergyInsightFragment">
 
-</FrameLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/breakdown_top_margin"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/museosans_500"
+            android:text="@string/insights_title"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_medium" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/museosans_500"
+            android:text="@string/insights_desc"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_medium" />
+
+        <android.support.v7.widget.AppCompatButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/very_large_padding"
+            android:background="@drawable/bg_login_btn"
+            android:fontFamily="@font/museosans_500"
+            android:paddingLeft="@dimen/large_padding"
+            android:paddingRight="@dimen/large_padding"
+            android:text="@string/generate_Insights"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_medium" />
+
+    </LinearLayout>
+
+</RelativeLayout>

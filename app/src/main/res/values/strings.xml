@@ -89,4 +89,15 @@
     <string name="sms">SMS</string>
     <string name="billamount_format">%+.2f $</string>
     <string name="notification_global_toggle_heading">Select how you wish to receive your notifications</string>
+    <string name="insights_title">Welcome, Mohd Zulkifli!</string>
+    <string name="insights_desc">Start prioritising and optimising your energy consumption today with our Energy Insights intelligence.</string>
+    <string name="generate_Insights">Generate Insights</string>
+    <string name="view_energy_breakdown">View Energy Breakdown</string>
+    <string name="breakdown_question">What electrical appliances do you have at home?</string>
+    <string name="session_expired_msg">Something isn\'t right. There seems to be an error here, please try to login again.</string>
+    <string name="something_not_right">Something isn\'t right</string>
+    <string name="back_to_login">Back to login</string>
+    <string name="can_get_signal">We can\'t get a signal</string>
+    <string name="offline_msg">Check your connection (or) Try again Later</string>
+    <string name="refresh">Refresh</string>
 </resources>

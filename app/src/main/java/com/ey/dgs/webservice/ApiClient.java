@@ -47,6 +47,7 @@ public class ApiClient {
     public static int REQUEST_CODE_ANSWER_QUESTIONS = 108;
     public static int REQUEST_CODE_GET_USER_SETTINGS = 109;
     public static int REQUEST_CODE_UPDATE_USER_SETTINGS = 110;
+    public static int REQUEST_CODE_REFRESH_USER_SETTINGS = 111;
 
     public static Retrofit getClient() {
         return new Retrofit.Builder()
@@ -151,6 +152,7 @@ public class ApiClient {
                 UserDetailResponse userDetailResponse = new UserDetailResponse();
                 userDetailResponse.setMessage("Failed to load User Details!");
                 callback.onFailure(REQUEST_CODE_GET_USER, userDetailResponse.getMessage(), 0);
+                callback.onOffline(REQUEST_CODE_GET_USER, true);
             }
         });
     }
@@ -210,6 +212,39 @@ public class ApiClient {
                 UserSettingsResponse userSettingsResponse = new UserSettingsResponse();
                 userSettingsResponse.setMessage("Failed to load User Settings!");
                 callback.onFailure(REQUEST_CODE_GET_USER_SETTINGS, userSettingsResponse.getMessage(), 0);
+            }
+        });
+    }
+
+    public void refreshUserSettings(String token, User user, APICallback callback) {
+        ApiInterface apiService = ApiClient.getUserDetailsClient().create(ApiInterface.class);
+
+        Call<UserSettingsResponse> call = apiService.getUserSettings(token, user.getEmail());
+        call.enqueue(new Callback<UserSettingsResponse>() {
+            @Override
+            public void onResponse(Call<UserSettingsResponse> call, Response<UserSettingsResponse> response) {
+                UserSettingsResponse userSettingsResponse = response.body();
+                if (userSettingsResponse != null) {
+                    if (userSettingsResponse.isSuccess()) {
+                        userSettingsResponse.getUserSettings().setUserId(user.getUserId());
+                        userSettingsResponse.getUserSettings().setUserName(user.getEmail());
+                        callback.onSuccess(REQUEST_CODE_REFRESH_USER_SETTINGS, userSettingsResponse, response.code());
+                    } else {
+                        userSettingsResponse.setMessage("Failed to load User Settings!");
+                        callback.onFailure(REQUEST_CODE_REFRESH_USER_SETTINGS, userSettingsResponse.getMessage(), response.code());
+                    }
+                } else {
+                    userSettingsResponse = new UserSettingsResponse();
+                    userSettingsResponse.setMessage("Failed to load User Settings!");
+                    callback.onFailure(REQUEST_CODE_REFRESH_USER_SETTINGS, userSettingsResponse.getMessage(), response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UserSettingsResponse> call, Throwable t) {
+                UserSettingsResponse userSettingsResponse = new UserSettingsResponse();
+                userSettingsResponse.setMessage("Failed to load User Settings!");
+                callback.onFailure(REQUEST_CODE_REFRESH_USER_SETTINGS, userSettingsResponse.getMessage(), 0);
             }
         });
     }
@@ -373,7 +408,7 @@ public class ApiClient {
             public void onFailure(Call<BillingDetailsResponse> call, Throwable t) {
                 BillingDetailsResponse billingDetailsResponse = new BillingDetailsResponse();
                 billingDetailsResponse.setMessage("Failed to load Billing History!");
-                callback.onFailure(REQUEST_CODE_GET_BILLING_HISTORY, billingDetailsResponse.getMessage(), 0);
+                callback.onOffline(REQUEST_CODE_GET_BILLING_HISTORY, true);
             }
         });
     }

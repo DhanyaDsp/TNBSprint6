@@ -1,4 +1,4 @@
-package com.ey.dgs.dashboard.myaccount;
+package com.ey.dgs.dashboard.myaccount.breakdown;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;

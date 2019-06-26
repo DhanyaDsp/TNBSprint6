@@ -7,4 +7,6 @@ public interface APICallback {
     public void onFailure(int requestCode, Object obj, int code);
 
     public void onProgress(int requestCode, boolean isLoading);
+
+    public void onOffline(int requestCode, boolean isLoading);
 }

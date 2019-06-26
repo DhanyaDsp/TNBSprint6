@@ -7,20 +7,18 @@ import android.content.Context;
 import com.ey.dgs.api_response.UserDetailResponse;
 import com.ey.dgs.database.DatabaseCallback;
 import com.ey.dgs.database.DatabaseClient;
-import com.ey.dgs.model.Account;
 import com.ey.dgs.model.User;
 import com.ey.dgs.utils.AppPreferences;
 import com.ey.dgs.utils.Utils;
 import com.ey.dgs.webservice.APICallback;
 import com.ey.dgs.webservice.ApiClient;
 
-import java.util.ArrayList;
-
 
 public class LoginViewModel extends ViewModel implements DatabaseCallback, APICallback {
 
     private Context context;
     private MutableLiveData<User> userData = new MutableLiveData<>();
+    private MutableLiveData<Boolean> offlineData = new MutableLiveData<>();
     private MutableLiveData<Boolean> showProgress = new MutableLiveData<>();
     private AppPreferences appPreference;
 
@@ -113,6 +111,14 @@ public class LoginViewModel extends ViewModel implements DatabaseCallback, APICa
         }
     }
 
+    public MutableLiveData<Boolean> getOfflineData() {
+        return offlineData;
+    }
+
+    public void setOfflineData(Boolean isOffline) {
+        this.offlineData.postValue(isOffline);
+    }
+
     public void getAccountDetails(User user) {
         DatabaseClient.getInstance(context).getAccountDetails(User.REQUEST_CODE_UPDATE_USER_DETAIL, user, this);
     }
@@ -126,5 +132,10 @@ public class LoginViewModel extends ViewModel implements DatabaseCallback, APICa
     @Override
     public void onProgress(int requestCode, boolean isLoading) {
 
+    }
+
+    @Override
+    public void onOffline(int requestCode, boolean isLoading) {
+        setOfflineData(isLoading);
     }
 }

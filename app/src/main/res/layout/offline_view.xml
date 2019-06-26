@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/loader_bg"
+    android:clickable="true"
+    android:focusableInTouchMode="true"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.AppCompatImageView
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/very_large_padding"
+        android:adjustViewBounds="true"
+        android:src="@drawable/offline_icon" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/medium_padding"
+        android:fontFamily="@font/museosans_500"
+        android:paddingLeft="@dimen/medium_padding"
+        android:paddingRight="@dimen/medium_padding"
+        android:text="@string/can_get_signal"
+        android:textAlignment="center"
+        android:textColor="@color/light_white_70"
+        android:textSize="@dimen/text_size_medium" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/medium_padding"
+        android:fontFamily="@font/museosans_500"
+        android:paddingLeft="@dimen/medium_padding"
+        android:paddingRight="@dimen/medium_padding"
+        android:text="@string/offline_msg"
+        android:textAlignment="center"
+        android:textColor="@color/light_white_70"
+        android:textSize="@dimen/text_size_medium" />
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/btnRefresh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/medium_padding"
+        android:background="@drawable/rounded_white"
+        android:fontFamily="@font/museosans_500"
+        android:paddingLeft="@dimen/large_padding"
+        android:paddingRight="@dimen/large_padding"
+        android:text="@string/refresh"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_medium" />
+
+</LinearLayout>

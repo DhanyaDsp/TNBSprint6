@@ -238,6 +238,11 @@
             layout="@layout/loader"
             android:visibility="gone" />
 
+        <include
+            android:id="@+id/offlineView"
+            layout="@layout/offline_view"
+            android:visibility="gone" />
+
     </RelativeLayout>
 
 

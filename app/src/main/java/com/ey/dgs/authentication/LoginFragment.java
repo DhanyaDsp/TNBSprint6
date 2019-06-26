@@ -207,4 +207,9 @@ public class LoginFragment extends Fragment implements APICallback {
             loader.setVisibility(View.GONE);
         }
     }
+
+    @Override
+    public void onOffline(int requestCode, boolean isLoading) {
+
+    }
 }

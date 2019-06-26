@@ -747,6 +747,31 @@ public class DatabaseClient {
         st.execute();
     }
 
+    public void updateAccountFromUserSettings(int requestCode, List<Account> accounts, DatabaseCallback databaseCallback) {
+        class UpdateAccountTask extends AsyncTask<Void, Void, Void> {
+
+            @Override
+            protected Void doInBackground(Void... voids) {
+
+                for (Account account : accounts) {
+                    DatabaseClient.getInstance(mCtx).getAppDatabase()
+                            .accountDao()
+                            .updateAccountFromUserSettings(account.getAccountNumber(), account.isUserThresholdSet(), account.isHasConsumptionReached(), account.isOutageAlertFlag(), account.isRestoreAlertFlag());
+                }
+
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                databaseCallback.onUpdate(accounts, requestCode, 0);
+            }
+        }
+
+        UpdateAccountTask st = new UpdateAccountTask();
+        st.execute();
+    }
 
     public void getAccountDetails(int requestCode, User user, DatabaseCallback databaseCallback) {
         class GetAccountDetailsTask extends AsyncTask<Void, Void, Void> {

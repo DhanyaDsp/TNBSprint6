@@ -7,20 +7,25 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.support.v4.app.FragmentActivity;
 
+import com.ey.dgs.api_response.UserSettingsResponse;
+import com.ey.dgs.base.BaseViewModel;
 import com.ey.dgs.database.DatabaseCallback;
 import com.ey.dgs.database.DatabaseClient;
 import com.ey.dgs.model.Account;
+import com.ey.dgs.model.AccountSettings;
 import com.ey.dgs.model.BillingDetails;
+import com.ey.dgs.model.User;
 import com.ey.dgs.notifications.NotificationViewModel;
 import com.ey.dgs.utils.AppPreferences;
 import com.ey.dgs.utils.Utils;
 import com.ey.dgs.webservice.APICallback;
 import com.ey.dgs.webservice.ApiClient;
+import com.google.android.gms.common.api.CommonStatusCodes;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class DashboardViewModel extends ViewModel implements DatabaseCallback, APICallback {
+public class DashboardViewModel extends BaseViewModel implements DatabaseCallback, APICallback {
 
     private MutableLiveData<ArrayList<Account>> accounts = new MutableLiveData<>();
     private MutableLiveData<ArrayList<BillingDetails>> billingDetailsData = new MutableLiveData<>();
@@ -80,6 +85,9 @@ public class DashboardViewModel extends ViewModel implements DatabaseCallback, A
         DatabaseClient.getInstance(context).addAccounts(Account.REQUEST_CODE_ADD_ACCOUNTS, accounts, this);
     }
 
+    public void refreshUserSettingsFromServer(String token, User user) {
+        new ApiClient().refreshUserSettings(token, user, this);
+    }
 
     @Override
     public void onInsert(Object object, int requestCode, int responseCode) {
@@ -103,6 +111,8 @@ public class DashboardViewModel extends ViewModel implements DatabaseCallback, A
     @Override
     public void onUpdate(Object object, int requestCode, int responseCode) {
         if (requestCode == Account.REQUEST_CODE_UPDATE_ACCOUNT) {
+        } else if (requestCode == Account.REQUEST_CODE_REFRESH_ACCOUNT) {
+            loadAccountsFromLocalDB(1);
         }
     }
 
@@ -135,7 +145,28 @@ public class DashboardViewModel extends ViewModel implements DatabaseCallback, A
         if (requestCode == ApiClient.REQUEST_CODE_GET_BILLING_HISTORY) {
             Account account = (Account) obj;
             updateBillingDetailsToAccount(account);
+        } else if (requestCode == ApiClient.REQUEST_CODE_REFRESH_USER_SETTINGS) {
+            UserSettingsResponse userSettingsResponse = (UserSettingsResponse) obj;
+            List<Account> accounts = new ArrayList<>();
+            for (AccountSettings accountSettings : userSettingsResponse.getUserSettings().getAccountSettings()) {
+                Account account = new Account();
+                account.setAccountId(Integer.parseInt(accountSettings.getAccountNumber()));
+                account.setNickName(accountSettings.getNickName());
+                account.setAccountNumber(accountSettings.getAccountNumber());
+                account.setUserThreshold(accountSettings.getUserThreshold());
+                account.setUserThresholdSet(accountSettings.isUserThresholdSet());
+                account.setHasConsumptionReached(accountSettings.isHasConsumptionReached());
+                account.setOutageAlertFlag(accountSettings.isOutageAlertFlag());
+                account.setRestoreAlertFlag(accountSettings.isRestoreAlertFlag());
+                account.setUser_id(1);
+                accounts.add(account);
+            }
+            updateAccountFromUserSettings(accounts);
         }
+    }
+
+    private void updateAccountFromUserSettings(List<Account> accounts) {
+        DatabaseClient.getInstance(context).updateAccountFromUserSettings(Account.REQUEST_CODE_REFRESH_ACCOUNT, accounts, this);
     }
 
     private void updateBillingDetailsToAccount(Account account) {
@@ -154,10 +185,18 @@ public class DashboardViewModel extends ViewModel implements DatabaseCallback, A
     public void onFailure(int requestCode, Object obj, int code) {
         setLoader(false);
         Utils.showToast(context, (String) obj);
+        if (code == 401) {
+            setSessionExpiredData(true);
+        }
     }
 
     @Override
     public void onProgress(int requestCode, boolean isLoading) {
+
+    }
+
+    @Override
+    public void onOffline(int requestCode, boolean isLoading) {
 
     }
 }

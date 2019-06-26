@@ -108,6 +108,11 @@ public class UserSettingsViewModel extends ViewModel implements APICallback, Dat
     }
 
     @Override
+    public void onOffline(int requestCode, boolean isLoading) {
+
+    }
+
+    @Override
     public void onInsert(Object object, int requestCode, int responseCode) {
         if (requestCode == UserSettings.REQUEST_CODE_ADD_USER_SETTINGS) {
             UserSettings userSettings = (UserSettings) object;
@@ -119,8 +124,8 @@ public class UserSettingsViewModel extends ViewModel implements APICallback, Dat
     public void onUpdate(Object object, int requestCode, int responseCode) {
         if (requestCode == UserSettings.REQUEST_CODE_UPDATE_USER_SETTINGS) {
             setUserSettingsData((UserSettings) object);
-        } else if (requestCode == UserSettings.REQUEST_CODE_TOGGLE_PUSH) {
         }
+
     }
 
     @Override

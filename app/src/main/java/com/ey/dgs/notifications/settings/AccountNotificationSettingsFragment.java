@@ -2,6 +2,7 @@ package com.ey.dgs.notifications.settings;
 
 import android.app.Activity;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -16,6 +17,7 @@ import android.view.ViewGroup;
 
 import com.ey.dgs.R;
 import com.ey.dgs.adapters.NotificationSettingsAdapter;
+import com.ey.dgs.authentication.AuthenticationActivity;
 import com.ey.dgs.authentication.LoginViewModel;
 import com.ey.dgs.dashboard.DashboardFragment;
 import com.ey.dgs.dashboard.MyDashboardFragment;
@@ -169,6 +171,11 @@ public class AccountNotificationSettingsFragment extends Fragment {
         });
         accountSettingsViewModel.getLoaderData().observe(getViewLifecycleOwner(), showProgress -> {
             showProgress(showProgress);
+        });
+        accountSettingsViewModel.getSessionExpiredData().observe(getViewLifecycleOwner(), isSessionExpired -> {
+            if (isSessionExpired) {
+                ((NotificationSettingsActivity)getActivity()).showSessionExpiredView(isSessionExpired);
+            }
         });
     }
 

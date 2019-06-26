@@ -51,6 +51,11 @@ public class QuestionsViewModel extends ViewModel implements APICallback, Databa
 
     }
 
+    @Override
+    public void onOffline(int requestCode, boolean isLoading) {
+
+    }
+
     public void getAccountFromLocalDB(Account account) {
         DatabaseClient.getInstance(context).getAccount(Account.REQUEST_CODE_GET_ACCOUNT,
                 account, this);

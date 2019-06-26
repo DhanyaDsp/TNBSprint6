@@ -6,13 +6,14 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.ey.dgs.R;
 import com.ey.dgs.adapters.MyAccountTabsAdapter;
+import com.ey.dgs.dashboard.myaccount.breakdown.BreakdownQuestionsFragment;
+import com.ey.dgs.dashboard.myaccount.breakdown.EnergyInsightFragment;
 import com.ey.dgs.dashboard.questions.MMCQuestionsFragment;
 import com.ey.dgs.databinding.FragmentMyAccountBinding;
 import com.ey.dgs.model.Account;
@@ -70,7 +71,7 @@ public class MyAccountFragment extends Fragment {
         vpAccountTabs.setPagingEnabled(false);
         accountTabsAdapter = new MyAccountTabsAdapter(getChildFragmentManager(), getActivity());
         accountTabsAdapter.addFrag(ConsumptionFragment.newInstance(account), "Consumptions");
-        accountTabsAdapter.addFrag(EnergyInsightFragment.newInstance(), "Energy Insights");
+        accountTabsAdapter.addFrag(BreakdownQuestionsFragment.newInstance(null), "Energy Insights");
         vpAccountTabs.setAdapter(accountTabsAdapter);
     }
 

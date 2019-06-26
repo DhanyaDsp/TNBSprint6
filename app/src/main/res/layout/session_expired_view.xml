@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_login"
+    android:clickable="true"
+    android:focusableInTouchMode="true"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.AppCompatImageView
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/very_large_padding"
+        android:adjustViewBounds="true"
+        android:src="@drawable/offline_icon" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/medium_padding"
+        android:fontFamily="@font/museosans_500"
+        android:paddingLeft="@dimen/medium_padding"
+        android:paddingRight="@dimen/medium_padding"
+        android:text="@string/something_not_right"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_medium" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/medium_padding"
+        android:fontFamily="@font/museosans_500"
+        android:paddingLeft="@dimen/medium_padding"
+        android:paddingRight="@dimen/medium_padding"
+        android:text="@string/session_expired_msg"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_medium" />
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/btnBackToLogin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/medium_padding"
+        android:background="@drawable/rounded_white"
+        android:fontFamily="@font/museosans_500"
+        android:paddingLeft="@dimen/medium_padding"
+        android:paddingRight="@dimen/medium_padding"
+        android:text="@string/back_to_login"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_medium" />
+
+</LinearLayout>

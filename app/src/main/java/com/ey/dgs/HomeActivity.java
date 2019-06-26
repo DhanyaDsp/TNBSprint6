@@ -10,12 +10,14 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.ey.dgs.authentication.AuthenticationActivity;
 import com.ey.dgs.authentication.LoginViewModel;
 import com.ey.dgs.dashboard.DashboardFragment;
 import com.ey.dgs.dashboard.DashboardViewModel;
@@ -35,7 +37,7 @@ import com.ey.dgs.utils.Utils;
 
 import java.io.Serializable;
 
-public class HomeActivity extends AppCompatActivity implements MyAccountFragment.OnFragmentInteractionListener, DashboardFragment.OnFragmentInteractionListener, MyDashboardFragment.OnFragmentInteractionListener, FragmentManager.OnBackStackChangedListener {
+public class HomeActivity extends AppCompatActivity implements MyAccountFragment.OnFragmentInteractionListener, DashboardFragment.OnFragmentInteractionListener, MyDashboardFragment.OnFragmentInteractionListener, FragmentManager.OnBackStackChangedListener, View.OnClickListener {
 
     public static boolean IS_THRESHOLD = false;
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
@@ -44,7 +46,6 @@ public class HomeActivity extends AppCompatActivity implements MyAccountFragment
     public static boolean IS_COMING_FROM_MORE;
     private AppCompatTextView tvTitle;
     private Toolbar toolbar;
-    DashboardViewModel dashboardViewModel;
     LoginViewModel loginViewModel;
     private Account selectedAccount;
     public User user;
@@ -56,21 +57,23 @@ public class HomeActivity extends AppCompatActivity implements MyAccountFragment
     private BottomNavigationView navigation;
     private boolean dashboardShown;
     private boolean notificationRegistered;
-    View loader;
+    View loader, offlineView;
     private Fragment currentFragment;
+    AppCompatButton btnRefresh;
+    View sessionExpiredView;
+    AppCompatButton btnBackToLogin;
+    private boolean isSessionExpired;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         appPreferences = new AppPreferences(this);
+        getSupportFragmentManager().addOnBackStackChangedListener(this);
         user = (User) getIntent().getSerializableExtra("user");
         userName = user.getEmail();
-        dashboardViewModel = ViewModelProviders.of(this).get(DashboardViewModel.class);
-        dashboardViewModel.setContext(this);
         loginViewModel = ViewModelProviders.of(this).get(LoginViewModel.class);
         loginViewModel.setContext(this);
-        getSupportFragmentManager().addOnBackStackChangedListener(this);
         initViews();
         subscribe();
         notificationsSetup();
@@ -97,6 +100,9 @@ public class HomeActivity extends AppCompatActivity implements MyAccountFragment
 
 
     private void subscribe() {
+        loginViewModel.getOfflineData().observe(this, isOffline -> {
+            showOfflineView(isOffline);
+        });
         loginViewModel.getUserDetailFromServer(user);
         loginViewModel.getUserDetail().observe(this, user -> {
             if (user != null) {
@@ -116,7 +122,9 @@ public class HomeActivity extends AppCompatActivity implements MyAccountFragment
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_notification:
-                moveToNotificationListPage();
+                if (!isSessionExpired) {
+                    moveToNotificationListPage();
+                }
                 return true;
             case android.R.id.home:
                 onBackPressed();
@@ -148,10 +156,16 @@ public class HomeActivity extends AppCompatActivity implements MyAccountFragment
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("");
         tvTitle.setText("");
-        ;
+
         navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         loader = findViewById(R.id.loader);
+        offlineView = findViewById(R.id.offlineView);
+        btnRefresh = offlineView.findViewById(R.id.btnRefresh);
+        btnRefresh.setOnClickListener(this);
+        sessionExpiredView = findViewById(R.id.sessionExpiredView);
+        btnBackToLogin = sessionExpiredView.findViewById(R.id.btnBackToLogin);
+        btnBackToLogin.setOnClickListener(this);
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -164,19 +178,7 @@ public class HomeActivity extends AppCompatActivity implements MyAccountFragment
                     FragmentUtils.newInstance(getSupportFragmentManager())
                             .addFragment(INDEX_DASHBOARD, null, DashboardFragment.class.getName(), null, R.id.homeFlContainer);
 
-                  /*  if (!user.isPrimaryAccountSet()) {
-                        FragmentUtils.newInstance(getSupportFragmentManager())
-                                .addFragment(INDEX_DASHBOARD, null, DashboardFragment.class.getName(), R.id.homeFlContainer);
-                    } else {
-                        dashboardViewModel.getPrimaryAccountFromLocalDB();
-                        dashboardViewModel.getPrimaryAccount().observe(HomeActivity.this, account -> {
-                            selectedAccount = account;
-                            if (selectedAccount != null) {
-                                FragmentUtils.newInstance(getSupportFragmentManager())
-                                        .replaceFragment(FragmentUtils.INDEX_MY_DASHBOARD_FRAGMENT, selectedAccount, MyDashboardFragment.class.getName(), R.id.homeFlContainer);
-                            }
-                        });
-                    }*/
+
                     return true;
                /* case R.id.navigation_bills:
                     FragmentUtils.newInstance(getSupportFragmentManager())
@@ -192,7 +194,9 @@ public class HomeActivity extends AppCompatActivity implements MyAccountFragment
                     return true;
                     */
                 case R.id.navigation_more:
-                    moveToSettingsPage();
+                    if (!isSessionExpired) {
+                        moveToSettingsPage();
+                    }
                     return true;
             }
             return false;
@@ -211,18 +215,20 @@ public class HomeActivity extends AppCompatActivity implements MyAccountFragment
     }
 
     public void onBackPressed() {
-        FragmentManager fm = getSupportFragmentManager();
-        if (fm.getBackStackEntryCount() > 0) {
-            Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.homeFlContainer);
-            if (fragment instanceof MyAccountFragment) {
-                setToolbarTitle("");
+        if (!isSessionExpired) {
+            FragmentManager fm = getSupportFragmentManager();
+            if (fm.getBackStackEntryCount() > 0) {
+                Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.homeFlContainer);
+                if (fragment instanceof MyAccountFragment) {
+                    setToolbarTitle("");
+                }
+                if (fragment instanceof MMCManageAccountsFragment || fragment instanceof MMCQuestionsFragment) {
+                    Utils.hideKeyBoard(this);
+                }
+                fm.popBackStack();
+            } else {
+                super.onBackPressed();
             }
-            if (fragment instanceof MMCManageAccountsFragment || fragment instanceof MMCQuestionsFragment) {
-                Utils.hideKeyBoard(this);
-            }
-            fm.popBackStack();
-        } else {
-            super.onBackPressed();
         }
     }
 
@@ -278,5 +284,52 @@ public class HomeActivity extends AppCompatActivity implements MyAccountFragment
         } else {
             loader.setVisibility(View.GONE);
         }
+    }
+
+    public void showOfflineView(boolean show) {
+        if (show) {
+            offlineView.setVisibility(View.VISIBLE);
+        } else {
+            offlineView.setVisibility(View.GONE);
+        }
+    }
+
+    public void showSessionExpiredView(boolean show) {
+        isSessionExpired = show;
+        if (show) {
+            sessionExpiredView.setVisibility(View.VISIBLE);
+        } else {
+            sessionExpiredView.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btnRefresh:
+                refreshPage();
+                break;
+            case R.id.btnBackToLogin:
+                logout();
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void logout() {
+        finish();
+        moveToLoginPage();
+    }
+
+    private void moveToLoginPage() {
+        Intent intent = new Intent(this, AuthenticationActivity.class);
+        startActivity(intent);
+    }
+
+    private void refreshPage() {
+        loginViewModel.setOfflineData(false);
+        loginViewModel.setShowProgress(true);
+        loginViewModel.getUserDetailFromServer(user);
     }
 }

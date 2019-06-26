@@ -16,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.Gallery;
 import android.widget.LinearLayout;
 
+import com.ey.dgs.HomeActivity;
 import com.ey.dgs.R;
 import com.ey.dgs.adapters.DaysAdapter;
 import com.ey.dgs.authentication.LoginViewModel;
@@ -55,13 +56,14 @@ public class ConsumptionFragment extends Fragment implements View.OnClickListene
     User user;
     LinearLayout llTabs;
     AppCompatButton btnDaily, btnMonthly, btnYearly, btnManageConsumption;
-    View loader;
+    View loader, offlineView;
     Gallery glDays;
     DaysAdapter daysAdapter;
     private ArrayList<ChartData> chartDatum;
     private String chartPeriod = BillingHistory.MONTHLY;
     LinearLayout llAmount;
     AppCompatTextView tvDueAmount;
+    AppCompatButton btnRefresh;
 
     public ConsumptionFragment() {
     }
@@ -123,6 +125,14 @@ public class ConsumptionFragment extends Fragment implements View.OnClickListene
                         setChartData(billingDetails);
                     }
                 });
+            }
+        });
+        billingHistoryViewModel.getOfflineData().observe(getViewLifecycleOwner(), isOffline -> {
+            showOfflineView(isOffline);
+        });
+        billingHistoryViewModel.getSessionExpiredData().observe(getViewLifecycleOwner(), isSessionExpired -> {
+            if (isSessionExpired) {
+                ((HomeActivity) getActivity()).showSessionExpiredView(isSessionExpired);
             }
         });
     }
@@ -208,6 +218,9 @@ public class ConsumptionFragment extends Fragment implements View.OnClickListene
 
     private void initViews() {
         loader = view.findViewById(R.id.loader);
+        offlineView = view.findViewById(R.id.offlineView);
+        btnRefresh = offlineView.findViewById(R.id.btnRefresh);
+        btnRefresh.setOnClickListener(this);
         llTabs = view.findViewById(R.id.llTabs);
         llTabs.setClipToOutline(true);
         tvDueAmount = view.findViewById(R.id.tvDueAmount);
@@ -256,9 +269,19 @@ public class ConsumptionFragment extends Fragment implements View.OnClickListene
             case R.id.btnManageConsumption:
                 showQuestionsFragment();
                 break;
+
+            case R.id.btnRefresh:
+                refreshPage();
+                break;
             default:
                 break;
         }
+    }
+
+    private void refreshPage() {
+        billingHistoryViewModel.setLoaderData(true);
+        billingHistoryViewModel.setOfflineData(false);
+        getBillingHistory(chartPeriod);
     }
 
     private void getBillingHistory(String period) {
@@ -283,6 +306,15 @@ public class ConsumptionFragment extends Fragment implements View.OnClickListene
             loader.setVisibility(View.GONE);
         }
     }
+
+    public void showOfflineView(boolean show) {
+        if (show) {
+            offlineView.setVisibility(View.VISIBLE);
+        } else {
+            offlineView.setVisibility(View.GONE);
+        }
+    }
+
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
