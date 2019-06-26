@@ -25,6 +25,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.ey.dgs.HomeActivity;
 import com.ey.dgs.R;
 import com.ey.dgs.dashboard.DashboardFragment;
 import com.ey.dgs.databinding.MmcquestionsFragmentBinding;
@@ -211,8 +212,8 @@ public class MMCQuestionsFragment extends Fragment implements View.OnClickListen
             Gson gson = new Gson();
             this.billingDetails = gson.fromJson(billingHistory.getBillingDetails(), BillingDetails[].class);
             setChartData(billingDetails);
-            if(layoutQuestion2.getVisibility() == View.VISIBLE) {
-                if(Integer.parseInt(thresholdAnswer.getText().toString().trim().replace(".", "")) < 1) {
+            if (layoutQuestion2.getVisibility() == View.VISIBLE) {
+                if (Integer.parseInt(thresholdAnswer.getText().toString().trim().replace(".", "")) < 1) {
                     thresholdAnswer.setText(account.getAverageThreshold());
                 }
             }
@@ -231,6 +232,9 @@ public class MMCQuestionsFragment extends Fragment implements View.OnClickListen
             questionsViewModel.updateAccountDetailsInServer(accountDetailsArray);
             questionsViewModel.getLoaderData().observe(getViewLifecycleOwner(), showProgress -> {
                 showProgress(showProgress);
+            });
+            questionsViewModel.getSessionExpiredData().observe(getViewLifecycleOwner(), isSessionExpired -> {
+                ((HomeActivity) getActivity()).showSessionExpiredView(isSessionExpired);
             });
         } else {
             Utils.showToast(getActivity(), "Please enter value");

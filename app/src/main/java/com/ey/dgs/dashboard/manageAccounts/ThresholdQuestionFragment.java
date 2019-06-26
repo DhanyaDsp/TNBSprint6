@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.ey.dgs.HomeActivity;
 import com.ey.dgs.R;
 import com.ey.dgs.adapters.ThresholdQuestionAdapter;
 import com.ey.dgs.dashboard.questions.QuestionsViewModel;
@@ -93,16 +94,19 @@ public class ThresholdQuestionFragment extends Fragment {
         questionsViewModel.getLoaderData().observe(getViewLifecycleOwner(), showProgress -> {
             showProgress(showProgress);
         });
+        questionsViewModel.getSessionExpiredData().observe(getViewLifecycleOwner(), isSessionExpired -> {
+            ((HomeActivity) getActivity()).showSessionExpiredView(isSessionExpired);
+        });
     }
 
     public static void setValues(ArrayList<String> accountNumbers, ArrayList<Integer> peopleInProperty) {
         accNumberFromQuestion = accountNumbers;
         ArrayList<String> peopleInPropertyArray = new ArrayList<>();
-        for (Integer i: peopleInProperty) {
+        for (Integer i : peopleInProperty) {
             peopleInPropertyArray.add(String.valueOf(i));
         }
         accountDetailsArray = new AccountDetails[accountNumbers.size()];
-        if(accountNumbers.size() ==  peopleInProperty.size()) {
+        if (accountNumbers.size() == peopleInProperty.size()) {
             for (int i = 0; i < accountNumbers.size(); i++) {
                 accountDetailsArray[i] = new AccountDetails(accountNumbers.get(i),
                         peopleInPropertyArray.get(i), null);
@@ -115,7 +119,7 @@ public class ThresholdQuestionFragment extends Fragment {
             loader.setVisibility(View.VISIBLE);
         } else {
             loader.setVisibility(View.GONE);
-            if(questionsViewModel.isSuccess()) {
+            if (questionsViewModel.isSuccess()) {
                 getActivity().onBackPressed();
             }
         }

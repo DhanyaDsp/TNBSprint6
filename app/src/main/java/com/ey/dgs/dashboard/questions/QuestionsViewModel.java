@@ -4,6 +4,7 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.content.Context;
 
+import com.ey.dgs.base.BaseViewModel;
 import com.ey.dgs.database.DatabaseCallback;
 import com.ey.dgs.database.DatabaseClient;
 import com.ey.dgs.model.Account;
@@ -16,7 +17,7 @@ import com.ey.dgs.webservice.ApiClient;
 
 import static com.ey.dgs.webservice.ApiClient.REQUEST_CODE_ANSWER_QUESTIONS;
 
-public class QuestionsViewModel extends ViewModel implements APICallback, DatabaseCallback {
+public class QuestionsViewModel extends BaseViewModel implements APICallback, DatabaseCallback {
 
     private Context context;
     AppPreferences appPreferences;
@@ -44,6 +45,9 @@ public class QuestionsViewModel extends ViewModel implements APICallback, Databa
     public void onFailure(int requestCode, Object obj, int code) {
         Utils.showToast(context, (String) obj);
         setLoader(false);
+        if (code == 401) {
+            setSessionExpiredData(true);
+        }
     }
 
     @Override
@@ -103,7 +107,7 @@ public class QuestionsViewModel extends ViewModel implements APICallback, Databa
 
     @Override
     public void onUpdate(Object object, int requestCode, int responseCode) {
-        if(requestCode == Account.REQUEST_CODE_UPDATE_ACCOUNTS) {
+        if (requestCode == Account.REQUEST_CODE_UPDATE_ACCOUNTS) {
             this.accountData.postValue((AccountDetails[]) object);
         } else if (requestCode == Account.REQUEST_CODE_GET_ACCOUNT) {
             this.account.postValue((Account) object);
@@ -112,7 +116,7 @@ public class QuestionsViewModel extends ViewModel implements APICallback, Databa
 
     @Override
     public void onReceived(Object object, int requestCode, int responseCode) {
-        if(requestCode == Account.REQUEST_CODE_UPDATE_ACCOUNTS) {
+        if (requestCode == Account.REQUEST_CODE_UPDATE_ACCOUNTS) {
             this.accountData.postValue((AccountDetails[]) object);
         } else if (requestCode == Account.REQUEST_CODE_GET_ACCOUNT) {
             this.account.postValue((Account) object);
